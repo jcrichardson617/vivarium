@@ -1,0 +1,2821 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.18"
+  }
+  public: {
+    Tables: {
+      animal_acquisitions: {
+        Row: {
+          acquired_date: string | null
+          animal_id: string
+          created_at: string
+          currency: string | null
+          id: string
+          notes: string | null
+          price: number | null
+          source_name: string | null
+          source_type: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_date?: string | null
+          animal_id: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          price?: number | null
+          source_name?: string | null
+          source_type?: string | null
+          user_id?: string
+        }
+        Update: {
+          acquired_date?: string | null
+          animal_id?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          price?: number | null
+          source_name?: string | null
+          source_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_acquisitions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_enclosures: {
+        Row: {
+          animal_id: string | null
+          enclosure_id: string | null
+          end_date: string | null
+          id: string
+          notes: string | null
+          start_date: string | null
+        }
+        Insert: {
+          animal_id?: string | null
+          enclosure_id?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          start_date?: string | null
+        }
+        Update: {
+          animal_id?: string | null
+          enclosure_id?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          start_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosure_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_enclosures_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_genes: {
+        Row: {
+          animal_id: string
+          created_at: string
+          gene_id: string
+          het_probability: number | null
+          id: string
+          status: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          gene_id: string
+          het_probability?: number | null
+          id?: string
+          status: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          gene_id?: string
+          het_probability?: number | null
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_genes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_genes_gene_id_fkey"
+            columns: ["gene_id"]
+            isOneToOne: false
+            referencedRelation: "genes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_notes: {
+        Row: {
+          animal_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          note_text: string
+          note_type: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_text: string
+          note_type?: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_text?: string
+          note_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_notes_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_ownership: {
+        Row: {
+          animal_id: string | null
+          end_date: string | null
+          id: string
+          is_current_owner: boolean | null
+          start_date: string | null
+          user_id: string | null
+        }
+        Insert: {
+          animal_id?: string | null
+          end_date?: string | null
+          id?: string
+          is_current_owner?: boolean | null
+          start_date?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          animal_id?: string | null
+          end_date?: string | null
+          id?: string
+          is_current_owner?: boolean | null
+          start_date?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_ownership_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_photos: {
+        Row: {
+          animal_id: string
+          caption: string | null
+          created_at: string
+          id: string
+          is_primary: boolean
+          storage_path: string
+          taken_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          animal_id: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          storage_path: string
+          taken_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          animal_id?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          storage_path?: string
+          taken_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_photos_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_photos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animals: {
+        Row: {
+          animal_code: string | null
+          created_at: string | null
+          created_by: string | null
+          dam_id: string | null
+          hatch_date: string | null
+          id: string
+          locality_id: string | null
+          name: string | null
+          sex: string | null
+          sire_id: string | null
+          species_id: string | null
+          status: string
+          status_date: string | null
+          visibility: string | null
+        }
+        Insert: {
+          animal_code?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          dam_id?: string | null
+          hatch_date?: string | null
+          id?: string
+          locality_id?: string | null
+          name?: string | null
+          sex?: string | null
+          sire_id?: string | null
+          species_id?: string | null
+          status?: string
+          status_date?: string | null
+          visibility?: string | null
+        }
+        Update: {
+          animal_code?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          dam_id?: string | null
+          hatch_date?: string | null
+          id?: string
+          locality_id?: string | null
+          name?: string | null
+          sex?: string | null
+          sire_id?: string | null
+          species_id?: string | null
+          status?: string
+          status_date?: string | null
+          visibility?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_dam_id_fkey"
+            columns: ["dam_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_locality_id_fkey"
+            columns: ["locality_id"]
+            isOneToOne: false
+            referencedRelation: "localities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breeding_pairings: {
+        Row: {
+          female_id: string | null
+          id: string
+          male_id: string | null
+          notes: string | null
+          pairing_date: string
+        }
+        Insert: {
+          female_id?: string | null
+          id?: string
+          male_id?: string | null
+          notes?: string | null
+          pairing_date?: string
+        }
+        Update: {
+          female_id?: string | null
+          id?: string
+          male_id?: string | null
+          notes?: string | null
+          pairing_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_female_id_fkey"
+            columns: ["female_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "breeding_pairings_male_id_fkey"
+            columns: ["male_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+        ]
+      }
+      clutches: {
+        Row: {
+          egg_count: number | null
+          fertile_count: number | null
+          id: string
+          laid_date: string | null
+          notes: string | null
+          pairing_id: string | null
+        }
+        Insert: {
+          egg_count?: number | null
+          fertile_count?: number | null
+          id?: string
+          laid_date?: string | null
+          notes?: string | null
+          pairing_id?: string | null
+        }
+        Update: {
+          egg_count?: number | null
+          fertile_count?: number | null
+          id?: string
+          laid_date?: string | null
+          notes?: string | null
+          pairing_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clutches_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "breeding_pairings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eggs: {
+        Row: {
+          clutch_id: string | null
+          egg_number: number | null
+          id: string
+          incubation_start: string | null
+          laid_date: string | null
+          notes: string | null
+          status: string | null
+        }
+        Insert: {
+          clutch_id?: string | null
+          egg_number?: number | null
+          id?: string
+          incubation_start?: string | null
+          laid_date?: string | null
+          notes?: string | null
+          status?: string | null
+        }
+        Update: {
+          clutch_id?: string | null
+          egg_number?: number | null
+          id?: string
+          incubation_start?: string | null
+          laid_date?: string | null
+          notes?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eggs_clutch_id_fkey"
+            columns: ["clutch_id"]
+            isOneToOne: false
+            referencedRelation: "breeding_detail_view"
+            referencedColumns: ["clutch_id"]
+          },
+          {
+            foreignKeyName: "eggs_clutch_id_fkey"
+            columns: ["clutch_id"]
+            isOneToOne: false
+            referencedRelation: "breeding_metrics_view"
+            referencedColumns: ["clutch_id"]
+          },
+          {
+            foreignKeyName: "eggs_clutch_id_fkey"
+            columns: ["clutch_id"]
+            isOneToOne: false
+            referencedRelation: "clutches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enclosures: {
+        Row: {
+          created_at: string | null
+          enclosure_type: string | null
+          heat_source: string | null
+          height_cm: number | null
+          id: string
+          length_cm: number | null
+          name: string
+          notes: string | null
+          owner_id: string | null
+          substrate: string | null
+          target_cool_temp_c: number | null
+          target_hot_temp_c: number | null
+          target_humidity_pct: number | null
+          updated_at: string | null
+          uvb_type: string | null
+          width_cm: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          enclosure_type?: string | null
+          heat_source?: string | null
+          height_cm?: number | null
+          id?: string
+          length_cm?: number | null
+          name: string
+          notes?: string | null
+          owner_id?: string | null
+          substrate?: string | null
+          target_cool_temp_c?: number | null
+          target_hot_temp_c?: number | null
+          target_humidity_pct?: number | null
+          updated_at?: string | null
+          uvb_type?: string | null
+          width_cm?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          enclosure_type?: string | null
+          heat_source?: string | null
+          height_cm?: number | null
+          id?: string
+          length_cm?: number | null
+          name?: string
+          notes?: string | null
+          owner_id?: string | null
+          substrate?: string | null
+          target_cool_temp_c?: number | null
+          target_hot_temp_c?: number | null
+          target_humidity_pct?: number | null
+          updated_at?: string | null
+          uvb_type?: string | null
+          width_cm?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enclosures_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      environment_logs: {
+        Row: {
+          enclosure_id: string | null
+          humidity_pct: number | null
+          id: string
+          notes: string | null
+          recorded_at: string | null
+          temperature_cool_c: number | null
+          temperature_hot_c: number | null
+          uv_index: number | null
+        }
+        Insert: {
+          enclosure_id?: string | null
+          humidity_pct?: number | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          temperature_cool_c?: number | null
+          temperature_hot_c?: number | null
+          uv_index?: number | null
+        }
+        Update: {
+          enclosure_id?: string | null
+          humidity_pct?: number | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          temperature_cool_c?: number | null
+          temperature_hot_c?: number | null
+          uv_index?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "environment_logs_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosure_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "environment_logs_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedings: {
+        Row: {
+          accepted: boolean
+          animal_id: string
+          fed_at: string
+          fed_by: string | null
+          feeder_size: string | null
+          feeder_type: string
+          id: string
+          notes: string | null
+          quantity: number | null
+        }
+        Insert: {
+          accepted?: boolean
+          animal_id: string
+          fed_at?: string
+          fed_by?: string | null
+          feeder_size?: string | null
+          feeder_type: string
+          id?: string
+          notes?: string | null
+          quantity?: number | null
+        }
+        Update: {
+          accepted?: boolean
+          animal_id?: string
+          fed_at?: string
+          fed_by?: string | null
+          feeder_size?: string | null
+          feeder_type?: string
+          id?: string
+          notes?: string | null
+          quantity?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "feedings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "feedings_fed_by_fkey"
+            columns: ["fed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gene_submissions: {
+        Row: {
+          allelic_group: string | null
+          created_at: string
+          id: string
+          inheritance: string
+          name: string
+          notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          species_id: string
+          status: string
+          submitted_by: string | null
+          super_name: string | null
+        }
+        Insert: {
+          allelic_group?: string | null
+          created_at?: string
+          id?: string
+          inheritance: string
+          name: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          species_id: string
+          status?: string
+          submitted_by?: string | null
+          super_name?: string | null
+        }
+        Update: {
+          allelic_group?: string | null
+          created_at?: string
+          id?: string
+          inheritance?: string
+          name?: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          species_id?: string
+          status?: string
+          submitted_by?: string | null
+          super_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gene_submissions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gene_submissions_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gene_submissions_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gene_submissions_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      genes: {
+        Row: {
+          active: boolean
+          aliases: string[]
+          allelic_group: string | null
+          created_at: string
+          id: string
+          inheritance: string
+          name: string
+          notes: string | null
+          species_id: string
+          super_name: string | null
+          verified: boolean
+        }
+        Insert: {
+          active?: boolean
+          aliases?: string[]
+          allelic_group?: string | null
+          created_at?: string
+          id?: string
+          inheritance: string
+          name: string
+          notes?: string | null
+          species_id: string
+          super_name?: string | null
+          verified?: boolean
+        }
+        Update: {
+          active?: boolean
+          aliases?: string[]
+          allelic_group?: string | null
+          created_at?: string
+          id?: string
+          inheritance?: string
+          name?: string
+          notes?: string | null
+          species_id?: string
+          super_name?: string | null
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "genes_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "genes_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hatchlings: {
+        Row: {
+          animal_id: string | null
+          egg_id: string | null
+          hatch_date: string | null
+          hatch_weight_g: number | null
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          animal_id?: string | null
+          egg_id?: string | null
+          hatch_date?: string | null
+          hatch_weight_g?: number | null
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          animal_id?: string | null
+          egg_id?: string | null
+          hatch_date?: string | null
+          hatch_weight_g?: number | null
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "hatchlings_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "hatchlings_egg_id_fkey"
+            columns: ["egg_id"]
+            isOneToOne: false
+            referencedRelation: "eggs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_events: {
+        Row: {
+          animal_id: string
+          event_date: string
+          event_type: string
+          id: string
+          notes: string | null
+          recorded_by: string | null
+          severity: string | null
+        }
+        Insert: {
+          animal_id: string
+          event_date?: string
+          event_type: string
+          id?: string
+          notes?: string | null
+          recorded_by?: string | null
+          severity?: string | null
+        }
+        Update: {
+          animal_id?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          notes?: string | null
+          recorded_by?: string | null
+          severity?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "health_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "health_events_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incubation_logs: {
+        Row: {
+          egg_id: string | null
+          humidity_pct: number | null
+          id: string
+          incubation_day: number | null
+          notes: string | null
+          recorded_at: string | null
+          temperature_c: number | null
+        }
+        Insert: {
+          egg_id?: string | null
+          humidity_pct?: number | null
+          id?: string
+          incubation_day?: number | null
+          notes?: string | null
+          recorded_at?: string | null
+          temperature_c?: number | null
+        }
+        Update: {
+          egg_id?: string | null
+          humidity_pct?: number | null
+          id?: string
+          incubation_day?: number | null
+          notes?: string | null
+          recorded_at?: string | null
+          temperature_c?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incubation_logs_egg_id_fkey"
+            columns: ["egg_id"]
+            isOneToOne: false
+            referencedRelation: "eggs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      length_logs: {
+        Row: {
+          animal_id: string
+          id: string
+          length_cm: number
+          notes: string | null
+          recorded_at: string
+          recorded_by: string | null
+        }
+        Insert: {
+          animal_id: string
+          id?: string
+          length_cm: number
+          notes?: string | null
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Update: {
+          animal_id?: string
+          id?: string
+          length_cm?: number
+          notes?: string | null
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "length_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "length_logs_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      localities: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          region: string | null
+          species_id: string
+          verified: boolean
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          region?: string | null
+          species_id: string
+          verified?: boolean
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          region?: string | null
+          species_id?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "localities_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "localities_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ownership_transfers: {
+        Row: {
+          animal_id: string
+          completed_at: string | null
+          created_at: string | null
+          from_user_id: string
+          id: string
+          status: string
+          to_user_id: string
+        }
+        Insert: {
+          animal_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          from_user_id: string
+          id?: string
+          status?: string
+          to_user_id: string
+        }
+        Update: {
+          animal_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          from_user_id?: string
+          id?: string
+          status?: string
+          to_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ownership_transfers_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          country: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          plan: string
+          role: string
+          unit_system: string | null
+          username: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          plan?: string
+          role?: string
+          unit_system?: string | null
+          username: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          plan?: string
+          role?: string
+          unit_system?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      research_document_species: {
+        Row: {
+          document_id: string
+          species_id: string
+        }
+        Insert: {
+          document_id: string
+          species_id: string
+        }
+        Update: {
+          document_id?: string
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_document_species_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "research_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_document_species_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_document_species_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_documents: {
+        Row: {
+          authors: string[]
+          content: string | null
+          content_rights: string
+          created_at: string | null
+          doi: string | null
+          evidence_level: string
+          id: string
+          license: string | null
+          open_access: boolean
+          published_date: string | null
+          publisher: string | null
+          retrieved_at: string | null
+          source_type: string
+          source_url: string
+          species_id: string | null
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          authors?: string[]
+          content?: string | null
+          content_rights?: string
+          created_at?: string | null
+          doi?: string | null
+          evidence_level?: string
+          id?: string
+          license?: string | null
+          open_access?: boolean
+          published_date?: string | null
+          publisher?: string | null
+          retrieved_at?: string | null
+          source_type: string
+          source_url: string
+          species_id?: string | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          authors?: string[]
+          content?: string | null
+          content_rights?: string
+          created_at?: string | null
+          doi?: string | null
+          evidence_level?: string
+          id?: string
+          license?: string | null
+          open_access?: boolean
+          published_date?: string | null
+          publisher?: string | null
+          retrieved_at?: string | null
+          source_type?: string
+          source_url?: string
+          species_id?: string | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_documents_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_documents_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sheds: {
+        Row: {
+          animal_id: string
+          complete_shed: boolean
+          id: string
+          notes: string | null
+          recorded_by: string | null
+          retained_eye_caps: boolean
+          retained_tail_tip: boolean
+          shed_date: string
+        }
+        Insert: {
+          animal_id: string
+          complete_shed?: boolean
+          id?: string
+          notes?: string | null
+          recorded_by?: string | null
+          retained_eye_caps?: boolean
+          retained_tail_tip?: boolean
+          shed_date?: string
+        }
+        Update: {
+          animal_id?: string
+          complete_shed?: boolean
+          id?: string
+          notes?: string | null
+          recorded_by?: string | null
+          retained_eye_caps?: boolean
+          retained_tail_tip?: boolean
+          shed_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "sheds_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "sheds_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      species: {
+        Row: {
+          accepted_name: boolean | null
+          active: boolean | null
+          common_name: string | null
+          created_at: string | null
+          family: string | null
+          genus: string | null
+          id: string
+          notes: string | null
+          scientific_name: string
+        }
+        Insert: {
+          accepted_name?: boolean | null
+          active?: boolean | null
+          common_name?: string | null
+          created_at?: string | null
+          family?: string | null
+          genus?: string | null
+          id?: string
+          notes?: string | null
+          scientific_name: string
+        }
+        Update: {
+          accepted_name?: boolean | null
+          active?: boolean | null
+          common_name?: string | null
+          created_at?: string | null
+          family?: string | null
+          genus?: string | null
+          id?: string
+          notes?: string | null
+          scientific_name?: string
+        }
+        Relationships: []
+      }
+      species_submissions: {
+        Row: {
+          common_name: string | null
+          created_at: string
+          family: string | null
+          genus: string | null
+          id: string
+          notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          scientific_name: string
+          status: string
+          submitted_by: string | null
+        }
+        Insert: {
+          common_name?: string | null
+          created_at?: string
+          family?: string | null
+          genus?: string | null
+          id?: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scientific_name: string
+          status?: string
+          submitted_by?: string | null
+        }
+        Update: {
+          common_name?: string | null
+          created_at?: string
+          family?: string | null
+          genus?: string | null
+          id?: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scientific_name?: string
+          status?: string
+          submitted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "species_submissions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "species_submissions_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      species_synonyms: {
+        Row: {
+          created_at: string
+          id: string
+          source: string | null
+          species_id: string
+          synonym_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          source?: string | null
+          species_id: string
+          synonym_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          source?: string | null
+          species_id?: string
+          synonym_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "species_synonyms_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "species_synonyms_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weight_logs: {
+        Row: {
+          animal_id: string | null
+          id: string
+          notes: string | null
+          recorded_at: string | null
+          recorded_by: string | null
+          weight_grams: number | null
+        }
+        Insert: {
+          animal_id?: string | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          recorded_by?: string | null
+          weight_grams?: number | null
+        }
+        Update: {
+          animal_id?: string | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          recorded_by?: string | null
+          weight_grams?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "weight_logs_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      animal_detail_view: {
+        Row: {
+          common_name: string | null
+          created_at: string | null
+          current_owner_id: string | null
+          current_owner_username: string | null
+          hatch_date: string | null
+          id: string | null
+          latest_weight_grams: number | null
+          name: string | null
+          ownership_count: number | null
+          scientific_name: string | null
+          sex: string | null
+          visibility: string | null
+          weight_log_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_ownership_user_id_fkey"
+            columns: ["current_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animal_timeline_view: {
+        Row: {
+          animal_id: string | null
+          event_date: string | null
+          event_type: string | null
+          event_value: string | null
+        }
+        Relationships: []
+      }
+      breeding_detail_view: {
+        Row: {
+          clutch_id: string | null
+          declared_egg_count: number | null
+          declared_fertile_count: number | null
+          failed_count: number | null
+          hatched_egg_count: number | null
+          hatchling_count: number | null
+          incubating_count: number | null
+          infertile_count: number | null
+          laid_date: string | null
+          notes: string | null
+          pairing_id: string | null
+          slug_count: number | null
+          tracked_egg_count: number | null
+          tracked_hatch_rate: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clutches_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "breeding_pairings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breeding_metrics_view: {
+        Row: {
+          avg_incubation_humidity_pct: number | null
+          avg_incubation_temp_c: number | null
+          clutch_id: string | null
+          egg_count: number | null
+          fertile_count: number | null
+          first_hatch_date: string | null
+          hatch_rate: number | null
+          hatchlings: number | null
+          laid_date: string | null
+          last_hatch_date: string | null
+          tracked_eggs: number | null
+        }
+        Relationships: []
+      }
+      collection_view: {
+        Row: {
+          common_name: string | null
+          current_weight: number | null
+          id: string | null
+          name: string | null
+          owner_username: string | null
+          scientific_name: string | null
+        }
+        Relationships: []
+      }
+      dashboard_view: {
+        Row: {
+          average_current_weight: number | null
+          average_weight_gain: number | null
+          feedings_last_30_days: number | null
+          health_events_last_30_days: number | null
+          total_animals: number | null
+          total_clutches: number | null
+          total_eggs: number | null
+          total_enclosures: number | null
+          total_hatchlings: number | null
+          total_pairings: number | null
+          weight_logs_last_30_days: number | null
+        }
+        Relationships: []
+      }
+      enclosure_detail_view: {
+        Row: {
+          animal_count: number | null
+          created_at: string | null
+          enclosure_type: string | null
+          heat_source: string | null
+          height_cm: number | null
+          id: string | null
+          last_environment_log: string | null
+          length_cm: number | null
+          name: string | null
+          owner_id: string | null
+          substrate: string | null
+          target_cool_temp_c: number | null
+          target_hot_temp_c: number | null
+          target_humidity_pct: number | null
+          updated_at: string | null
+          uvb_type: string | null
+          width_cm: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enclosures_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enclosure_timeline_view: {
+        Row: {
+          details: string | null
+          enclosure_id: string | null
+          event_date: string | null
+          event_type: string | null
+          title: string | null
+        }
+        Relationships: []
+      }
+      growth_metrics_view: {
+        Row: {
+          animal_id: string | null
+          avg_daily_weight_gain: number | null
+          current_weight: number | null
+          first_weight: number | null
+          first_weight_date: string | null
+          latest_weight_date: string | null
+          max_recorded_weight: number | null
+          name: string | null
+          species_id: string | null
+          total_weight_gain: number | null
+          weight_entries: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      growth_percentile_view: {
+        Row: {
+          animal_id: string | null
+          avg_current_weight: number | null
+          avg_daily_weight_gain: number | null
+          current_weight: number | null
+          growth_percentile: number | null
+          name: string | null
+          species_avg_growth: number | null
+          species_id: string | null
+          weight_percentile: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      husbandry_metrics_view: {
+        Row: {
+          animal_id: string | null
+          avg_daily_growth: number | null
+          current_weight_grams: number | null
+          feeding_count: number | null
+          health_event_count: number | null
+          last_feeding_date: string | null
+          last_health_event_date: string | null
+          last_shed_date: string | null
+          last_weight_date: string | null
+          name: string | null
+          shed_count: number | null
+          species_id: string | null
+          weight_log_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recommendations_view: {
+        Row: {
+          animal_id: string | null
+          avg_daily_weight_gain: number | null
+          current_weight: number | null
+          feeding_alert: string | null
+          feeding_count: number | null
+          growth_flag: string | null
+          growth_percentile: number | null
+          health_alert: string | null
+          health_event_count: number | null
+          last_feeding_date: string | null
+          last_health_event_date: string | null
+          last_shed_date: string | null
+          name: string | null
+          shed_alert: string | null
+          species_id: string | null
+          weight_percentile: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      search_documents_view: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          document_type: string | null
+          id: string | null
+          species_id: string | null
+          title: string | null
+        }
+        Relationships: []
+      }
+      species_benchmark_view: {
+        Row: {
+          animal_count: number | null
+          avg_current_weight: number | null
+          avg_daily_weight_gain: number | null
+          best_daily_growth: number | null
+          max_current_weight: number | null
+          min_current_weight: number | null
+          species_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      species_detail_view: {
+        Row: {
+          animal_count: number | null
+          avg_daily_growth: number | null
+          avg_hatch_rate: number | null
+          avg_weight_grams: number | null
+          clutch_count: number | null
+          common_name: string | null
+          egg_count: number | null
+          first_record_added: string | null
+          hatchling_count: number | null
+          id: string | null
+          latest_record_added: string | null
+          pairing_count: number | null
+          scientific_name: string | null
+        }
+        Relationships: []
+      }
+    }
+    Functions: {
+      fn01_accept_ownership_transfer: {
+        Args: { transfer_uuid: string }
+        Returns: undefined
+      }
+      fn02_request_ownership_transfer: {
+        Args: { p_animal_id: string; p_to_user_id: string }
+        Returns: string
+      }
+      fn03_cancel_ownership_transfer: {
+        Args: { p_transfer_id: string }
+        Returns: undefined
+      }
+      fn04_decline_ownership_transfer: {
+        Args: { p_transfer_id: string }
+        Returns: undefined
+      }
+      fn05_get_current_owner: { Args: { p_animal_id: string }; Returns: string }
+      fn06_is_current_owner: {
+        Args: { p_animal_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      fn07_get_ownership_history: {
+        Args: { p_animal_id: string }
+        Returns: {
+          end_date: string
+          is_current_owner: boolean
+          start_date: string
+          user_id: string
+        }[]
+      }
+      fn08_log_feeding: {
+        Args: {
+          p_accepted: boolean
+          p_animal_id: string
+          p_feeder_size: string
+          p_feeder_type: string
+          p_notes: string
+          p_quantity: number
+        }
+        Returns: string
+      }
+      fn09_log_shed: {
+        Args: {
+          p_animal_id: string
+          p_complete_shed: boolean
+          p_notes: string
+          p_retained_eye_caps: boolean
+          p_retained_tail_tip: boolean
+        }
+        Returns: string
+      }
+      fn14_submit_species: {
+        Args: {
+          p_common_name: string
+          p_family: string
+          p_genus: string
+          p_notes: string
+          p_scientific_name: string
+        }
+        Returns: string
+      }
+      fn15_approve_species_submission: {
+        Args: { p_submission_id: string }
+        Returns: string
+      }
+      fn16_reject_species_submission: {
+        Args: { p_submission_id: string }
+        Returns: undefined
+      }
+      fn17_search_species: {
+        Args: { p_search: string }
+        Returns: {
+          display_name: string
+          id: string
+        }[]
+      }
+      fn18_get_species: {
+        Args: { p_species_id: string }
+        Returns: {
+          common_name: string
+          family: string
+          genus: string
+          id: string
+          scientific_name: string
+        }[]
+      }
+      fn19_create_animal: {
+        Args: {
+          p_hatch_date?: string
+          p_name: string
+          p_sex: string
+          p_species_id: string
+        }
+        Returns: string
+      }
+      fn20_log_weight: {
+        Args: { p_animal_id: string; p_notes?: string; p_weight_grams: number }
+        Returns: string
+      }
+      fn21_get_weight_history: {
+        Args: { p_animal_id: string }
+        Returns: {
+          notes: string
+          recorded_at: string
+          weight_grams: number
+        }[]
+      }
+      fn22_get_latest_weight: {
+        Args: { p_animal_id: string }
+        Returns: {
+          recorded_at: string
+          weight_grams: number
+        }[]
+      }
+      fn23_get_animal_dashboard: {
+        Args: { p_animal_id: string }
+        Returns: {
+          animal_name: string
+          latest_feeding: string
+          latest_weight: number
+          species_name: string
+        }[]
+      }
+      fn24_get_my_animals: {
+        Args: { p_user_id: string }
+        Returns: {
+          animal_id: string
+          animal_name: string
+          latest_weight: number
+          species_name: string
+        }[]
+      }
+      fn25_log_length: {
+        Args: { p_animal_id: string; p_length_cm: number; p_notes?: string }
+        Returns: string
+      }
+      fn26_get_length_history: {
+        Args: { p_animal_id: string }
+        Returns: {
+          length_cm: number
+          notes: string
+          recorded_at: string
+        }[]
+      }
+      fn27_get_latest_length: {
+        Args: { p_animal_id: string }
+        Returns: {
+          length_cm: number
+          recorded_at: string
+        }[]
+      }
+      fn28_get_species_names: {
+        Args: { p_species_id: string }
+        Returns: {
+          species_name: string
+        }[]
+      }
+      fn29_submit_gene: {
+        Args: {
+          p_allelic_group?: string
+          p_inheritance: string
+          p_name: string
+          p_notes?: string
+          p_species_id: string
+          p_super_name?: string
+        }
+        Returns: string
+      }
+      fn30_approve_gene_submission: {
+        Args: { p_submission_id: string }
+        Returns: string
+      }
+      fn31_reject_gene_submission: {
+        Args: { p_submission_id: string }
+        Returns: undefined
+      }
+      fn32_get_ancestors: {
+        Args: { p_animal_id: string; p_generations?: number }
+        Returns: {
+          animal_id: string
+          generation: number
+          name: string
+          relation: string
+          sex: string
+        }[]
+      }
+      fn33_get_offspring: {
+        Args: { p_animal_id: string }
+        Returns: {
+          animal_id: string
+          hatch_date: string
+          name: string
+          sex: string
+        }[]
+      }
+      morph_name: { Args: { p_animal_id: string }; Returns: string }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
