@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { animal } = await load(id);
   if (!animal) return { title: "Animal not found | Reptilytics" };
   const title = `${animal.name ?? "Animal"} · ${animal.species?.common_name ?? "Reptile"} | Reptilytics`;
-  return { title, openGraph: { title, siteName: "Reptilytics" } };
+  const description = `${animal.name ?? "This animal"}, a ${animal.species?.common_name ?? "reptile"} tracked on Reptilytics.`;
+  return { title, description, openGraph: { title, description, siteName: "Reptilytics" } };
 }
 
 export default async function PublicAnimalPage({ params }: Props) {

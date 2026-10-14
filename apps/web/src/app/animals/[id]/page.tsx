@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { moveAnimal } from "@/app/enclosures/actions";
 import { PhotoUploader } from "@/components/photo-uploader";
+import { ShareButton } from "@/components/share-button";
 import { SITE_URL } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -178,11 +179,10 @@ export default async function AnimalPage({
       {saved && <p className="rounded-md bg-brand/10 p-3 text-sm text-brand-dark">{saved} ✓</p>}
 
       {isOwner && animal.visibility === "public" && (
-        <p className="rounded-md border border-border bg-card p-3 text-sm">
-          Public link:{" "}
-          <Link href={`/a/${id}`} className="break-all text-brand hover:underline">
-            {`${SITE_URL}/a/${id}`}
-          </Link>
+        <p className="text-sm text-muted">
+          This animal has a public page ·{" "}
+          <Link href={`/a/${id}`} className="text-brand hover:underline">View</Link> ·{" "}
+          <ShareButton url={`${SITE_URL}/a/${id}`} title={`${animal.name ?? "My animal"} on Reptilytics`} />
         </p>
       )}
 
