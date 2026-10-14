@@ -8,12 +8,12 @@ export default function AboutPage() {
   return (
     <ProsePage title="About Reptilytics">
       <p>
-        Reptilytics exists to help reptile keepers make better husbandry and breeding decisions through data, research
+        Reptilytics exists to help reptile and amphibian keepers make better husbandry and breeding decisions through data, research
         and community knowledge.
       </p>
       <h2>Why we built it</h2>
       <p>
-        Reptile knowledge is scattered across forums, social groups, breeder websites, videos and personal notebooks.
+        Reptile and amphibian knowledge is scattered across forums, social groups, breeder websites, videos and personal notebooks.
         Keepers often make decisions based on limited experience or conflicting advice, and years of valuable growth,
         feeding and breeding records end up lost in spreadsheets.
       </p>

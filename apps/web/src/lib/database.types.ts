@@ -1952,6 +1952,7 @@ export type Database = {
           id: string
           notes: string | null
           scientific_name: string
+          taxon_class: string
         }
         Insert: {
           accepted_name?: boolean | null
@@ -1963,6 +1964,7 @@ export type Database = {
           id?: string
           notes?: string | null
           scientific_name: string
+          taxon_class: string
         }
         Update: {
           accepted_name?: boolean | null
@@ -1974,6 +1976,7 @@ export type Database = {
           id?: string
           notes?: string | null
           scientific_name?: string
+          taxon_class?: string
         }
         Relationships: []
       }

@@ -39,7 +39,7 @@ export default function TermsPage() {
       <h2>Not veterinary advice</h2>
       <p>
         Care information, benchmarks, research summaries and insights on Reptilytics are for general information only.
-        They are not a substitute for advice from a qualified reptile veterinarian. Always consult a vet about your
+        They are not a substitute for advice from a qualified reptile or amphibian veterinarian. Always consult a vet about your
         animal&apos;s health.
       </p>
 
