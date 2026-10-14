@@ -35,6 +35,6 @@ export async function resendCode(formData: FormData) {
 
   const status = error
     ? `error=${encodeURIComponent(error.message)}`
-    : `message=${encodeURIComponent("A new code is on its way.")}`;
+    : `message=${encodeURIComponent("Another email is on its way.")}`;
   redirect(verifyUrl(email, `${status}&next=${encodeURIComponent(next)}`));
 }
