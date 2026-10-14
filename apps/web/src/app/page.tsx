@@ -58,8 +58,7 @@ export default async function Home() {
         <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-brand">Coming soon</p>
         <h2 className="mb-3 text-2xl font-bold">Meet Monty</h2>
         <p className="mx-auto max-w-xl text-muted">
-          An AI assistant that knows your collection and the research. Ask why a female isn&apos;t eating, what a pairing
-          will produce, or how your hatchling&apos;s growth compares, and get answers with sources.
+          An AI assistant that knows your collection and the research. Ask questions and get answers with sources.
         </p>
         <MontyDemo />
       </section>
