@@ -5,46 +5,51 @@
       <stop offset="1" stop-color="#0b5e44"/>
     </linearGradient>
     <clipPath id="badge"><circle cx="256" cy="256" r="248"/></clipPath>
+    <pattern id="mail" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="3.2" fill="none" stroke="#5f686d" stroke-width="1.4"/>
+    </pattern>
   </defs>
   <circle cx="256" cy="256" r="248" fill="url(#bg)"/>
   <g clip-path="url(#badge)">
-  <g transform="translate(-38 -6)">
-  <!-- polo shirt -->
-  <path d="M60 520 C70 450 120 410 190 400 L320 400 C390 410 445 450 455 520 Z" fill="#f2f5f3"/>
-  <!-- collar -->
-  <path d="M190 398 L255 448 L232 470 L176 420 Z" fill="#dfe6e2" stroke="#b9c6bf" stroke-width="3"/>
-  <path d="M322 398 L257 448 L280 470 L336 420 Z" fill="#dfe6e2" stroke="#b9c6bf" stroke-width="3"/>
-  <!-- placket and buttons -->
-  <rect x="246" y="448" width="20" height="70" rx="3" fill="#e6ece8" stroke="#b9c6bf" stroke-width="2"/>
-  <circle cx="256" cy="468" r="4" fill="#0b5e44"/>
-  <circle cx="256" cy="490" r="4" fill="#0b5e44"/>
-  <!-- little logo on chest -->
-  <circle cx="360" cy="462" r="11" fill="#15935a"/>
-  <!-- neck -->
-  <path d="M200 300 C205 340 210 370 205 410 L300 410 C300 375 305 345 312 318 Z" fill="#17191a"/>
-  <path d="M207 352 C235 345 270 345 305 352 L304 366 C270 359 236 359 208 366 Z" fill="#f3f1ea"/>
-  <path d="M206 385 C235 378 270 378 302 385 L302 398 C270 391 236 391 206 398 Z" fill="#f3f1ea"/>
+  <g transform="translate(-40 -10)">
+  <path d="M60 530 C70 455 120 415 186 406 L326 406 C392 415 446 455 456 530 Z" fill="#f2f5f3"/>
+  <path d="M186 404 L256 452 L232 474 L172 424 Z" fill="#dfe6e2" stroke="#b9c6bf" stroke-width="3"/>
+  <path d="M326 404 L256 452 L280 474 L340 424 Z" fill="#dfe6e2" stroke="#b9c6bf" stroke-width="3"/>
+  <rect x="246" y="452" width="20" height="70" rx="3" fill="#e6ece8" stroke="#b9c6bf" stroke-width="2"/>
+  <circle cx="256" cy="472" r="4" fill="#0b5e44"/>
+  <circle cx="256" cy="494" r="4" fill="#0b5e44"/>
+
+  <!-- neck with bead bands -->
+  <path d="M196 300 C198 350 200 385 194 422 L318 422 C314 380 318 340 330 300 Z" fill="#16181a"/>
+  <path d="M206 300 C206 340 210 372 206 422 L300 422 C298 380 300 340 312 300 Z" fill="#efe8d8" opacity="0"/>
+  <circle cx="206" cy="360" r="3.6" fill="#efe8d8"/><circle cx="217" cy="360" r="3.6" fill="#efe8d8"/><circle cx="228" cy="360" r="3.6" fill="#efe8d8"/><circle cx="239" cy="360" r="3.6" fill="#efe8d8"/><circle cx="250" cy="360" r="3.6" fill="#efe8d8"/><circle cx="261" cy="360" r="3.6" fill="#efe8d8"/><circle cx="272" cy="360" r="3.6" fill="#efe8d8"/><circle cx="283" cy="360" r="3.6" fill="#efe8d8"/><circle cx="294" cy="360" r="3.6" fill="#efe8d8"/><circle cx="305" cy="360" r="3.6" fill="#efe8d8"/><circle cx="316" cy="360" r="3.6" fill="#efe8d8"/>
+  <circle cx="202" cy="394" r="3.6" fill="#efe8d8"/><circle cx="213" cy="394" r="3.6" fill="#efe8d8"/><circle cx="224" cy="394" r="3.6" fill="#efe8d8"/><circle cx="235" cy="394" r="3.6" fill="#efe8d8"/><circle cx="246" cy="394" r="3.6" fill="#efe8d8"/><circle cx="257" cy="394" r="3.6" fill="#efe8d8"/><circle cx="268" cy="394" r="3.6" fill="#efe8d8"/><circle cx="279" cy="394" r="3.6" fill="#efe8d8"/><circle cx="290" cy="394" r="3.6" fill="#efe8d8"/><circle cx="301" cy="394" r="3.6" fill="#efe8d8"/><circle cx="312" cy="394" r="3.6" fill="#efe8d8"/>
   <!-- head -->
-  <path d="M182 300 C176 228 236 180 318 186 C368 190 410 200 432 224 C444 238 438 256 418 262 L334 284 C322 318 292 344 248 348 C210 350 186 332 182 300 Z" fill="#17191a"/>
-  <!-- jowl highlight -->
-  <path d="M200 312 C214 334 240 340 266 334" fill="none" stroke="#f3f1ea" stroke-width="6" stroke-linecap="round"/>
-  <!-- head bands -->
-  <path d="M230 205 C250 230 252 262 238 292" fill="none" stroke="#f3f1ea" stroke-width="9" stroke-linecap="round"/>
-  <path d="M270 194 C286 214 290 236 282 256" fill="none" stroke="#f3f1ea" stroke-width="7" stroke-linecap="round"/>
-  <circle cx="372" cy="203" r="5" fill="#f3f1ea"/>
-  <circle cx="392" cy="210" r="4" fill="#f3f1ea"/>
-  <circle cx="300" cy="300" r="6" fill="#f3f1ea"/>
-  <circle cx="268" cy="312" r="5" fill="#f3f1ea"/>
-  <!-- mouth -->
-  <path d="M418 262 C390 270 360 278 334 284 C326 286 318 284 312 280" fill="none" stroke="#d9a3a0" stroke-width="5" stroke-linecap="round"/>
-  <!-- tongue -->
-  <path d="M424 256 C444 258 458 262 470 262 M470 262 L486 252 M470 262 L486 272" fill="none" stroke="#e5788f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- eye -->
-  <circle cx="326" cy="216" r="17" fill="#f3f1ea"/>
-  <circle cx="330" cy="217" r="10" fill="#3b2412"/>
-  <circle cx="333" cy="213" r="3.5" fill="#ffffff"/>
-  <!-- nostril -->
-  <ellipse cx="418" cy="224" rx="4" ry="3" fill="#f3f1ea"/>
+  <path d="M176 292 C172 232 214 196 276 192 C330 189 380 192 414 204 C440 213 452 230 448 246 C446 258 436 264 420 266 L352 272 C350 300 336 330 300 346 C262 362 214 356 190 334 C180 324 177 308 176 292 Z" fill="#16181a"/>
+  <clipPath id="headclip"><path d="M176 292 C172 232 214 196 276 192 C330 189 380 192 414 204 C440 213 452 230 448 246 C446 258 436 264 420 266 L352 272 C350 300 336 330 300 346 C262 362 214 356 190 334 C180 324 177 308 176 292 Z"/></clipPath>
+  <path d="M150 300 C220 292 300 284 352 276 L420 268 C440 266 452 256 452 246 L470 246 L470 420 L150 420 Z" fill="#efe8d8" clip-path="url(#headclip)"/>
+  <!-- jowl crease and a few dark jaw marks -->
+  <path d="M222 318 C240 334 270 338 300 330" fill="none" stroke="#cfc6b2" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="250" cy="304" rx="6" ry="4" fill="#16181a"/><ellipse cx="284" cy="300" rx="6" ry="4" fill="#16181a"/><ellipse cx="322" cy="292" rx="6" ry="4" fill="#16181a"/><ellipse cx="230" cy="326" rx="6" ry="4" fill="#16181a"/><ellipse cx="268" cy="330" rx="6" ry="4" fill="#16181a"/>
+  <!-- mouth line -->
+  <path d="M206 304 C260 296 320 286 352 278 L420 268 C434 266 446 258 448 248" fill="none" stroke="#16181a" stroke-width="5" stroke-linecap="round"/>
+  <!-- bead band across the back of the head -->
+  <circle cx="214" cy="214" r="3.2" fill="#efe8d8"/><circle cx="224" cy="214" r="3.2" fill="#efe8d8"/><circle cx="234" cy="214" r="3.2" fill="#efe8d8"/><circle cx="244" cy="214" r="3.2" fill="#efe8d8"/><circle cx="254" cy="214" r="3.2" fill="#efe8d8"/>
+  <!-- brow and eye -->
+  <path d="M302 212 C320 198 348 198 364 210" fill="none" stroke="#33383b" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="331" cy="226" r="14" fill="#efe8d8"/>
+  <circle cx="333" cy="227" r="9" fill="#5a3214"/>
+  <circle cx="333" cy="227" r="4" fill="#16181a"/>
+  <circle cx="336" cy="223" r="2.4" fill="#fff"/>
+  <ellipse cx="430" cy="226" rx="4.5" ry="3" fill="#3a3f42"/>
+
+  <g transform="translate(-70 -16)">
+    <path d="M332 470 C346 440 372 424 404 428 L420 470 Z" fill="#f2f5f3"/>
+    <path d="M376 440 C392 432 414 432 430 440 L440 478 L378 486 Z" fill="#16181a"/>
+    <circle cx="386" cy="456" r="3" fill="#efe8d8"/><circle cx="396" cy="456" r="3" fill="#efe8d8"/><circle cx="406" cy="456" r="3" fill="#efe8d8"/><circle cx="416" cy="456" r="3" fill="#efe8d8"/><circle cx="426" cy="456" r="3" fill="#efe8d8"/>
+    <path d="M424 452 C440 448 456 452 462 462 C466 470 460 478 448 478 L414 480 Z" fill="#16181a"/>
+    <path d="M426 476 q6 8 2 14" fill="none" stroke="#efe8d8" stroke-width="3" stroke-linecap="round"/><path d="M438 476 q6 8 2 14" fill="none" stroke="#efe8d8" stroke-width="3" stroke-linecap="round"/><path d="M450 476 q6 8 2 14" fill="none" stroke="#efe8d8" stroke-width="3" stroke-linecap="round"/>
+  </g>
   </g>
   </g>
 </svg>
