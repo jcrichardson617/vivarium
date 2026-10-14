@@ -41,7 +41,8 @@ Deno.serve(async (req) => {
     touched.add(c.document_id);
   }
 
-  // Documents whose passages are now all embedded (and not waiting on full text) are ready.
+  // Documents whose passages are now all embedded are searchable. (A paper queued
+  // for full text is searchable by its abstract meanwhile.)
   let ready = 0;
   for (const id of touched) {
     const [{ count: pending }, { count: total }] = await Promise.all([
@@ -52,8 +53,7 @@ Deno.serve(async (req) => {
       await admin
         .from("research_documents")
         .update({ ingest_status: "ready", chunk_count: total ?? 0 })
-        .eq("id", id)
-        .or("fulltext_status.is.null,fulltext_status.neq.pending");
+        .eq("id", id);
       ready++;
     }
   }

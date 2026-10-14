@@ -8,7 +8,9 @@ import { chunk, plain } from "./text.ts";
 const SEARCH = "https://www.ebi.ac.uk/europepmc/webservices/rest/search";
 const PAGE_SIZE = 100;
 const MAX_PAGES = 5;
-// Licenses that allow storing full text in a commercial product.
+// Licenses that allow storing full text in a commercial product. Full text is
+// only queued for papers found by topic sweeps (husbandry, veterinary, disease…),
+// which keeps storage within the free plan; fetch-fulltext also enforces a cap.
 const REUSABLE = /^cc(0| by| by-sa)$/;
 
 const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -47,7 +49,7 @@ Deno.serve(async (req) => {
       const body = await res.json();
       hitCount = body.hitCount ?? 0;
       const results: Result[] = body.resultList?.result ?? [];
-      added += await save(results, target.kind === "species" ? target.id : null);
+      added += await save(results, target.kind === "species" ? target.id : null, target.kind === "topic");
       if (!body.nextCursorMark || body.nextCursorMark === cursor || results.length < PAGE_SIZE) break;
       cursor = body.nextCursorMark;
     }
@@ -82,7 +84,7 @@ async function nextTarget(): Promise<Target | null> {
   return (topicTurn ? topicTarget ?? speciesTarget : speciesTarget ?? topicTarget) ?? null;
 }
 
-async function save(results: Result[], speciesId: string | null) {
+async function save(results: Result[], speciesId: string | null, queueFullText: boolean) {
   const seen = new Set<string>();
   const rows = results
     .filter((r) => r.title && r.abstractText && !seen.has(`${r.source}:${r.id}`) && seen.add(`${r.source}:${r.id}`))
@@ -115,18 +117,32 @@ async function save(results: Result[], speciesId: string | null) {
         published_date: /^\d{4}-\d{2}-\d{2}$/.test(r.firstPublicationDate ?? "") ? r.firstPublicationDate : null,
         cited_by_count: r.citedByCount ?? null,
         retrieved_at: new Date().toISOString(),
-        fulltext_status: fullTextEligible ? "pending" : null,
+        fulltext_status: queueFullText && fullTextEligible ? "pending" : null,
+        full_text_eligible: fullTextEligible,
         ingest_status: "processing",
       };
     });
   if (!rows.length) return 0;
+  const eligibleIds = rows.filter((r) => r.full_text_eligible).map((r) => r.external_id);
+  const docs = rows.map(({ full_text_eligible: _, ...doc }) => doc);
 
   // Insert new papers only; papers already in the library just get this species tag.
   const { data: inserted, error } = await admin
     .from("research_documents")
-    .upsert(rows, { onConflict: "external_source,external_id", ignoreDuplicates: true })
+    .upsert(docs, { onConflict: "external_source,external_id", ignoreDuplicates: true })
     .select("id, title, content");
   if (error) throw new Error(error.message);
+
+  // Papers already in the library (found earlier by a species run) get queued too.
+  if (queueFullText && eligibleIds.length) {
+    const { error: queueError } = await admin
+      .from("research_documents")
+      .update({ fulltext_status: "pending" })
+      .eq("external_source", "europepmc")
+      .in("external_id", eligibleIds)
+      .is("fulltext_status", null);
+    if (queueError) throw new Error(queueError.message);
+  }
 
   if (speciesId) {
     const { data: all, error: allError } = await admin

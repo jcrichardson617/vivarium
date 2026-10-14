@@ -1,10 +1,12 @@
 // Fetches the full text of open-access papers whose license allows reuse
-// (marked fulltext_status = 'pending' by harvest-research) and replaces their
-// abstract passages with full-text passages. A few papers per run.
+// (queued by harvest-research topic sweeps) and adds full-text passages after
+// their abstract passages. A few papers per run, up to FULLTEXT_CAP in total.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { chunk, decodeEntities } from "./text.ts";
 
 const PER_RUN = 4;
+// Storage budget on the free plan: a full paper is ~65 passages (~300 KB).
+const FULLTEXT_CAP = 1000;
 
 const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
   auth: { persistSession: false },
@@ -14,12 +16,20 @@ Deno.serve(async (req) => {
   const { data: ok } = await admin.rpc("fn45_check_cron_secret", { p_secret: req.headers.get("x-cron-secret") ?? "" });
   if (!ok) return new Response("Unauthorized", { status: 401 });
 
+  const { count: stored } = await admin
+    .from("research_documents")
+    .select("id", { count: "exact", head: true })
+    .eq("content_rights", "full_text");
+  if ((stored ?? 0) >= FULLTEXT_CAP) return Response.json({ capped: true, stored });
+
+  // Most-cited papers first.
   const { data: docs, error } = await admin
     .from("research_documents")
     .select("id, title, pmcid")
     .eq("fulltext_status", "pending")
+    .order("cited_by_count", { ascending: false, nullsFirst: false })
     .order("created_at")
-    .limit(PER_RUN);
+    .limit(Math.min(PER_RUN, FULLTEXT_CAP - (stored ?? 0)));
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
   const results = [];
@@ -55,7 +65,7 @@ Deno.serve(async (req) => {
       }
       const { error: updateError } = await admin
         .from("research_documents")
-        .update({ content: text, content_rights: "full_text", fulltext_status: "done", ingest_status: "processing" })
+        .update({ content: text, content_rights: "full_text", fulltext_status: "done" })
         .eq("id", doc.id);
       if (updateError) throw new Error(updateError.message);
       results.push({ id: doc.id, status: "done", passages: passages.length });
