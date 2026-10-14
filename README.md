@@ -24,3 +24,16 @@ functions), so every client gets the same rules.
 - Today: `free` (3 photos per animal) and `premium` (10).
 - Likely tiers later, e.g. a photos tier, and a higher tier with Monty access
   and 10 photos. Pricing not decided yet.
+
+## To do later
+
+- **Google sign-in** (code is ready, hidden): from a non-work computer, create a
+  Google OAuth client (Web application) with redirect URI
+  `https://megvsfrjvmjpujarjksx.supabase.co/auth/v1/callback`, paste its ID and
+  secret into Supabase → Authentication → Providers → Google, then set
+  `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel and redeploy.
+- Turn on leaked-password protection in Supabase → Authentication.
+- Ask Palo Alto (urlfiltering.paloaltonetworks.com) to recategorize
+  reptilytics.com from "parked" once the domain resolves publicly.
+- Review the 49 seeded ball python genes and mark them verified.
+- Move hosting to a commercial-use plan (or Cloudflare) before charging users.
