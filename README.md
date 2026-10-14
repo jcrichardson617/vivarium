@@ -37,5 +37,10 @@ functions), so every client gets the same rules.
 - Before launch: send app emails (sign-up, password reset, reminders) through
   Resend from noreply@reptilytics.com. Supabase's built-in email only allows a
   few messages per hour.
+- Send email as info@reptilytics.com (from home): sign up at resend.com, add
+  the domain and paste its DNS records into Spaceship → Advanced DNS, create an
+  API key, then Gmail → Settings → Accounts and Import → Send mail as →
+  info@reptilytics.com via smtp.resend.com, port 465, username `resend`,
+  password = the API key. Incoming mail already forwards to Gmail.
 - Review the 49 seeded ball python genes and mark them verified.
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
