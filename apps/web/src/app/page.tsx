@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MontyDemo } from "@/components/monty-demo";
 import { createClient } from "@/lib/supabase/server";
 
 const STEPS = [
@@ -60,6 +61,7 @@ export default async function Home() {
           An AI assistant that knows your collection and the research. Ask why a female isn&apos;t eating, what a pairing
           will produce, or how your hatchling&apos;s growth compares, and get answers with sources.
         </p>
+        <MontyDemo />
       </section>
 
       <section className="flex flex-col items-center gap-4 text-center">

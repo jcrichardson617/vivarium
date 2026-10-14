@@ -63,3 +63,17 @@ body {
 .prose-page a {
   @apply text-brand hover:underline;
 }
+
+@keyframes monty-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.monty-caret {
+  animation: monty-blink 1s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .monty-caret {
+    animation: none;
+  }
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MontyDemo } from "@/components/monty-demo";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Features | Reptilytics" };
@@ -79,6 +80,7 @@ export default async function FeaturesPage() {
           Ask questions in plain language and get answers drawn from your own records and the research, always with
           sources.
         </p>
+        <MontyDemo />
       </section>
 
       <div className="text-center">
