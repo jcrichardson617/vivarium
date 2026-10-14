@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MontyDemo } from "@/components/monty-demo";
@@ -74,6 +75,13 @@ export default async function FeaturesPage() {
       </div>
 
       <section className="rounded-2xl border border-border bg-card p-8 text-center">
+        <Image
+          src="/monty/monty.png"
+          alt="Monty, a black and white tegu in a polo shirt"
+          width={128}
+          height={128}
+          className="mx-auto mb-4"
+        />
         <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-brand">Coming soon</p>
         <h2 className="mb-3 text-2xl font-bold">Monty, your AI assistant</h2>
         <p className="mx-auto max-w-xl text-muted">
