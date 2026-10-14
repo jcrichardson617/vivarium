@@ -41,6 +41,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <Link href="/animals" className="hover:text-brand">
                   My animals
                 </Link>
+                <Link href="/enclosures" className="hover:text-brand">
+                  Enclosures
+                </Link>
                 {isModerator && (
                   <Link href="/admin/species" className="hover:text-brand">
                     Admin

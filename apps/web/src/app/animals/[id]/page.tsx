@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { moveAnimal } from "@/app/enclosures/actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -69,6 +70,11 @@ export default async function AnimalPage({
     .eq("id", id)
     .maybeSingle();
   if (!animal) notFound();
+
+  const [{ data: enclosures }, { data: housing }] = await Promise.all([
+    supabase.from("enclosures").select("id, name").eq("owner_id", user!.id).order("name"),
+    supabase.from("animal_enclosures").select("enclosure_id, enclosures(name)").eq("animal_id", id).is("end_date", null).maybeSingle(),
+  ]);
 
   const [{ data: isOwner }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition, profile] =
     await Promise.all([
@@ -156,6 +162,32 @@ export default async function AnimalPage({
           <p className="mt-1 font-semibold">{daysAgo(latestShed?.shed_date)}</p>
         </div>
       </section>
+
+      {isOwner && (
+        <section className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4 text-sm">
+          <span className="font-medium">Housed in:</span>
+          {housing?.enclosure_id ? (
+            <Link href={`/enclosures/${housing.enclosure_id}`} className="text-brand hover:underline">
+              {housing.enclosures?.name}
+            </Link>
+          ) : (
+            <span className="text-muted">No enclosure</span>
+          )}
+          {enclosures?.length ? (
+            <form action={moveAnimal} className="ml-auto flex items-center gap-2">
+              <input type="hidden" name="animal_id" value={id} />
+              <input type="hidden" name="back" value={`/animals/${id}`} />
+              <select name="enclosure_id" defaultValue={housing?.enclosure_id ?? ""} className="field py-1">
+                <option value="">— none —</option>
+                {enclosures.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}
+              </select>
+              <button className="btn-secondary py-1">Move</button>
+            </form>
+          ) : (
+            <Link href="/enclosures/new" className="ml-auto text-brand hover:underline">Add an enclosure</Link>
+          )}
+        </section>
+      )}
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">Photos</h2>
