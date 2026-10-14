@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -21,7 +22,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} font-sans antialiased`}>
+      <body className={`${geistSans.variable} flex min-h-screen flex-col font-sans antialiased`}>
         <header className="border-b border-border bg-card">
           <nav className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
             <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -44,7 +45,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             )}
           </nav>
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-8">{children}</main>
+        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );

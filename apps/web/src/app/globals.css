@@ -49,3 +49,17 @@ body {
     @apply rounded-md border border-border px-4 py-2 font-medium hover:border-brand;
   }
 }
+
+.prose-page h2 {
+  @apply mt-8 mb-2 text-xl font-semibold;
+}
+.prose-page p,
+.prose-page ul {
+  @apply mb-4 leading-relaxed;
+}
+.prose-page ul {
+  @apply list-disc pl-6;
+}
+.prose-page a {
+  @apply text-brand hover:underline;
+}
