@@ -15,3 +15,9 @@ export async function updateRequest(formData: FormData) {
     .eq("id", String(formData.get("id")));
   revalidatePath("/admin/requests");
 }
+
+export async function removeRequest(formData: FormData) {
+  const supabase = await createClient();
+  await supabase.from("feature_requests").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/admin/requests");
+}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { updateRequest } from "./actions";
+import { removeRequest, updateRequest } from "./actions";
 
 export const metadata: Metadata = { title: "Feature requests | Reptilytics" };
 
@@ -54,6 +54,9 @@ export default async function FeatureRequestsAdminPage() {
               </select>
               <input name="admin_notes" defaultValue={r.admin_notes ?? ""} placeholder="Private notes" className="field flex-1 py-1 text-sm" />
               <button className="btn-secondary py-1 text-sm">Save</button>
+              <button formAction={removeRequest} className="py-1 text-sm text-red-600 hover:underline">
+                Delete
+              </button>
             </form>
           </li>
         ))}
