@@ -5,13 +5,30 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { SiteFooter } from "@/components/site-footer";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
+const DESCRIPTION =
+  "The record-keeping hub for reptile and amphibian keepers and breeders. Log feedings, weights and sheds, track genetics and lineage, and learn from community data.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Reptilytics | Intelligence for Modern Herpetoculture",
-  description: "Track your reptile and amphibian collection, log husbandry, and learn from community data.",
+  description: DESCRIPTION,
+  applicationName: "Reptilytics",
+  keywords: ["reptile tracker", "reptile care log", "ball python morphs", "herp record keeping", "reptile breeding software", "amphibian care"],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Reptilytics",
+    title: "Reptilytics | Intelligence for Modern Herpetoculture",
+    description: DESCRIPTION,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image" },
+  appleWebApp: { capable: true, title: "Reptilytics", statusBarStyle: "default" },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
