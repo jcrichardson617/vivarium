@@ -6,9 +6,9 @@ import { speciesSlug } from "@/lib/slug";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Ball Python Genetics Calculator | Reptilytics",
+  title: "Morph Genetics Calculator: Ball Python, Leopard Gecko, Corn Snake & More | Reptilytics",
   description:
-    "Free morph genetics calculator: pick two parents and see every possible offspring morph with its odds, including supers, allelic combos and possible hets.",
+    "Free reptile morph genetics calculator for ball pythons, leopard geckos, corn snakes, boas, hognoses and more: pick two parents and see every possible offspring morph with its odds, including supers, allelic combos and possible hets.",
   alternates: { canonical: "/genetics" },
 };
 
