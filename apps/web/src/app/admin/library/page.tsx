@@ -29,10 +29,10 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
   const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
-  const count = (table: "research_documents" | "research_chunks", filter?: (b: any) => any) => {
-    const base = supabase.from(table).select("id", { count: "exact", head: true });
-    return (filter ? filter(base) : base).then((r: { count: number | null }) => r.count ?? 0);
-  };
+  const docCount = (build: (q: ReturnType<typeof docsHead>) => ReturnType<typeof docsHead> = (q) => q) =>
+    build(docsHead()).then((r) => r.count ?? 0);
+  const docsHead = () => supabase.from("research_documents").select("id", { count: "exact", head: true });
+  const chunksHead = () => supabase.from("research_chunks").select("id", { count: "exact", head: true });
 
   let docsQuery = supabase
     .from("research_documents")
@@ -43,12 +43,12 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
 
   const [docs, ready, fullText, ftPending, passages, embedded, speciesTotal, { data: speciesRuns }, { data: topics }, { data: recent }] =
     await Promise.all([
-      count("research_documents"),
-      count("research_documents", (b) => b.eq("ingest_status", "ready")),
-      count("research_documents", (b) => b.eq("content_rights", "full_text")),
-      count("research_documents", (b) => b.eq("fulltext_status", "pending")),
-      count("research_chunks"),
-      count("research_chunks", (b) => b.not("embedding", "is", null)),
+      docCount(),
+      docCount((q) => q.eq("ingest_status", "ready")),
+      docCount((q) => q.eq("content_rights", "full_text")),
+      docCount((q) => q.eq("fulltext_status", "pending")),
+      chunksHead().then((r) => r.count ?? 0),
+      chunksHead().not("embedding", "is", null).then((r) => r.count ?? 0),
       supabase.from("species").select("id", { count: "exact", head: true }).eq("active", true).then((r) => r.count ?? 0),
       supabase
         .from("research_harvest_state")
