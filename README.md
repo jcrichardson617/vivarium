@@ -32,8 +32,7 @@ functions), so every client gets the same rules.
   `https://megvsfrjvmjpujarjksx.supabase.co/auth/v1/callback`, paste its ID and
   secret into Supabase → Authentication → Providers → Google, then set
   `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel and redeploy.
-- Turn on leaked-password protection in Supabase → Authentication.
-- Ask Palo Alto (urlfiltering.paloaltonetworks.com) to recategorize
-  reptilytics.com from "parked" once the domain resolves publicly.
+- Turn on leaked-password protection in Supabase → Authentication (requires
+  the Supabase Pro plan).
 - Review the 49 seeded ball python genes and mark them verified.
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
