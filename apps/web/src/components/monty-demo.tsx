@@ -12,7 +12,7 @@ const QUESTIONS = [
 const TYPE_MS = 45;
 const DELETE_MS = 20;
 const HOLD_MS = 1600;
-const PAUSE_MS = 500;
+const PAUSE_MS = 1800;
 
 export function MontyDemo() {
   const [text, setText] = useState("");
@@ -29,6 +29,7 @@ export function MontyDemo() {
     const wait = (ms: number) => new Promise<void>((resolve) => (timer = setTimeout(resolve, ms)));
 
     (async () => {
+      await wait(PAUSE_MS);
       for (let i = 0; !cancelled; i = (i + 1) % QUESTIONS.length) {
         const question = QUESTIONS[i];
         for (let n = 1; n <= question.length && !cancelled; n++) {
