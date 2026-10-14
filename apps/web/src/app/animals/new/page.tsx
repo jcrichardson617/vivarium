@@ -16,8 +16,8 @@ export default async function NewAnimalPage({ searchParams }: { searchParams: Pr
       {error && <p className="mb-4 rounded-md bg-red-500/10 p-3 text-sm text-red-600">{error}</p>}
       <form action={createAnimal} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">
-          Name
-          <input name="name" required maxLength={80} className="field" />
+          Name / ID
+          <input name="name" required maxLength={80} placeholder="e.g. Monty or BP-24-07" className="field" />
         </label>
         <label className="flex flex-col gap-1 text-sm">
           Species
@@ -43,6 +43,10 @@ export default async function NewAnimalPage({ searchParams }: { searchParams: Pr
         <label className="flex flex-col gap-1 text-sm">
           Hatch date (optional)
           <input name="hatch_date" type="date" className="field" />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          Acquisition date (optional)
+          <input name="acquired_date" type="date" className="field" />
         </label>
         <button className="btn-primary mt-2">Save animal</button>
       </form>

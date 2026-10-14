@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AnimalsPage() {
+export default async function AnimalsPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error: pageError } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,6 +25,7 @@ export default async function AnimalsPage() {
         </Link>
       </div>
 
+      {pageError && <p className="mb-4 rounded-md bg-red-500/10 p-3 text-sm text-red-600">{pageError}</p>}
       {error && <p className="text-red-600">Could not load animals: {error.message}</p>}
 
       {animals?.length === 0 && (
