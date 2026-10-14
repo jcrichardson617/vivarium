@@ -72,11 +72,18 @@ export default function PrivacyPage() {
       <ul>
         <li>You can edit or delete your records at any time.</li>
         <li>
-          You can ask for a copy of your data, or for your account to be deleted, by emailing{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Anonymized statistics that no longer identify you may
-          be kept.
+          You can delete your account at any time from Settings, or ask for a copy of your data by emailing{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
         </li>
       </ul>
+
+      <h2>When you delete your account</h2>
+      <p>
+        We delete your login, email address, profile, photos, free-text notes and purchase details. Husbandry records
+        (species, sex, dates, genetics, lineage, weights, feedings, sheds, health events and enclosure readings) are kept
+        in anonymized form to support research and community statistics. They are no longer linked to you or visible in
+        the app.
+      </p>
 
       <h2>Children</h2>
       <p>Reptilytics is not intended for children under 13, and we do not knowingly collect their information.</p>

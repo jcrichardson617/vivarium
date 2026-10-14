@@ -54,8 +54,10 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
       <div className="mt-12 rounded-lg border border-red-500/40 p-4">
         <h2 className="mb-1 text-lg font-semibold text-red-600">Delete account</h2>
         <p className="mb-3 text-sm text-muted">
-          Permanently deletes your account, animals, photos, logs and enclosures. Animals you&apos;ve transferred to
-          other keepers stay with them. This can&apos;t be undone.
+          Permanently deletes your login, profile, photos, notes and purchase details. Your animals&apos; care records
+          (species, dates, genetics, weights, feedings, sheds and enclosure readings) are kept anonymously for research
+          and can no longer be linked to you. Animals you&apos;ve transferred to other keepers stay with them. This
+          can&apos;t be undone.
         </p>
         <form action={deleteAccount} className="flex flex-wrap items-center gap-2">
           <input name="confirm" required placeholder='Type "delete my account"' autoComplete="off" className="field py-1" />
