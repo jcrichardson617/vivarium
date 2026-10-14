@@ -3,6 +3,7 @@ import Link from "next/link";
 export const CONTACT_EMAIL = "info@reptilytics.com";
 
 const LINKS = [
+  { href: "/features", label: "Features" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/terms", label: "Terms of Service" },
