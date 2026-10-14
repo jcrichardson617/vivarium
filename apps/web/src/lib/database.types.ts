@@ -2798,6 +2798,11 @@ export type Database = {
           sex: string
         }[]
       }
+      fn40_delete_animal: {
+        Args: { p_animal_id: string }
+        Returns: undefined
+      }
+      fn41_delete_my_account: { Args: never; Returns: undefined }
       fn39_username_available: {
         Args: { p_username: string }
         Returns: boolean

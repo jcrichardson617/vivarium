@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { saveSettings } from "./actions";
+import { deleteAccount, saveSettings } from "./actions";
 
 export const metadata: Metadata = { title: "Settings | Reptilytics" };
 
@@ -50,6 +50,18 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         </div>
         <button className="btn-primary self-start">Save</button>
       </form>
+
+      <div className="mt-12 rounded-lg border border-red-500/40 p-4">
+        <h2 className="mb-1 text-lg font-semibold text-red-600">Delete account</h2>
+        <p className="mb-3 text-sm text-muted">
+          Permanently deletes your account, animals, photos, logs and enclosures. Animals you&apos;ve transferred to
+          other keepers stay with them. This can&apos;t be undone.
+        </p>
+        <form action={deleteAccount} className="flex flex-wrap items-center gap-2">
+          <input name="confirm" required placeholder='Type "delete my account"' autoComplete="off" className="field py-1" />
+          <button className="rounded-md bg-red-600 px-4 py-1.5 font-medium text-white hover:bg-red-700">Delete account</button>
+        </form>
+      </div>
     </section>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { addGene, removeGene, updateDetails } from "./actions";
+import { addGene, deleteAnimal, removeGene, updateDetails } from "./actions";
 
 export const metadata: Metadata = { title: "Edit animal | Reptilytics" };
 
@@ -199,6 +199,19 @@ export default async function EditAnimalPage({
         ) : (
           <p className="text-sm text-muted">No gene list for this species yet.</p>
         )}
+      </section>
+
+      <section className="rounded-lg border border-red-500/40 p-4">
+        <h2 className="mb-1 text-lg font-semibold text-red-600">Delete this animal</h2>
+        <p className="mb-3 text-sm text-muted">
+          Permanently removes {animal.name ?? "this animal"}, its photos, logs and genetics. This can&apos;t be undone.
+          If it was sold or died, consider changing its status instead to keep its history.
+        </p>
+        <form action={deleteAnimal} className="flex flex-wrap items-center gap-2">
+          <input type="hidden" name="animal_id" value={id} />
+          <input name="confirm" required placeholder='Type "delete"' autoComplete="off" className="field py-1" />
+          <button className="rounded-md bg-red-600 px-4 py-1.5 font-medium text-white hover:bg-red-700">Delete animal</button>
+        </form>
       </section>
     </div>
   );

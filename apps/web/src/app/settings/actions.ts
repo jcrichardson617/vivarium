@@ -29,3 +29,30 @@ export async function saveSettings(formData: FormData) {
   revalidatePath("/", "layout");
   redirect("/settings?saved=1");
 }
+
+export async function deleteAccount(formData: FormData) {
+  const supabase = await createClient();
+  if (String(formData.get("confirm") ?? "").trim().toLowerCase() !== "delete my account") {
+    redirect(`/settings?error=${encodeURIComponent('Type "delete my account" to confirm.')}`);
+  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Remove photo files for animals they own; the rest is deleted in the database.
+  const { data: owned } = await supabase
+    .from("animal_ownership")
+    .select("animal_id")
+    .eq("user_id", user!.id)
+    .eq("is_current_owner", true);
+  const ids = (owned ?? []).map((o) => o.animal_id).filter((v): v is string => !!v);
+  if (ids.length) {
+    const { data: photos } = await supabase.from("animal_photos").select("storage_path").in("animal_id", ids);
+    if (photos?.length) await supabase.storage.from("animal-photos").remove(photos.map((p) => p.storage_path));
+  }
+
+  const { error } = await supabase.rpc("fn41_delete_my_account");
+  if (error) redirect(`/settings?error=${encodeURIComponent(error.message)}`);
+  await supabase.auth.signOut();
+  redirect("/?account_deleted=1");
+}

@@ -71,3 +71,20 @@ export async function removeGene(formData: FormData) {
   const { error } = await supabase.from("animal_genes").delete().eq("id", String(formData.get("id"))).eq("animal_id", animalId);
   back(animalId, error ? `error=${encodeURIComponent(error.message)}` : "saved=Gene+removed");
 }
+
+export async function deleteAnimal(formData: FormData) {
+  const supabase = await createClient();
+  const animalId = String(formData.get("animal_id"));
+  if (String(formData.get("confirm") ?? "").trim().toLowerCase() !== "delete") {
+    back(animalId, `error=${encodeURIComponent('Type "delete" to confirm.')}`);
+  }
+
+  // Remove photo files first; the database rows go with the animal.
+  const { data: photos } = await supabase.from("animal_photos").select("storage_path").eq("animal_id", animalId);
+  if (photos?.length) await supabase.storage.from("animal-photos").remove(photos.map((p) => p.storage_path));
+
+  const { error } = await supabase.rpc("fn40_delete_animal", { p_animal_id: animalId });
+  if (error) back(animalId, `error=${encodeURIComponent(error.message)}`);
+  revalidatePath("/animals");
+  redirect("/animals?deleted=1");
+}
