@@ -36,7 +36,11 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
 
       <ul className="grid gap-3 sm:grid-cols-2">
         {animals?.map((animal) => (
-          <li key={animal.id} className="rounded-lg border border-border bg-card p-4">
+          <li key={animal.id}>
+            <Link
+              href={`/animals/${animal.id}`}
+              className="block rounded-lg border border-border bg-card p-4 transition hover:border-brand"
+            >
             <p className="font-semibold">{animal.name ?? "Unnamed"}</p>
             <p className="text-sm text-muted">
               {animal.species?.common_name ??
@@ -49,6 +53,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
             {animal.status !== "active" && (
               <p className="mt-1 text-xs uppercase tracking-wide text-muted">{animal.status}</p>
             )}
+            </Link>
           </li>
         ))}
       </ul>
