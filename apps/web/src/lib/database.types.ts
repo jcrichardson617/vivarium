@@ -545,11 +545,11 @@ export type Database = {
       }
       animals: {
         Row: {
-          feeding_interval_days: number | null
           animal_code: string | null
           created_at: string | null
           created_by: string | null
           dam_id: string | null
+          feeding_interval_days: number | null
           hatch_date: string | null
           id: string
           locality_id: string | null
@@ -563,11 +563,11 @@ export type Database = {
           visibility: string | null
         }
         Insert: {
-          feeding_interval_days?: number | null
           animal_code?: string | null
           created_at?: string | null
           created_by?: string | null
           dam_id?: string | null
+          feeding_interval_days?: number | null
           hatch_date?: string | null
           id?: string
           locality_id?: string | null
@@ -581,11 +581,11 @@ export type Database = {
           visibility?: string | null
         }
         Update: {
-          feeding_interval_days?: number | null
           animal_code?: string | null
           created_at?: string | null
           created_by?: string | null
           dam_id?: string | null
+          feeding_interval_days?: number | null
           hatch_date?: string | null
           id?: string
           locality_id?: string | null
@@ -859,31 +859,31 @@ export type Database = {
       }
       clutches: {
         Row: {
-          expected_hatch_date: string | null
-          incubation_temp_c: number | null
           egg_count: number | null
+          expected_hatch_date: string | null
           fertile_count: number | null
           id: string
+          incubation_temp_c: number | null
           laid_date: string | null
           notes: string | null
           pairing_id: string | null
         }
         Insert: {
-          expected_hatch_date?: string | null
-          incubation_temp_c?: number | null
           egg_count?: number | null
+          expected_hatch_date?: string | null
           fertile_count?: number | null
           id?: string
+          incubation_temp_c?: number | null
           laid_date?: string | null
           notes?: string | null
           pairing_id?: string | null
         }
         Update: {
-          expected_hatch_date?: string | null
-          incubation_temp_c?: number | null
           egg_count?: number | null
+          expected_hatch_date?: string | null
           fertile_count?: number | null
           id?: string
+          incubation_temp_c?: number | null
           laid_date?: string | null
           notes?: string | null
           pairing_id?: string | null
@@ -1796,6 +1796,44 @@ export type Database = {
         }
         Relationships: []
       }
+      research_chunks: {
+        Row: {
+          chunk_index: number
+          content: string
+          created_at: string
+          document_id: string
+          embedding: string | null
+          fts: unknown
+          id: number
+        }
+        Insert: {
+          chunk_index: number
+          content: string
+          created_at?: string
+          document_id: string
+          embedding?: string | null
+          fts?: unknown
+          id?: never
+        }
+        Update: {
+          chunk_index?: number
+          content?: string
+          created_at?: string
+          document_id?: string
+          embedding?: string | null
+          fts?: unknown
+          id?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "research_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       research_document_species: {
         Row: {
           document_id: string
@@ -1835,15 +1873,25 @@ export type Database = {
       }
       research_documents: {
         Row: {
+          added_by: string | null
           authors: string[]
+          chunk_count: number
+          cited_by_count: number | null
           content: string | null
           content_rights: string
           created_at: string | null
           doi: string | null
           evidence_level: string
+          external_id: string | null
+          external_source: string | null
+          file_path: string | null
+          fulltext_status: string | null
           id: string
+          ingest_error: string | null
+          ingest_status: string
           license: string | null
           open_access: boolean
+          pmcid: string | null
           published_date: string | null
           publisher: string | null
           retrieved_at: string | null
@@ -1855,15 +1903,25 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          added_by?: string | null
           authors?: string[]
+          chunk_count?: number
+          cited_by_count?: number | null
           content?: string | null
           content_rights?: string
           created_at?: string | null
           doi?: string | null
           evidence_level?: string
+          external_id?: string | null
+          external_source?: string | null
+          file_path?: string | null
+          fulltext_status?: string | null
           id?: string
+          ingest_error?: string | null
+          ingest_status?: string
           license?: string | null
           open_access?: boolean
+          pmcid?: string | null
           published_date?: string | null
           publisher?: string | null
           retrieved_at?: string | null
@@ -1875,15 +1933,25 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          added_by?: string | null
           authors?: string[]
+          chunk_count?: number
+          cited_by_count?: number | null
           content?: string | null
           content_rights?: string
           created_at?: string | null
           doi?: string | null
           evidence_level?: string
+          external_id?: string | null
+          external_source?: string | null
+          file_path?: string | null
+          fulltext_status?: string | null
           id?: string
+          ingest_error?: string | null
+          ingest_status?: string
           license?: string | null
           open_access?: boolean
+          pmcid?: string | null
           published_date?: string | null
           publisher?: string | null
           retrieved_at?: string | null
@@ -1895,6 +1963,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "research_documents_added_by_fkey"
+            columns: ["added_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "research_documents_species_id_fkey"
             columns: ["species_id"]
@@ -1910,6 +1985,84 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      research_harvest_state: {
+        Row: {
+          docs_added: number
+          hit_count: number | null
+          last_error: string | null
+          last_harvested_at: string | null
+          last_status: string | null
+          species_id: string
+        }
+        Insert: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id: string
+        }
+        Update: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_harvest_state_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_harvest_state_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_harvest_topics: {
+        Row: {
+          active: boolean
+          docs_added: number
+          hit_count: number | null
+          id: string
+          label: string
+          last_error: string | null
+          last_harvested_at: string | null
+          last_status: string | null
+          query: string
+        }
+        Insert: {
+          active?: boolean
+          docs_added?: number
+          hit_count?: number | null
+          id?: string
+          label: string
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          query: string
+        }
+        Update: {
+          active?: boolean
+          docs_added?: number
+          hit_count?: number | null
+          id?: string
+          label?: string
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          query?: string
+        }
+        Relationships: []
       }
       sheds: {
         Row: {
@@ -2807,18 +2960,63 @@ export type Database = {
           sex: string
         }[]
       }
-      fn40_delete_animal: {
-        Args: { p_animal_id: string }
-        Returns: undefined
-      }
-      fn41_delete_my_account: { Args: never; Returns: undefined }
-      fn42_hatch_egg: {
-        Args: { p_egg_id: string; p_name: string; p_sex: string; p_hatch_date: string; p_weight_g?: number }
-        Returns: string
-      }
       fn39_username_available: {
         Args: { p_username: string }
         Returns: boolean
+      }
+      fn40_delete_animal: { Args: { p_animal_id: string }; Returns: undefined }
+      fn41_delete_my_account: { Args: never; Returns: undefined }
+      fn42_hatch_egg: {
+        Args: {
+          p_egg_id: string
+          p_hatch_date: string
+          p_name: string
+          p_sex: string
+          p_weight_g?: number
+        }
+        Returns: string
+      }
+      fn43_search_research: {
+        Args: {
+          p_match_count?: number
+          p_query_embedding: string
+          p_query_text: string
+          p_species_ids?: string[]
+        }
+        Returns: {
+          authors: string[]
+          chunk_id: number
+          content: string
+          document_id: string
+          doi: string
+          evidence_level: string
+          published_date: string
+          publisher: string
+          score: number
+          source_type: string
+          source_url: string
+          title: string
+        }[]
+      }
+      fn44_run_research_job: { Args: { p_job: string }; Returns: number }
+      fn45_check_cron_secret: { Args: { p_secret: string }; Returns: boolean }
+      fn46_next_harvest_species: {
+        Args: never
+        Returns: {
+          common_name: string
+          id: string
+          scientific_name: string
+          synonyms: string[]
+        }[]
+      }
+      fn47_next_harvest_topic: {
+        Args: never
+        Returns: {
+          id: string
+          label: string
+          last_harvested_at: string
+          query: string
+        }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }

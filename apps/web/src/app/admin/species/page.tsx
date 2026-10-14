@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AdminNav } from "@/components/admin-nav";
 import { createClient } from "@/lib/supabase/server";
 import { approveSpecies, rejectSpecies } from "./actions";
 
@@ -23,10 +23,7 @@ export default async function SpeciesRequestsPage({ searchParams }: { searchPara
 
   return (
     <section>
-      <div className="mb-2 flex items-center gap-4 text-sm">
-        <span className="font-semibold">Species requests</span>
-        <Link href="/admin/requests" className="text-muted hover:text-foreground">Feature requests</Link>
-      </div>
+      <AdminNav current="/admin/species" />
       <h1 className="mb-2 text-2xl font-bold">Species requests</h1>
       <p className="mb-6 text-muted">
         Approving adds the species for everyone and links any animals waiting on it.

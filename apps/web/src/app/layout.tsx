@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                   Breeding
                 </Link>
                 {isModerator && (
-                  <Link href="/admin/species" className="hover:text-brand">
+                  <Link href="/admin/library" className="hover:text-brand">
                     Admin
                   </Link>
                 )}

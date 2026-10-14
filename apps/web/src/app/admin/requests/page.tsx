@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AdminNav } from "@/components/admin-nav";
 import { createClient } from "@/lib/supabase/server";
 import { removeRequest, updateRequest } from "./actions";
 
@@ -26,10 +26,7 @@ export default async function FeatureRequestsAdminPage() {
 
   return (
     <section>
-      <div className="mb-2 flex items-center gap-4 text-sm">
-        <Link href="/admin/species" className="text-muted hover:text-foreground">Species requests</Link>
-        <span className="font-semibold">Feature requests</span>
-      </div>
+      <AdminNav current="/admin/requests" />
       <h1 className="mb-6 text-2xl font-bold">Feature requests</h1>
       {!requests?.length && (
         <p className="rounded-lg border border-dashed border-border p-8 text-center text-muted">No requests yet.</p>

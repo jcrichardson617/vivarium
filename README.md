@@ -40,3 +40,15 @@ functions), so every client gets the same rules.
   password = the API key. Incoming mail already forwards to Gmail.
 - Review the 49 seeded ball python genes and mark them verified.
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
+
+## HerpAtlas research library
+
+Papers are harvested automatically into `research_documents` / `research_chunks`:
+
+- `harvest-research` edge function (pg_cron, every 10 min) alternates between the next species and the next topic sweep (`research_harvest_topics`), pulling from Europe PMC. Each target is re-harvested every 30 days.
+- `fetch-fulltext` (every 2 min) adds full text for open-access papers under CC BY / CC BY-SA / CC0. Non-commercial (NC) and paywalled papers keep only their abstract.
+- `embed-chunks` (every 20 s) embeds passages with Supabase's built-in gte-small model (384 dims).
+- `fn43_search_research` does hybrid (semantic + keyword) retrieval for Monty.
+- Admin → Library shows progress and has run-now buttons.
+
+Later: semantic chunking (needs a faster/paid embedding API), care-sheet sources (only with permission, otherwise link + our own summary).
