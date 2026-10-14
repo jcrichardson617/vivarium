@@ -19,6 +19,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+    : { data: null };
+  const isModerator = profile?.role === "moderator" || profile?.role === "admin";
 
   return (
     <html lang="en">
@@ -37,6 +41,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <Link href="/animals" className="hover:text-brand">
                   My animals
                 </Link>
+                {isModerator && (
+                  <Link href="/admin/species" className="hover:text-brand">
+                    Admin
+                  </Link>
+                )}
                 <form action={signOut}>
                   <button className="text-muted hover:text-foreground">Sign out</button>
                 </form>

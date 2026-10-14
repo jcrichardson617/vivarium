@@ -7,7 +7,27 @@ const QUESTIONS = [
   "Why might my female boa be refusing food?",
   "What will a Pastel Clown x het Clown pairing produce?",
   "Is 31°C a good incubation temperature for crested gecko eggs?",
+  "How often should I feed a yearling Argentine tegu?",
+  "When is my next shed due for Monty?",
+  "Which of my animals haven't eaten in over two weeks?",
+  "What humidity do White's tree frogs need?",
+  "Is my blue tongue skink a healthy weight for her age?",
+  "What does the research say about UVB for ball pythons?",
+  "Which enclosure has the most temperature swings this month?",
+  "How long until my crested gecko eggs hatch?",
+  "Are retained eye caps a sign of low humidity?",
+  "What's the average clutch size for corn snakes?",
 ];
+
+// Fisher-Yates shuffle so each visit starts with a different question.
+function shuffled<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
 const TYPE_MS = 45;
 const DELETE_MS = 20;
@@ -19,8 +39,10 @@ export function MontyDemo() {
 
   useEffect(() => {
     // Respect users who prefer no motion: show one question, no animation.
+    // Shuffle on the client only, so server and browser render the same first frame.
+    const questions = shuffled(QUESTIONS);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setText(QUESTIONS[0]);
+      setText(questions[0]);
       return;
     }
 
@@ -30,8 +52,8 @@ export function MontyDemo() {
 
     (async () => {
       await wait(PAUSE_MS);
-      for (let i = 0; !cancelled; i = (i + 1) % QUESTIONS.length) {
-        const question = QUESTIONS[i];
+      for (let i = 0; !cancelled; i = (i + 1) % questions.length) {
+        const question = questions[i];
         for (let n = 1; n <= question.length && !cancelled; n++) {
           setText(question.slice(0, n));
           await wait(TYPE_MS);

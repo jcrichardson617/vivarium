@@ -553,6 +553,7 @@ export type Database = {
           id: string
           locality_id: string | null
           name: string | null
+          pending_species_submission_id: string | null
           sex: string | null
           sire_id: string | null
           species_id: string | null
@@ -569,6 +570,7 @@ export type Database = {
           id?: string
           locality_id?: string | null
           name?: string | null
+          pending_species_submission_id?: string | null
           sex?: string | null
           sire_id?: string | null
           species_id?: string | null
@@ -585,6 +587,7 @@ export type Database = {
           id?: string
           locality_id?: string | null
           name?: string | null
+          pending_species_submission_id?: string | null
           sex?: string | null
           sire_id?: string | null
           species_id?: string | null
@@ -654,6 +657,13 @@ export type Database = {
             columns: ["locality_id"]
             isOneToOne: false
             referencedRelation: "localities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_pending_species_submission_id_fkey"
+            columns: ["pending_species_submission_id"]
+            isOneToOne: false
+            referencedRelation: "species_submissions"
             referencedColumns: ["id"]
           },
           {
@@ -1993,6 +2003,7 @@ export type Database = {
           scientific_name: string
           status: string
           submitted_by: string | null
+          taxon_class: string | null
         }
         Insert: {
           common_name?: string | null
@@ -2006,6 +2017,7 @@ export type Database = {
           scientific_name: string
           status?: string
           submitted_by?: string | null
+          taxon_class?: string | null
         }
         Update: {
           common_name?: string | null
@@ -2019,6 +2031,7 @@ export type Database = {
           scientific_name?: string
           status?: string
           submitted_by?: string | null
+          taxon_class?: string | null
         }
         Relationships: [
           {
@@ -2687,6 +2700,27 @@ export type Database = {
           hatch_date: string
           name: string
           sex: string
+        }[]
+      }
+      fn34_create_animal_with_species_request: {
+        Args: {
+          p_common_name: string
+          p_hatch_date?: string
+          p_name: string
+          p_scientific_name: string
+          p_sex: string
+          p_taxon_class: string
+        }
+        Returns: string
+      }
+      fn35_search_species: {
+        Args: { p_query: string }
+        Returns: {
+          common_name: string
+          id: string
+          matched_alias: string
+          scientific_name: string
+          taxon_class: string
         }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }

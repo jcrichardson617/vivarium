@@ -11,7 +11,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   // Animals the user currently owns (RLS would also return other keepers' public animals).
   const { data: animals, error } = await supabase
     .from("animals")
-    .select("id, name, sex, hatch_date, status, animal_code, species(common_name), animal_ownership!inner(user_id)")
+    .select("id, name, sex, hatch_date, status, animal_code, species(common_name), species_submissions!animals_pending_species_submission_id_fkey(scientific_name, status), animal_ownership!inner(user_id)")
     .eq("animal_ownership.user_id", user!.id)
     .eq("animal_ownership.is_current_owner", true)
     .order("name");
@@ -39,7 +39,10 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
           <li key={animal.id} className="rounded-lg border border-border bg-card p-4">
             <p className="font-semibold">{animal.name ?? "Unnamed"}</p>
             <p className="text-sm text-muted">
-              {animal.species?.common_name ?? "Unknown species"}
+              {animal.species?.common_name ??
+                (animal.species_submissions
+                  ? `${animal.species_submissions.scientific_name} (${animal.species_submissions.status === "rejected" ? "species request rejected" : "species pending review"})`
+                  : "Unknown species")}
               {animal.sex && animal.sex !== "unknown" ? ` · ${animal.sex}` : ""}
               {animal.animal_code ? ` · ${animal.animal_code}` : ""}
             </p>
