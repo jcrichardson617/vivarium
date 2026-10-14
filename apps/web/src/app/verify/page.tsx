@@ -4,9 +4,9 @@ import { resendCode, verifyCode } from "./actions";
 
 export const metadata: Metadata = { title: "Verify your email | Reptilytics" };
 
-// Codes need a custom email sender (Supabase only allows editing the email template
-// with custom SMTP). Until then the email contains a confirmation link instead.
-const EMAIL_CODES_ENABLED = process.env.NEXT_PUBLIC_EMAIL_CODES === "true";
+// The "Confirm signup" email template shows {{ .Token }} (custom SMTP via Resend).
+// Set NEXT_PUBLIC_EMAIL_CODES=false to fall back to confirmation links only.
+const EMAIL_CODES_ENABLED = process.env.NEXT_PUBLIC_EMAIL_CODES !== "false";
 
 export default async function VerifyPage({
   searchParams,

@@ -34,16 +34,8 @@ functions), so every client gets the same rules.
   `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel and redeploy.
 - Turn on leaked-password protection in Supabase → Authentication (requires
   the Supabase Pro plan).
-- Email verification codes: once Resend SMTP is connected in Supabase
-  (Authentication → Emails → SMTP), edit the "Confirm signup" template to show
-  `{{ .Token }}` and set `NEXT_PUBLIC_EMAIL_CODES=true` in Vercel. Until then the
-  sign-up email contains a link.
-- Before launch: send app emails (sign-up, password reset, reminders) through
-  Resend from noreply@reptilytics.com. Supabase's built-in email only allows a
-  few messages per hour.
-- Send email as info@reptilytics.com (from home): sign up at resend.com, add
-  the domain and paste its DNS records into Spaceship → Advanced DNS, create an
-  API key, then Gmail → Settings → Accounts and Import → Send mail as →
+- Send email as info@reptilytics.com (from home; Resend is already set up):
+  create a second Resend API key, then Gmail → Settings → Accounts and Import → Send mail as →
   info@reptilytics.com via smtp.resend.com, port 465, username `resend`,
   password = the API key. Incoming mail already forwards to Gmail.
 - Review the 49 seeded ball python genes and mark them verified.
