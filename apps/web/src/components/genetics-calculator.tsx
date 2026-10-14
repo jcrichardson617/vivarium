@@ -156,6 +156,24 @@ export function GeneticsCalculator({
     }
   }, [current, a, b]);
 
+  // Health warnings: genes carried by either parent, and risky supers among the babies.
+  const byId = new Map(current.genes.map((g) => [g.id, g]));
+  const carried = [...new Set([...a, ...b].map((g) => g.geneId))]
+    .map((id) => byId.get(id))
+    .filter((g): g is Gene => !!g?.health_note);
+  const superOdds = new Map<string, number>();
+  for (const o of result.outcomes) for (const id of o.supers) superOdds.set(id, (superOdds.get(id) ?? 0) + o.probability);
+  const riskySupers = [...superOdds]
+    .map(([id, p]) => ({ gene: byId.get(id)!, p }))
+    .filter(({ gene }) => gene?.super_lethal || gene?.super_health_note)
+    .sort((x, y) => Number(!!y.gene.super_lethal) - Number(!!x.gene.super_lethal));
+  const rowWarning = (supers: string[]) => {
+    const genes = supers.map((id) => byId.get(id)).filter((g): g is Gene => !!g);
+    if (genes.some((g) => g.super_lethal)) return "lethal";
+    if (genes.some((g) => g.super_health_note)) return "health";
+    return null;
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {species.length > 1 && (
@@ -184,6 +202,26 @@ export function GeneticsCalculator({
         <Parent title="Female" species={current} animals={mine.filter((x) => x.sex !== "male")} value={b} onChange={setB} />
       </div>
 
+      {(riskySupers.length > 0 || carried.length > 0) && (
+        <div className="flex flex-col gap-2">
+          {riskySupers.map(({ gene, p }) => (
+            <p
+              key={gene.id}
+              className={`rounded-md p-3 text-sm ${gene.super_lethal ? "bg-red-500/10 text-red-700 dark:text-red-400" : "bg-amber-500/15 text-amber-800 dark:text-amber-300"}`}
+            >
+              ⚠️ <strong>{gene.super_name ?? `Super ${gene.name}`}</strong> expected in {formatPercent(p)} of eggs.{" "}
+              {gene.super_health_note ?? "The super form is not expected to survive."}
+              {gene.super_lethal && " Most breeders avoid this pairing."}
+            </p>
+          ))}
+          {carried.map((g) => (
+            <p key={g.id} className="rounded-md bg-amber-500/15 p-3 text-sm text-amber-800 dark:text-amber-300">
+              ⚠️ <strong>{g.name}:</strong> {g.health_note}
+            </p>
+          ))}
+        </div>
+      )}
+
       <section>
         <h2 className="mb-3 text-xl font-semibold">Possible offspring</h2>
         {result.error ? (
@@ -205,6 +243,16 @@ export function GeneticsCalculator({
                     <td className="px-4 py-2 font-semibold tabular-nums">{formatPercent(o.probability)}</td>
                     <td className="px-4 py-2">
                       <span className="font-medium">{o.morph}</span>
+                      {rowWarning(o.supers) === "lethal" && (
+                        <span className="ml-2 rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-400">
+                          lethal
+                        </span>
+                      )}
+                      {rowWarning(o.supers) === "health" && (
+                        <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-amber-800 dark:text-amber-300">
+                          health risk
+                        </span>
+                      )}
                       {o.hets.length > 0 && <span className="text-muted"> · {o.hets.map(hetLabel).join(", ")}</span>}
                     </td>
                   </tr>
@@ -214,8 +262,9 @@ export function GeneticsCalculator({
           </div>
         )}
         <p className="mt-2 text-xs text-muted">
-          Odds per egg, assuming genes are inherited independently. Real clutches vary. Genes come from our{" "}
-          {current.name.toLowerCase()} list, which is still being reviewed.
+          Odds per egg, assuming genes are inherited independently. Real clutches vary. Genes and health notes come
+          from our {current.name.toLowerCase()} list, which is still being reviewed: always check with experienced
+          breeders.
         </p>
       </section>
     </div>

@@ -1277,11 +1277,14 @@ export type Database = {
           aliases: string[]
           allelic_group: string | null
           created_at: string
+          health_note: string | null
           id: string
           inheritance: string
           name: string
           notes: string | null
           species_id: string
+          super_health_note: string | null
+          super_lethal: boolean
           super_name: string | null
           verified: boolean
         }
@@ -1290,11 +1293,14 @@ export type Database = {
           aliases?: string[]
           allelic_group?: string | null
           created_at?: string
+          health_note?: string | null
           id?: string
           inheritance: string
           name: string
           notes?: string | null
           species_id: string
+          super_health_note?: string | null
+          super_lethal?: boolean
           super_name?: string | null
           verified?: boolean
         }
@@ -1303,11 +1309,14 @@ export type Database = {
           aliases?: string[]
           allelic_group?: string | null
           created_at?: string
+          health_note?: string | null
           id?: string
           inheritance?: string
           name?: string
           notes?: string | null
           species_id?: string
+          super_health_note?: string | null
+          super_lethal?: boolean
           super_name?: string | null
           verified?: boolean
         }

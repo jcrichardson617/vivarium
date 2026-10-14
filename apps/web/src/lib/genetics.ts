@@ -11,6 +11,9 @@ export type Gene = {
   inheritance: string;
   allelic_group: string | null;
   super_name: string | null;
+  health_note?: string | null;
+  super_health_note?: string | null;
+  super_lethal?: boolean;
 };
 
 export type ParentGene = { geneId: string; status: GeneStatus; hetProbability?: number | null };
@@ -19,6 +22,8 @@ export type Outcome = {
   probability: number;
   morph: string;
   hets: { gene: string; probability: number }[];
+  // Genes present in two copies with a distinct super form (for health warnings).
+  supers: string[];
 };
 
 const WILD = "+";
@@ -65,7 +70,7 @@ function crossLocus(a: Weighted<string[]>[], b: Weighted<string[]>[]) {
   return [...out].map(([key, p]) => ({ value: key.split("|"), p }));
 }
 
-type Pheno = { visual: string[]; hets: string[] };
+type Pheno = { visual: string[]; hets: string[]; supers: string[] };
 
 // Morph names list co-dominant/dominant genes before recessive ones
 // ("Pastel Clown"); the sort key is stripped before display.
@@ -76,12 +81,15 @@ const unlabel = (v: string) => v.slice(v.indexOf("\u0000") + 1);
 function phenotype([x, y]: string[], genes: Map<string, Gene>): Pheno {
   const visual: string[] = [];
   const hets: string[] = [];
+  const supers: string[] = [];
   if (x === y) {
-    if (x === WILD) return { visual, hets };
+    if (x === WILD) return { visual, hets, supers };
     const g = genes.get(x)!;
-    if (g.inheritance === "incomplete_dominant") visual.push(label(g, g.super_name ?? `Super ${g.name}`));
-    else visual.push(label(g, g.name));
-    return { visual, hets };
+    if (g.inheritance === "incomplete_dominant") {
+      visual.push(label(g, g.super_name ?? `Super ${g.name}`));
+      supers.push(g.id);
+    } else visual.push(label(g, g.name));
+    return { visual, hets, supers };
   }
   for (const id of [x, y]) {
     if (id === WILD) continue;
@@ -91,7 +99,7 @@ function phenotype([x, y]: string[], genes: Map<string, Gene>): Pheno {
     if (g.inheritance === "recessive" && other === WILD) hets.push(g.name);
     else visual.push(label(g, g.name));
   }
-  return { visual, hets };
+  return { visual, hets, supers };
 }
 
 export function predictOffspring(
@@ -117,10 +125,11 @@ export function predictOffspring(
   parentB.forEach((g) => add("b", g));
 
   // Combine loci, merging identical (visual, hets) combinations as we go.
-  let combos = new Map<string, { visual: string[]; hets: string[]; p: number }>([["|", { visual: [], hets: [], p: 1 }]]);
+  type Combo = { visual: string[]; hets: string[]; supers: string[]; p: number };
+  let combos = new Map<string, Combo>([["|", { visual: [], hets: [], supers: [], p: 1 }]]);
   for (const { a, b } of loci.values()) {
     const child = crossLocus(parentLocus(a), parentLocus(b));
-    const next = new Map<string, { visual: string[]; hets: string[]; p: number }>();
+    const next = new Map<string, Combo>();
     for (const c of combos.values())
       for (const g of child) {
         const ph = phenotype(g.value, byId);
@@ -129,17 +138,17 @@ export function predictOffspring(
         const key = `${visual.join(",")}|${hets.join(",")}`;
         const prev = next.get(key);
         if (prev) prev.p += c.p * g.p;
-        else next.set(key, { visual, hets, p: c.p * g.p });
+        else next.set(key, { visual, hets, supers: [...c.supers, ...ph.supers], p: c.p * g.p });
       }
     combos = next;
   }
 
   // Group by what the baby looks like; hets become "N% possible het".
-  const groups = new Map<string, { p: number; hets: Map<string, number> }>();
+  const groups = new Map<string, { p: number; hets: Map<string, number>; supers: string[] }>();
   for (const c of combos.values()) {
     if (c.p < 1e-12) continue;
     const morph = c.visual.length ? c.visual.map(unlabel).join(" ") : "Normal";
-    if (!groups.has(morph)) groups.set(morph, { p: 0, hets: new Map() });
+    if (!groups.has(morph)) groups.set(morph, { p: 0, hets: new Map(), supers: c.supers });
     const g = groups.get(morph)!;
     g.p += c.p;
     for (const h of c.hets) g.hets.set(h, (g.hets.get(h) ?? 0) + c.p);
@@ -149,6 +158,7 @@ export function predictOffspring(
     .map(([morph, g]) => ({
       morph,
       probability: g.p,
+      supers: g.supers,
       hets: [...g.hets]
         .map(([gene, p]) => ({ gene, probability: p / g.p }))
         .sort((x, y) => y.probability - x.probability || x.gene.localeCompare(y.gene)),

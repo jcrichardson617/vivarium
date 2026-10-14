@@ -25,7 +25,7 @@ export default async function GeneticsPage({
 
   const { data: genes } = await supabase
     .from("genes")
-    .select("id, name, inheritance, allelic_group, super_name, species_id, species(common_name, scientific_name)")
+    .select("id, name, inheritance, allelic_group, super_name, health_note, super_health_note, super_lethal, species_id, species(common_name, scientific_name)")
     .eq("active", true)
     .order("name");
 
