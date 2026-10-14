@@ -31,6 +31,7 @@ export async function updateDetails(formData: FormData) {
       visibility: formData.get("public") === "on" ? "public" : "private",
       sire_id: text(formData, "sire_id"),
       dam_id: text(formData, "dam_id"),
+      feeding_interval_days: text(formData, "feeding_interval_days") ? Number(text(formData, "feeding_interval_days")) : null,
     })
     .eq("id", animalId);
   if (error) back(animalId, `error=${encodeURIComponent(error.message)}`);

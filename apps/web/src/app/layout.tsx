@@ -54,12 +54,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               </span>
             </Link>
             {user ? (
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm">
                 <Link href="/animals" className="hover:text-brand">
                   My animals
                 </Link>
                 <Link href="/enclosures" className="hover:text-brand">
                   Enclosures
+                </Link>
+                <Link href="/breeding" className="hover:text-brand">
+                  Breeding
                 </Link>
                 {isModerator && (
                   <Link href="/admin/species" className="hover:text-brand">

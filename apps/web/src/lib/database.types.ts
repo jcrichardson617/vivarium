@@ -545,6 +545,7 @@ export type Database = {
       }
       animals: {
         Row: {
+          feeding_interval_days: number | null
           animal_code: string | null
           created_at: string | null
           created_by: string | null
@@ -562,6 +563,7 @@ export type Database = {
           visibility: string | null
         }
         Insert: {
+          feeding_interval_days?: number | null
           animal_code?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -579,6 +581,7 @@ export type Database = {
           visibility?: string | null
         }
         Update: {
+          feeding_interval_days?: number | null
           animal_code?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -856,6 +859,8 @@ export type Database = {
       }
       clutches: {
         Row: {
+          expected_hatch_date: string | null
+          incubation_temp_c: number | null
           egg_count: number | null
           fertile_count: number | null
           id: string
@@ -864,6 +869,8 @@ export type Database = {
           pairing_id: string | null
         }
         Insert: {
+          expected_hatch_date?: string | null
+          incubation_temp_c?: number | null
           egg_count?: number | null
           fertile_count?: number | null
           id?: string
@@ -872,6 +879,8 @@ export type Database = {
           pairing_id?: string | null
         }
         Update: {
+          expected_hatch_date?: string | null
+          incubation_temp_c?: number | null
           egg_count?: number | null
           fertile_count?: number | null
           id?: string
@@ -2803,6 +2812,10 @@ export type Database = {
         Returns: undefined
       }
       fn41_delete_my_account: { Args: never; Returns: undefined }
+      fn42_hatch_egg: {
+        Args: { p_egg_id: string; p_name: string; p_sex: string; p_hatch_date: string; p_weight_g?: number }
+        Returns: string
+      }
       fn39_username_available: {
         Args: { p_username: string }
         Returns: boolean

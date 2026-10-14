@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { moveAnimal } from "@/app/enclosures/actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { ShareButton } from "@/components/share-button";
+import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
 import { SITE_URL } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -68,7 +69,7 @@ export default async function AnimalPage({
 
   const { data: animal } = await supabase
     .from("animals")
-    .select("id, name, sex, hatch_date, status, animal_code, visibility, sire_id, dam_id, species(common_name, scientific_name), species_submissions!animals_pending_species_submission_id_fkey(scientific_name, status)")
+    .select("id, name, sex, hatch_date, status, animal_code, visibility, feeding_interval_days, sire_id, dam_id, species(common_name, scientific_name), species_submissions!animals_pending_species_submission_id_fkey(scientific_name, status)")
     .eq("id", id)
     .maybeSingle();
   if (!animal) notFound();
@@ -112,6 +113,7 @@ export default async function AnimalPage({
   const latestWeight = weights.data?.[0];
   const latestFeeding = feedings.data?.find((f) => f.accepted);
   const latestShed = sheds.data?.[0];
+  const due = animal.status === "active" ? feedingDue(latestFeeding?.fed_at, animal.feeding_interval_days) : null;
 
   const timeline: TimelineItem[] = [
     ...(feedings.data ?? []).map((f) => ({
@@ -190,6 +192,15 @@ export default async function AnimalPage({
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wide text-muted">Last meal</p>
           <p className="mt-1 font-semibold">{daysAgo(latestFeeding?.fed_at)}</p>
+          {due ? (
+            <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${DUE_TONE_CLASS[due.tone]}`}>{due.label}</span>
+          ) : (
+            isOwner && (
+              <Link href={`/animals/${id}/edit`} className="mt-1 block text-xs text-muted hover:text-brand">
+                Set a feeding reminder
+              </Link>
+            )
+          )}
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wide text-muted">Weight</p>

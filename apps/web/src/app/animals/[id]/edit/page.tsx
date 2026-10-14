@@ -30,7 +30,7 @@ export default async function EditAnimalPage({
   const [{ data: animal }, { data: isOwner }] = await Promise.all([
     supabase
       .from("animals")
-      .select("id, name, sex, hatch_date, status, status_date, visibility, species_id, sire_id, dam_id, species(common_name)")
+      .select("id, name, sex, hatch_date, status, status_date, visibility, feeding_interval_days, species_id, sire_id, dam_id, species(common_name)")
       .eq("id", id)
       .maybeSingle(),
     supabase.rpc("fn06_is_current_owner", { p_animal_id: id, p_user_id: user!.id }),
@@ -96,6 +96,19 @@ export default async function EditAnimalPage({
         <label className="flex flex-col gap-1 text-sm">
           Acquisition date
           <input name="acquired_date" type="date" defaultValue={acquisition?.acquired_date ?? ""} className="field" />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          Feed every (days)
+          <input
+            name="feeding_interval_days"
+            type="number"
+            min={1}
+            max={365}
+            placeholder="e.g. 7"
+            defaultValue={animal.feeding_interval_days ?? ""}
+            className="field"
+          />
+          <span className="text-xs text-muted">Leave blank for no feeding reminders.</span>
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-sm">
