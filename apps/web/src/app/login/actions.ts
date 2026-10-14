@@ -40,6 +40,22 @@ export async function signUp(formData: FormData) {
   redirect("/login?message=Check your email to confirm your account.");
 }
 
+export async function signInWithGoogle(formData: FormData) {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin") ?? "";
+  const next = safeNext(formData.get("next"));
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
+  });
+
+  if (error || !data.url) {
+    redirect(`/login?error=${encodeURIComponent(error?.message ?? "Google sign-in is unavailable.")}`);
+  }
+  redirect(data.url);
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
