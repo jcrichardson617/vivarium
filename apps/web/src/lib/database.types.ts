@@ -1054,6 +1054,47 @@ export type Database = {
           },
         ]
       }
+      feature_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          details: string | null
+          id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feature_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedings: {
         Row: {
           accepted: boolean
@@ -2721,6 +2762,21 @@ export type Database = {
           matched_alias: string
           scientific_name: string
           taxon_class: string
+        }[]
+      }
+      fn36_feature_requests_admin: {
+        Args: never
+        Returns: {
+          admin_notes: string
+          animal_count: number
+          created_at: string
+          details: string
+          email: string
+          id: string
+          species_kept: string
+          status: string
+          title: string
+          username: string
         }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
