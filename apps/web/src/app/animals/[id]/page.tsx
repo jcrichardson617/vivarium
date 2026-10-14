@@ -66,7 +66,7 @@ export default async function AnimalPage({
 
   const { data: animal } = await supabase
     .from("animals")
-    .select("id, name, sex, hatch_date, status, animal_code, visibility, species(common_name, scientific_name), species_submissions!animals_pending_species_submission_id_fkey(scientific_name, status)")
+    .select("id, name, sex, hatch_date, status, animal_code, visibility, sire_id, dam_id, species(common_name, scientific_name), species_submissions!animals_pending_species_submission_id_fkey(scientific_name, status)")
     .eq("id", id)
     .maybeSingle();
   if (!animal) notFound();
@@ -90,6 +90,15 @@ export default async function AnimalPage({
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).maybeSingle(),
       supabase.from("profiles").select("plan").eq("id", user!.id).single(),
     ]);
+
+  const parentIds = [animal.sire_id, animal.dam_id].filter((v): v is string => !!v);
+  const { data: parentRows } = parentIds.length
+    ? await supabase.from("animals").select("id, name").in("id", parentIds)
+    : { data: [] as { id: string; name: string | null }[] };
+  const parents = {
+    sire: parentRows?.find((p) => p.id === animal.sire_id),
+    dam: parentRows?.find((p) => p.id === animal.dam_id),
+  };
 
   const photoRows = photos.data ?? [];
   const signed = photoRows.length
@@ -132,7 +141,14 @@ export default async function AnimalPage({
         <Link href="/animals" className="text-sm text-muted hover:text-foreground">
           ← My animals
         </Link>
-        <h1 className="mt-2 text-3xl font-bold">{animal.name ?? "Unnamed"}</h1>
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <h1 className="text-3xl font-bold">{animal.name ?? "Unnamed"}</h1>
+          {isOwner && (
+            <Link href={`/animals/${id}/edit`} className="btn-secondary text-sm">
+              Edit
+            </Link>
+          )}
+        </div>
         <p className="text-muted">
           {speciesLabel}
           {animal.species?.scientific_name && <span className="italic"> · {animal.species.scientific_name}</span>}
@@ -141,8 +157,20 @@ export default async function AnimalPage({
         </p>
         <p className="mt-1 text-sm text-muted">
           Hatched {fmt(animal.hatch_date)} · Acquired {fmt(acquisition.data?.acquired_date)}
-          {animal.status !== "active" ? ` · ${animal.status}` : ""}
+          {animal.status !== "active" ? ` · ${animal.status.replace("_", " ")}` : ""}
+          {animal.visibility === "public" ? " · Public" : ""}
         </p>
+        {(parents.sire || parents.dam) && (
+          <p className="mt-1 text-sm text-muted">
+            {parents.sire && (
+              <>Sire: <Link href={`/animals/${parents.sire.id}`} className="text-brand hover:underline">{parents.sire.name}</Link></>
+            )}
+            {parents.sire && parents.dam && " · "}
+            {parents.dam && (
+              <>Dam: <Link href={`/animals/${parents.dam.id}`} className="text-brand hover:underline">{parents.dam.name}</Link></>
+            )}
+          </p>
+        )}
       </div>
 
       {error && <p className="rounded-md bg-red-500/10 p-3 text-sm text-red-600">{error}</p>}
