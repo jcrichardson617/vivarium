@@ -25,7 +25,7 @@ export default async function Home() {
           <p className="mt-2 text-base tracking-[0.15em] text-muted">Intelligence for Modern Herpetoculture</p>
         </div>
         <p className="max-w-2xl text-lg">
-          The record-keeping app for reptile keepers and breeders. Track every animal, log husbandry in seconds, manage
+          The record-keeping hub for reptile keepers and breeders. Track every animal, log husbandry in seconds, manage
           breeding projects and genetics, and see how your animals compare with data from keepers everywhere.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
