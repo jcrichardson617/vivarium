@@ -19,6 +19,10 @@ export async function signIn(formData: FormData) {
   });
 
   if (error) {
+    // Unconfirmed accounts finish sign-up by entering their emailed code.
+    if (error.code === "email_not_confirmed") {
+      redirect(`/verify?email=${encodeURIComponent(String(formData.get("email")))}&next=${encodeURIComponent(next)}`);
+    }
     redirect(`/login?error=${encodeURIComponent(error.message)}&next=${encodeURIComponent(next)}`);
   }
   redirect(next);
@@ -37,7 +41,7 @@ export async function signUp(formData: FormData) {
   if (error) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
   }
-  redirect("/login?message=Check your email to confirm your account.");
+  redirect(`/verify?email=${encodeURIComponent(String(formData.get("email")))}`);
 }
 
 export async function signInWithGoogle(formData: FormData) {
