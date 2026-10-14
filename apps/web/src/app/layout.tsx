@@ -49,6 +49,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                     Admin
                   </Link>
                 )}
+                <Link href="/settings" className="hover:text-brand">
+                  Settings
+                </Link>
                 <form action={signOut}>
                   <button className="text-muted hover:text-foreground">Sign out</button>
                 </form>

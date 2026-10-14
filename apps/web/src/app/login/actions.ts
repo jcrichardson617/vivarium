@@ -32,10 +32,19 @@ export async function signUp(formData: FormData) {
   const supabase = await createClient();
   const origin = (await headers()).get("origin") ?? "";
 
+  const username = String(formData.get("username") ?? "").trim().toLowerCase();
+  if (!/^[a-z0-9_]{3,30}$/.test(username)) {
+    redirect(`/login?error=${encodeURIComponent("Choose a username of 3-30 lowercase letters, numbers or underscores.")}`);
+  }
+  const { data: available } = await supabase.rpc("fn39_username_available", { p_username: username });
+  if (!available) {
+    redirect(`/login?error=${encodeURIComponent(`The username "${username}" is taken. Try another.`)}`);
+  }
+
   const { error } = await supabase.auth.signUp({
     email: String(formData.get("email")),
     password: String(formData.get("password")),
-    options: { emailRedirectTo: `${origin}/auth/callback` },
+    options: { emailRedirectTo: `${origin}/auth/callback`, data: { username } },
   });
 
   if (error) {

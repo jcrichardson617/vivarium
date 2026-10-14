@@ -51,9 +51,25 @@ export default async function LoginPage({
         <button formAction={signIn} className="btn-primary mt-2">
           Sign in
         </button>
-        <button formAction={signUp} className="btn-secondary">
-          Create account
-        </button>
+        <details className="rounded-md border border-border p-3">
+          <summary className="cursor-pointer text-sm font-medium">New here? Create an account</summary>
+          <label className="mt-3 flex flex-col gap-1 text-sm">
+            Username
+            <input
+              name="username"
+              maxLength={30}
+              pattern="[a-zA-Z0-9_]{3,30}"
+              title="3-30 letters, numbers or underscores"
+              autoComplete="username"
+              placeholder="e.g. tegu_keeper"
+              className="field"
+            />
+            <span className="text-xs text-muted">Shown on your public profile. Letters, numbers and underscores.</span>
+          </label>
+          <button formAction={signUp} className="btn-secondary mt-3 w-full">
+            Create account
+          </button>
+        </details>
       </form>
     </section>
   );

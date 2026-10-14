@@ -2779,6 +2779,29 @@ export type Database = {
           username: string
         }[]
       }
+      fn37_public_animal_keeper: {
+        Args: { p_animal_id: string }
+        Returns: {
+          display_name: string
+          username: string
+        }[]
+      }
+      fn38_public_animals_for_keeper: {
+        Args: { p_username: string }
+        Returns: {
+          common_name: string
+          hatch_date: string
+          id: string
+          name: string
+          photo_path: string
+          scientific_name: string
+          sex: string
+        }[]
+      }
+      fn39_username_available: {
+        Args: { p_username: string }
+        Returns: boolean
+      }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
