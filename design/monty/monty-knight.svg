@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2bc77c"/>
+      <stop offset="1" stop-color="#0b5e44"/>
+    </linearGradient>
+    <clipPath id="badge"><circle cx="256" cy="256" r="248"/></clipPath>
+    <pattern id="mail" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="3.2" fill="none" stroke="#5f686d" stroke-width="1.4"/>
+    </pattern>
+  </defs>
+  <circle cx="256" cy="256" r="248" fill="url(#bg)"/>
+  <g clip-path="url(#badge)">
+  <g transform="translate(-38 -6)">
+  <!-- tunic over chainmail -->
+  <path d="M60 520 C70 450 120 410 190 400 L320 400 C390 410 445 450 455 520 Z" fill="#9aa3a8"/>
+  <path d="M60 520 C70 450 120 410 190 400 L320 400 C390 410 445 450 455 520 Z" fill="url(#mail)" opacity="0.6"/>
+  <path d="M120 520 C126 470 160 440 200 432 L312 432 C352 440 386 470 392 520 Z" fill="#f4f1e6"/>
+  <rect x="244" y="440" width="26" height="80" fill="#c62828"/>
+  <rect x="206" y="462" width="102" height="24" fill="#c62828"/>
+  <!-- chainmail coif around the neck -->
+  <path d="M188 330 C190 380 196 400 196 412 L314 412 C314 396 318 370 322 330 C300 360 220 360 188 330 Z" fill="#9aa3a8"/>
+  <path d="M188 330 C190 380 196 400 196 412 L314 412 C314 396 318 370 322 330 C300 360 220 360 188 330 Z" fill="url(#mail)" opacity="0.6"/>
+  <!-- neck -->
+  <path d="M200 300 C205 340 210 370 205 410 L300 410 C300 375 305 345 312 318 Z" fill="#17191a"/>
+  <path d="M207 352 C235 345 270 345 305 352 L304 366 C270 359 236 359 208 366 Z" fill="#f3f1ea"/>
+  <path d="M206 385 C235 378 270 378 302 385 L302 398 C270 391 236 391 206 398 Z" fill="#f3f1ea"/>
+  <!-- head -->
+  <path d="M182 300 C176 228 236 180 318 186 C368 190 410 200 432 224 C444 238 438 256 418 262 L334 284 C322 318 292 344 248 348 C210 350 186 332 182 300 Z" fill="#17191a"/>
+  <!-- jowl highlight -->
+  <path d="M200 312 C214 334 240 340 266 334" fill="none" stroke="#f3f1ea" stroke-width="6" stroke-linecap="round"/>
+  <!-- head bands -->
+  <path d="M230 205 C250 230 252 262 238 292" fill="none" stroke="#f3f1ea" stroke-width="9" stroke-linecap="round"/>
+  <path d="M270 194 C286 214 290 236 282 256" fill="none" stroke="#f3f1ea" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="372" cy="203" r="5" fill="#f3f1ea"/>
+  <circle cx="392" cy="210" r="4" fill="#f3f1ea"/>
+  <circle cx="300" cy="300" r="6" fill="#f3f1ea"/>
+  <circle cx="268" cy="312" r="5" fill="#f3f1ea"/>
+  <!-- mouth -->
+  <path d="M418 262 C390 270 360 278 334 284 C326 286 318 284 312 280" fill="none" stroke="#d9a3a0" stroke-width="5" stroke-linecap="round"/>
+  <!-- tongue -->
+  <path d="M424 256 C444 258 458 262 470 262 M470 262 L486 252 M470 262 L486 272" fill="none" stroke="#e5788f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- eye -->
+  <circle cx="326" cy="216" r="17" fill="#f3f1ea"/>
+  <circle cx="330" cy="217" r="10" fill="#3b2412"/>
+  <circle cx="333" cy="213" r="3.5" fill="#ffffff"/>
+  <!-- nostril -->
+  <ellipse cx="418" cy="224" rx="4" ry="3" fill="#f3f1ea"/>
+  <!-- coif over the head -->
+  <path d="M176 300 C168 214 230 166 290 168 C298 170 304 174 308 180 C294 196 284 222 283 250 C282 284 288 310 298 330 C268 352 214 348 186 328 Z" fill="#9aa3a8"/>
+  <path d="M176 300 C168 214 230 166 290 168 C298 170 304 174 308 180 C294 196 284 222 283 250 C282 284 288 310 298 330 C268 352 214 348 186 328 Z" fill="url(#mail)" opacity="0.6"/>
+  <path d="M308 180 C294 196 284 222 283 250 C282 284 288 310 298 330" fill="none" stroke="#6f787d" stroke-width="5"/>
+  </g>
+  </g>
+</svg>
