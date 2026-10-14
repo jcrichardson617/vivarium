@@ -28,6 +28,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <Image src="/logo.png" alt="" width={28} height={28} />
               Reptilytics
+              <span className="rounded-full border border-brand/40 bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wider text-brand">
+                Beta
+              </span>
             </Link>
             {user ? (
               <div className="flex items-center gap-4 text-sm">
