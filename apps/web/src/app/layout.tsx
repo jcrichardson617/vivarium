@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <header className="border-b border-border bg-card">
           <nav className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Image src="/logo.webp" alt="" width={28} height={28} />
+              <Image src="/logo.png" alt="" width={28} height={28} />
               Reptilytics
             </Link>
             {user ? (

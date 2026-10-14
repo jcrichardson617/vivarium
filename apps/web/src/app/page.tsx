@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <section className="flex flex-col items-center gap-6 py-12 text-center">
-      <Image src="/logo.webp" alt="Reptilytics logo" width={140} height={140} priority />
+      <Image src="/logo.png" alt="Reptilytics logo" width={140} height={140} priority />
       <h1 className="text-4xl font-bold tracking-tight">Reptilytics</h1>
       <p className="max-w-md text-lg text-muted">
         Track your collection, log husbandry in seconds, and learn from what the whole community records.
