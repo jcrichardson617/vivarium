@@ -9,8 +9,8 @@ import "./globals.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Reptilytics",
-  description: "Intelligence for modern herpetoculture.",
+  title: "Reptilytics | Intelligence for Modern Herpetoculture",
+  description: "Track your reptile collection, log husbandry, and learn from community data.",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
