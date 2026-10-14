@@ -34,5 +34,8 @@ functions), so every client gets the same rules.
   `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel and redeploy.
 - Turn on leaked-password protection in Supabase → Authentication (requires
   the Supabase Pro plan).
+- Before launch: send app emails (sign-up, password reset, reminders) through
+  Resend from noreply@reptilytics.com. Supabase's built-in email only allows a
+  few messages per hour.
 - Review the 49 seeded ball python genes and mark them verified.
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
