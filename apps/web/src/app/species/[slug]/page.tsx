@@ -82,7 +82,8 @@ export default async function SpeciesPage({ params }: Props) {
         <section>
           <h2 className="mb-1 text-2xl font-semibold">{name} morphs and genes</h2>
           <p className="mb-4 text-sm text-muted">
-            {genes.length} genes in our list. Log your animal&apos;s genetics and Reptilytics builds its morph name for you.
+            {genes.length} genes in our list. Log your animal&apos;s genetics and Reptilytics builds its morph name for you,
+            or try the <Link href={`/genetics?species=${slug}`} className="text-brand hover:underline">{name.toLowerCase()} genetics calculator</Link>.
           </p>
           {["recessive", "incomplete_dominant", "dominant", "polygenic"].map((type) =>
             byType.get(type)?.length ? (

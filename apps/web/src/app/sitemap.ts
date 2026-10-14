@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase.from("animals").select("id, created_at").eq("visibility", "public").limit(5000),
   ]);
 
-  const pages = ["", "/features", "/species", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
+  const pages = ["", "/features", "/species", "/genetics", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.6,

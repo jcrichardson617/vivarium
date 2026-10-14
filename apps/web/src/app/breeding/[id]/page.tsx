@@ -63,7 +63,13 @@ export default async function PairingPage({
           {p.female ? <Link href={`/animals/${p.female.id}`} className="hover:text-brand">{p.female.name ?? "Unnamed"}</Link> : "Outside female"}
         </h1>
         <p className="text-muted">
-          {(p.female ?? p.male)?.species?.common_name ?? "—"} · paired {fmt(p.pairing_date)}
+          {(p.female ?? p.male)?.species?.common_name ?? "—"} · paired {fmt(p.pairing_date)} ·{" "}
+          <Link
+            href={`/genetics?${new URLSearchParams({ ...(p.male ? { male: p.male.id } : {}), ...(p.female ? { female: p.female.id } : {}) })}`}
+            className="text-brand hover:underline"
+          >
+            Predict offspring
+          </Link>
         </p>
       </div>
 
