@@ -12,13 +12,15 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 - **Point each audience at the page that helps *them*** (see the table) — not the home page.
 - No attachments. One link per email is best, two at most.
 - Track who you emailed and when in a simple spreadsheet. **Follow up once** after ~10 days, then stop.
+- **Breeder replies are product research:** log their answers (software used, likes, frustrations)
+  in the spreadsheet too. Patterns across 10–20 replies tell us what to build next.
 
 | Audience | Link them to | Why they'd care |
 |---|---|---|
 | Herp societies | /tools and /species | Free resources for members; the society's links page |
 | Reptile vets | /tools/prey-size, /tools/enclosure-size | Handouts for clients; fewer husbandry-related visits |
 | Care-sheet & resource sites | /genetics, species morph pages, /research | Cite-able data and tools for their readers |
-| Breeders | /genetics, morph pages for their species | Explain pairings and morphs to buyers |
+| Breeders | /genetics, morph pages for their species | Explain pairings to buyers; and we ask what software they use and what they'd change |
 
 ## Who to contact
 
@@ -116,22 +118,28 @@ Reptilytics — https://www.reptilytics.com
 
 ## Email 4 — Breeder
 
-**Subject:** Morph genetics calculator for your buyers
+**Subject:** Quick question about your record keeping
 
 Hi [Name],
 
-I've been looking at your [species] — [genuine compliment about a specific animal/project].
+I've been admiring your [species] — [genuine compliment about a specific animal/project].
 
-I built a free morph genetics calculator at Reptilytics that handles supers, allelic combos and
-possible hets, and flags lethal and health-risk pairings:
+I'm building Reptilytics, a record-keeping site for keepers and breeders, and before I go
+further I'd love to learn from people who actually run collections. Would you mind answering
+three quick questions?
+
+1. What do you use to keep records today (iHerp, Husbandry.Pro, MorphMarket's Animal Manager,
+   a spreadsheet, paper…)?
+2. What do you like about it?
+3. What frustrates you, or what do you wish it did?
+
+Even one-line answers help a lot. In the meantime, feel free to use our free morph genetics
+calculator — it handles supers, allelic combos and possible hets, and flags lethal pairings:
 
 https://www.reptilytics.com/genetics
 
-There's also a page for every [species] morph with breeding odds, e.g.
-https://www.reptilytics.com/species/[species-slug]/morphs/[morph-slug]
-
-If it'd help your buyers understand what they're getting, feel free to link it from your site
-or FAQ. And if you spot a gene we've got wrong for [species], I'd love to fix it.
+If you're up for trying Reptilytics itself, I'd happily give you free premium for life as an
+early tester.
 
 Thanks,
 [Your name]
