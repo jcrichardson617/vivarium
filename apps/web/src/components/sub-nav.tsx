@@ -13,6 +13,7 @@ const APP: Item[] = [
 
 const EXPLORE: Item[] = [
   { href: "/species", label: "Species" },
+  { href: "/research", label: "Research" },
   { href: "/genetics", label: "Genetics calculator" },
   { href: "/tools", label: "Free tools" },
 ];

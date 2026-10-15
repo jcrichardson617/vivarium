@@ -2986,6 +2986,21 @@ export type Database = {
           title: string
         }[]
       }
+      fn50_newest_papers: {
+        Args: { p_species_id?: string; p_limit?: number; p_offset?: number }
+        Returns: {
+          authors: string[]
+          cited_by_count: number | null
+          excerpt: string | null
+          id: string
+          license: string | null
+          published_date: string
+          publisher: string | null
+          source_url: string
+          species: Json
+          title: string
+        }[]
+      }
       fn48_species_content_counts: {
         Args: never
         Returns: { gene_count: number; paper_count: number; species_id: string }[]

@@ -132,7 +132,8 @@ export default async function SpeciesPage({ params }: Props) {
         <section>
           <h2 className="mb-1 text-2xl font-semibold">{name} research</h2>
           <p className="mb-4 text-sm text-muted">
-            {paperCount?.toLocaleString()} published paper{paperCount === 1 ? "" : "s"} in the HerpAtlas library. Most cited:
+            {paperCount?.toLocaleString()} published paper{paperCount === 1 ? "" : "s"} in the HerpAtlas library. Most cited below, or{" "}
+            <Link href={`/species/${slug}/research`} className="text-brand hover:underline">see the latest research →</Link>
           </p>
           <ul className="flex flex-col gap-2">
             {papers.map((p) => (

@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase.from("genes").select("name, species(common_name, scientific_name)").eq("active", true),
   ]);
 
-  const pages = ["", "/features", "/species", "/genetics", "/tools", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
+  const pages = ["", "/features", "/species", "/genetics", "/research", "/tools", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.6,
@@ -31,6 +31,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(species ?? [])
       .filter((s) => (counts ?? []).some((c) => c.species_id === s.id && (c.gene_count > 0 || c.paper_count > 0)))
       .map((s) => ({ url: `${SITE_URL}/species/${speciesSlug(s)}`, changeFrequency: "monthly" as const, priority: 0.7 })),
+    ...(species ?? [])
+      .filter((s) => (counts ?? []).some((c) => c.species_id === s.id && c.paper_count > 0))
+      .map((s) => ({ url: `${SITE_URL}/species/${speciesSlug(s)}/research`, changeFrequency: "weekly" as const, priority: 0.6 })),
     ...(genes ?? [])
       .filter((g) => g.species)
       .map((g) => ({
