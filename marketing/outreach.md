@@ -105,14 +105,23 @@ Hi [Name],
 
 We really liked your [specific article/care sheet] — especially [one specific detail].
 
-We've built Reptilytics, a free site with a morph genetics calculator and a research library
-that collects published papers by species. For example, the [species] page lists [N] papers and
-every known morph with breeding odds:
+We're building Reptilytics, a free record-keeping site for reptile and amphibian keepers. Keepers
+log feedings, weights, sheds and health notes for each animal, get reminders when an animal is
+due to eat, and track their enclosures and breeding projects. Alongside that there's a morph
+genetics calculator and a research library that collects published papers by species. For
+example, the [species] page lists [N] papers and every known morph with breeding odds:
 
 https://www.reptilytics.com/species/[species-slug]
 
-If you think your readers would find it useful, we'd be glad if you linked it from your
-[article / resources page]. Happy to return the favour where it fits.
+Since you write for keepers all the time, we'd love your take on two quick questions:
+
+1. What do your readers ask about most that they struggle to find good answers to?
+2. Is there anything you wish keepers tracked (or tracked better) that would make your care
+   advice easier to follow?
+
+Even one-line answers help a lot. And if you think your readers would find Reptilytics useful,
+we'd be glad if you linked it from your [article / resources page]. Happy to return the favour
+where it fits.
 
 Cheers,
 The Reptilytics Team
