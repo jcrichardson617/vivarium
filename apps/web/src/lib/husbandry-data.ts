@@ -22,7 +22,7 @@ export const INCUBATION: IncubationInfo[] = [
     name: "Leopard gecko",
     tempC: [27, 31],
     days: [40, 60],
-    note: "Temperature sets sex: around 27 °C gives mostly females, around 31 °C mostly males. Cooler incubation can take 70+ days.",
+    note: "Temperature sets sex: around 26–27 °C gives mostly females, around 32 °C mostly males, and very high temperatures (34 °C) give females again. Cooler incubation can take 70+ days.",
   },
   {
     slug: "african-fat-tailed-gecko",
