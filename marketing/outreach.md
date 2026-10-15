@@ -160,6 +160,49 @@ https://www.reptilytics.com
 
 ---
 
+## Special — Eckerd College HERP Lab (Dr. Erin Rickman)
+
+Herpetological Environments and Research in Practice Lab, Eckerd College, St. Petersburg FL.
+Studies captive reptile welfare (enclosures, enrichment, behaviour, stress), with crested geckos
+as a current focus. Contact via https://herp.eckerd.edu/contact-us (no public email found).
+Pitch: research partnership, not just a link.
+
+**Subject:** Reptile welfare research and keeper husbandry data
+
+Hi Dr. Rickman,
+
+We came across the HERP Lab and really appreciated its focus on improving the welfare of pet
+reptiles and amphibians. Your work on enrichment and naturalistic enclosures is exactly the kind
+of evidence we wish more keepers acted on.
+
+We've built Reptilytics, a free record-keeping site for reptile and amphibian keepers. Keepers
+log feedings, weights, sheds, health notes and enclosure details (size, temperatures, humidity,
+substrate and equipment) for each animal. Alongside that we run an open research library that
+collects published papers by species, including crested geckos:
+
+https://www.reptilytics.com/species/crested-gecko
+
+We're early, but as the community grows this becomes a large, real-world record of how reptiles
+are actually kept and how they do. Keepers' care records are kept anonymously for research, and
+we'd love for that data to be useful to people doing welfare work. A few questions, if you have a
+moment:
+
+1. Are there husbandry details you wish keepers recorded that would help welfare research (for
+   example enrichment items, enclosure layout, or behaviour observations)? We can add fields.
+2. Would anonymised, aggregate keeper data be useful to your lab in the future?
+3. Is there anything in your findings you'd like keepers to see? We'd be glad to feature welfare
+   guidance on our species pages, with full credit and links to your papers.
+
+Your students would also be welcome to use Reptilytics for the lab's own animals and colonies.
+It's free.
+
+Thanks for the work you do,
+The Reptilytics Team
+https://www.reptilytics.com
+info@reptilytics.com
+
+---
+
 ## Follow-up (once, ~10 days later)
 
 **Subject:** Re: [original subject]
