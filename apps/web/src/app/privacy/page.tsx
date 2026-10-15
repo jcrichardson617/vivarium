@@ -77,6 +77,10 @@ export default function PrivacyPage() {
 
       <h2>Cookies</h2>
       <p>We only use cookies that are needed to keep you signed in. We do not use advertising or tracking cookies.</p>
+      <p>
+        We count page visits with Vercel Web Analytics, which uses no cookies and does not identify you. It records the
+        page, the referring site, and your country, browser and device type, in aggregate only.
+      </p>
 
       <h2>Your choices</h2>
       <ul>

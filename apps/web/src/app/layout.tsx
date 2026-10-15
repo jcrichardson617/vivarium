@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Image from "next/image";
@@ -80,6 +81,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <SubNav signedIn={!!user} />
         <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">{children}</main>
         <SiteFooter signedIn={!!user} />
+        <Analytics />
       </body>
     </html>
   );
