@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { fromC, fromCm, lengthUnit, round, tempUnit, unitSystemFor } from "@/lib/units";
-import { deleteEnvironmentLog, logEnvironment } from "../actions";
+import { GearPicker } from "@/components/gear-picker";
+import { categoryLabel } from "@/lib/gear";
+import { addGear, deleteEnvironmentLog, logEnvironment, removeGear } from "../actions";
 
 export const metadata: Metadata = { title: "Enclosure | Reptilytics" };
 
@@ -21,11 +23,18 @@ export default async function EnclosurePage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: e }, { data: housed }, { data: logs }, { data: profile }] = await Promise.all([
+  const [{ data: e }, { data: housed }, { data: logs }, { data: profile }, { data: gear }, { data: products }] = await Promise.all([
     supabase.from("enclosures").select("*").eq("id", id).maybeSingle(),
     supabase.from("animal_enclosures").select("animal_id, start_date, animals(name)").eq("enclosure_id", id).is("end_date", null),
     supabase.from("environment_logs").select("*").eq("enclosure_id", id).order("recorded_at", { ascending: false }).limit(50),
     supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single(),
+    supabase
+      .from("enclosure_gear")
+      .select("id, products(id, name, brand, category, note, blocked, block_reason, status)")
+      .eq("enclosure_id", id)
+      .is("removed_at", null)
+      .order("added_at"),
+    supabase.from("products").select("id, name, brand, category, blocked, note").neq("status", "rejected").order("name"),
   ]);
   if (!e) notFound();
   const u = unitSystemFor(profile);
@@ -66,6 +75,40 @@ export default async function EnclosurePage({
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-xl font-semibold">Gear</h2>
+        {!!gear?.length && (
+          <ul className="flex flex-col divide-y divide-border rounded-lg border border-border bg-card text-sm">
+            {gear
+              .filter((g) => g.products)
+              .map((g) => (
+                <li key={g.id} className="flex items-start justify-between gap-3 p-3">
+                  <div>
+                    <p className="font-medium">
+                      {g.products!.name}
+                      {g.products!.status === "pending" && <span className="ml-2 text-xs font-normal text-muted">(awaiting review)</span>}
+                    </p>
+                    <p className="text-xs text-muted">{categoryLabel(g.products!.category)}</p>
+                    {g.products!.blocked && (
+                      <p className="mt-1 text-red-600">⚠️ {g.products!.block_reason ?? "Not recommended for safety reasons."}</p>
+                    )}
+                    {!g.products!.blocked && g.products!.note && <p className="mt-1 text-amber-700 dark:text-amber-400">⚠️ {g.products!.note}</p>}
+                  </div>
+                  <form action={removeGear}>
+                    <input type="hidden" name="enclosure_id" value={id} />
+                    <input type="hidden" name="id" value={g.id} />
+                    <button aria-label="Remove gear" className="text-muted hover:text-red-600">✕</button>
+                  </form>
+                </li>
+              ))}
+          </ul>
+        )}
+        <GearPicker enclosureId={id} products={products ?? []} action={addGear} />
+        <p className="text-xs text-muted">
+          Your gear stays private. Anonymous totals (only when 5+ keepers use something) help others choose; you can opt out in Settings.
+        </p>
       </section>
 
       <section>

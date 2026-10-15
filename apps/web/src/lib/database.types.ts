@@ -950,6 +950,52 @@ export type Database = {
           },
         ]
       }
+      enclosure_gear: {
+        Row: {
+          added_at: string
+          enclosure_id: string
+          id: string
+          product_id: string
+          removed_at: string | null
+        }
+        Insert: {
+          added_at?: string
+          enclosure_id: string
+          id?: string
+          product_id: string
+          removed_at?: string | null
+        }
+        Update: {
+          added_at?: string
+          enclosure_id?: string
+          id?: string
+          product_id?: string
+          removed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enclosure_gear_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosure_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enclosure_gear_enclosure_id_fkey"
+            columns: ["enclosure_id"]
+            isOneToOne: false
+            referencedRelation: "enclosures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enclosure_gear_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       enclosures: {
         Row: {
           created_at: string | null
@@ -1772,34 +1818,96 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          amazon_url: string | null
+          block_reason: string | null
+          blocked: boolean
+          brand: string | null
+          category: string
+          chewy_url: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          note: string | null
+          other_url: string | null
+          status: string
+        }
+        Insert: {
+          amazon_url?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          brand?: string | null
+          category: string
+          chewy_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          note?: string | null
+          other_url?: string | null
+          status?: string
+        }
+        Update: {
+          amazon_url?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          brand?: string | null
+          category?: string
+          chewy_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          note?: string | null
+          other_url?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          animal_limit: number
           country: string | null
           created_at: string | null
           display_name: string | null
           id: string
           plan: string
           role: string
+          share_gear: boolean
           unit_system: string | null
           username: string
         }
         Insert: {
+          animal_limit?: number
           country?: string | null
           created_at?: string | null
           display_name?: string | null
           id: string
           plan?: string
           role?: string
+          share_gear?: boolean
           unit_system?: string | null
           username: string
         }
         Update: {
+          animal_limit?: number
           country?: string | null
           created_at?: string | null
           display_name?: string | null
           id?: string
           plan?: string
           role?: string
+          share_gear?: boolean
           unit_system?: string | null
           username?: string
         }
@@ -2204,75 +2312,90 @@ export type Database = {
       }
       species_care: {
         Row: {
-          species_id: string
-          length_cm_min: number | null
-          length_cm_max: number | null
-          weight_g_min: number | null
-          weight_g_max: number | null
-          lifespan_min: number | null
-          lifespan_max: number | null
-          hot_c_min: number | null
-          hot_c_max: number | null
-          cool_c_min: number | null
-          cool_c_max: number | null
-          night_c_min: number | null
-          humidity_min: number | null
-          humidity_max: number | null
-          diet: string | null
           activity: string | null
+          cool_c_max: number | null
+          cool_c_min: number | null
+          diet: string | null
           habitat: string | null
-          uvb: string | null
+          hot_c_max: number | null
+          hot_c_min: number | null
+          humidity_max: number | null
+          humidity_min: number | null
+          length_cm_max: number | null
+          length_cm_min: number | null
+          lifespan_max: number | null
+          lifespan_min: number | null
+          night_c_min: number | null
           notes: string | null
-          verified: boolean
+          species_id: string
           updated_at: string
+          uvb: string | null
+          verified: boolean
+          weight_g_max: number | null
+          weight_g_min: number | null
         }
         Insert: {
-          species_id: string
-          length_cm_min?: number | null
-          length_cm_max?: number | null
-          weight_g_min?: number | null
-          weight_g_max?: number | null
-          lifespan_min?: number | null
-          lifespan_max?: number | null
-          hot_c_min?: number | null
-          hot_c_max?: number | null
-          cool_c_min?: number | null
-          cool_c_max?: number | null
-          night_c_min?: number | null
-          humidity_min?: number | null
-          humidity_max?: number | null
-          diet?: string | null
           activity?: string | null
+          cool_c_max?: number | null
+          cool_c_min?: number | null
+          diet?: string | null
           habitat?: string | null
-          uvb?: string | null
+          hot_c_max?: number | null
+          hot_c_min?: number | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          length_cm_max?: number | null
+          length_cm_min?: number | null
+          lifespan_max?: number | null
+          lifespan_min?: number | null
+          night_c_min?: number | null
           notes?: string | null
-          verified?: boolean
+          species_id: string
           updated_at?: string
+          uvb?: string | null
+          verified?: boolean
+          weight_g_max?: number | null
+          weight_g_min?: number | null
         }
         Update: {
-          species_id?: string
-          length_cm_min?: number | null
-          length_cm_max?: number | null
-          weight_g_min?: number | null
-          weight_g_max?: number | null
-          lifespan_min?: number | null
-          lifespan_max?: number | null
-          hot_c_min?: number | null
-          hot_c_max?: number | null
-          cool_c_min?: number | null
-          cool_c_max?: number | null
-          night_c_min?: number | null
-          humidity_min?: number | null
-          humidity_max?: number | null
-          diet?: string | null
           activity?: string | null
+          cool_c_max?: number | null
+          cool_c_min?: number | null
+          diet?: string | null
           habitat?: string | null
-          uvb?: string | null
+          hot_c_max?: number | null
+          hot_c_min?: number | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          length_cm_max?: number | null
+          length_cm_min?: number | null
+          lifespan_max?: number | null
+          lifespan_min?: number | null
+          night_c_min?: number | null
           notes?: string | null
-          verified?: boolean
+          species_id?: string
           updated_at?: string
+          uvb?: string | null
+          verified?: boolean
+          weight_g_max?: number | null
+          weight_g_min?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "species_care_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "species_care_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       species_submissions: {
         Row: {
@@ -3047,36 +3170,6 @@ export type Database = {
       }
       fn40_delete_animal: { Args: { p_animal_id: string }; Returns: undefined }
       fn41_delete_my_account: { Args: never; Returns: undefined }
-      fn49_species_term_papers: {
-        Args: { p_species_id: string; p_term: string; p_limit?: number }
-        Returns: {
-          cited_by_count: number | null
-          id: string
-          published_date: string | null
-          publisher: string | null
-          source_url: string
-          title: string
-        }[]
-      }
-      fn50_newest_papers: {
-        Args: { p_species_id?: string; p_limit?: number; p_offset?: number }
-        Returns: {
-          authors: string[]
-          cited_by_count: number | null
-          excerpt: string | null
-          id: string
-          license: string | null
-          published_date: string
-          publisher: string | null
-          source_url: string
-          species: Json
-          title: string
-        }[]
-      }
-      fn48_species_content_counts: {
-        Args: never
-        Returns: { gene_count: number; paper_count: number; species_id: string }[]
-      }
       fn42_hatch_egg: {
         Args: {
           p_egg_id: string
@@ -3128,6 +3221,58 @@ export type Database = {
           last_harvested_at: string
           query: string
         }[]
+      }
+      fn48_species_content_counts: {
+        Args: never
+        Returns: {
+          gene_count: number
+          paper_count: number
+          species_id: string
+        }[]
+      }
+      fn49_species_term_papers: {
+        Args: { p_limit?: number; p_species_id: string; p_term: string }
+        Returns: {
+          cited_by_count: number
+          id: string
+          published_date: string
+          publisher: string
+          source_url: string
+          title: string
+        }[]
+      }
+      fn50_newest_papers: {
+        Args: { p_limit?: number; p_offset?: number; p_species_id?: string }
+        Returns: {
+          authors: string[]
+          cited_by_count: number
+          excerpt: string
+          id: string
+          license: string
+          published_date: string
+          publisher: string
+          source_url: string
+          species: Json
+          title: string
+        }[]
+      }
+      fn51_species_popular_gear: {
+        Args: { p_min_keepers?: number; p_species_id: string }
+        Returns: {
+          amazon_url: string
+          brand: string
+          category: string
+          chewy_url: string
+          id: string
+          keepers: number
+          name: string
+          note: string
+          other_url: string
+        }[]
+      }
+      fn52_merge_product: {
+        Args: { p_from: string; p_into: string }
+        Returns: undefined
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }

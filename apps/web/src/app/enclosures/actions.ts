@@ -96,3 +96,43 @@ export async function moveAnimal(formData: FormData) {
   revalidatePath(back);
   redirect(`${back}?saved=${enclosureId ? "Moved" : "Removed+from+enclosure"}`);
 }
+
+// Gear: pick a catalog product, or suggest a new one (pending moderator review).
+export async function addGear(formData: FormData) {
+  const supabase = await createClient();
+  const enclosureId = String(formData.get("enclosure_id"));
+  let productId = text(formData, "product_id");
+  const newName = text(formData, "new_name");
+
+  if (!productId && newName) {
+    const { data: existing } = await supabase.from("products").select("id").ilike("name", newName).maybeSingle();
+    if (existing) productId = existing.id;
+    else {
+      const { data: created, error } = await supabase
+        .from("products")
+        .insert({ name: newName, brand: text(formData, "new_brand"), category: text(formData, "category") ?? "other" })
+        .select("id")
+        .single();
+      if (error) redirect(`/enclosures/${enclosureId}?error=${encodeURIComponent(error.message)}`);
+      productId = created.id;
+    }
+  }
+  if (!productId) redirect(`/enclosures/${enclosureId}?error=Pick+a+product+or+type+a+new+one`);
+
+  const { error } = await supabase
+    .from("enclosure_gear")
+    .upsert({ enclosure_id: enclosureId, product_id: productId, removed_at: null, added_at: new Date().toISOString() }, { onConflict: "enclosure_id,product_id" });
+  revalidatePath(`/enclosures/${enclosureId}`);
+  redirect(`/enclosures/${enclosureId}?${error ? `error=${encodeURIComponent(error.message)}` : "saved=Gear+added"}`);
+}
+
+export async function removeGear(formData: FormData) {
+  const supabase = await createClient();
+  const enclosureId = String(formData.get("enclosure_id"));
+  const { error } = await supabase
+    .from("enclosure_gear")
+    .update({ removed_at: new Date().toISOString() })
+    .eq("id", String(formData.get("id")));
+  revalidatePath(`/enclosures/${enclosureId}`);
+  redirect(`/enclosures/${enclosureId}?${error ? `error=${encodeURIComponent(error.message)}` : "saved=Gear+removed"}`);
+}

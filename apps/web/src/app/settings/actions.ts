@@ -19,6 +19,7 @@ export async function saveSettings(formData: FormData) {
       display_name: String(formData.get("display_name") ?? "").trim() || username,
       country: String(formData.get("country") ?? "").trim().toUpperCase() || null,
       unit_system: unit === "metric" || unit === "imperial" ? unit : null,
+      share_gear: formData.get("share_gear") === "on",
     })
     .eq("id", user!.id);
 

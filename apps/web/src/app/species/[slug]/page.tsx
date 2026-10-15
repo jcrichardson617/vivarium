@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CareFacts } from "@/components/care-facts";
+import { PopularGear } from "@/components/popular-gear";
 import { ENCLOSURES } from "@/lib/husbandry-data";
 import { geneSlug } from "@/lib/morphs";
 import { speciesSlug } from "@/lib/slug";
@@ -63,7 +64,10 @@ export default async function SpeciesPage({ params }: Props) {
     .eq("active", true)
     .order("name");
 
-  const { data: care } = await supabase.from("species_care").select("*").eq("species_id", species.id).maybeSingle();
+  const [{ data: care }, { data: gear }] = await Promise.all([
+    supabase.from("species_care").select("*").eq("species_id", species.id).maybeSingle(),
+    supabase.rpc("fn51_species_popular_gear", { p_species_id: species.id }),
+  ]);
 
   // Most-cited papers tagged with this species in the HerpAtlas library.
   const { data: papers, count: paperCount } = await supabase
@@ -106,6 +110,8 @@ export default async function SpeciesPage({ params }: Props) {
       </dl>
 
       {care && <CareFacts care={care} name={name} enclosureTool={ENCLOSURES.some((e) => e.slug === slug)} />}
+
+      <PopularGear items={gear ?? []} name={name} />
 
       {!!genes?.length && (
         <section>

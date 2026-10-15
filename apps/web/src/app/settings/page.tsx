@@ -13,7 +13,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, display_name, country, unit_system")
+    .select("username, display_name, country, unit_system, share_gear")
     .eq("id", user!.id)
     .single();
 
@@ -48,6 +48,13 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             </select>
           </label>
         </div>
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="share_gear" defaultChecked={profile?.share_gear ?? true} className="mt-1" />
+          <span>
+            Count my enclosure gear in anonymous &ldquo;popular with keepers&rdquo; totals
+            <span className="block text-xs text-muted">Only totals are ever shown, and only once 5+ keepers use a product.</span>
+          </span>
+        </label>
         <button className="btn-primary self-start">Save</button>
       </form>
 

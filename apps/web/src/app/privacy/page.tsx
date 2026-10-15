@@ -43,9 +43,19 @@ export default function PrivacyPage() {
           To produce <strong>anonymized, combined statistics</strong>, such as average growth for a species. These are
           only shown when enough keepers contribute that no individual can be identified.
         </li>
+        <li>
+          To show <strong>which gear is popular</strong> for each species (for example, &ldquo;used by 12 ball python
+          keepers&rdquo;), based on the gear you add to your enclosures. Only totals are shown, only once at least 5
+          keepers use a product, and never who uses it. You can opt out in Settings.
+        </li>
         <li>To contact you about your account or important changes to the service.</li>
       </ul>
       <p>We do not sell your personal information, and we do not use advertising trackers.</p>
+      <p>
+        Some product links are affiliate links: if you buy through them, Reptilytics may earn a small commission at no
+        extra cost to you. The retailer sees that you came from Reptilytics, but we don&apos;t share your account or
+        records with them, and commissions never affect which products are shown or how they are ranked.
+      </p>
 
       <h2>Who can see your records</h2>
       <p>
@@ -71,6 +81,7 @@ export default function PrivacyPage() {
       <h2>Your choices</h2>
       <ul>
         <li>You can edit or delete your records at any time.</li>
+        <li>You can stop your gear from counting toward the anonymous &ldquo;popular gear&rdquo; totals in Settings.</li>
         <li>
           You can delete your account at any time from Settings, or ask for a copy of your data by emailing{" "}
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
