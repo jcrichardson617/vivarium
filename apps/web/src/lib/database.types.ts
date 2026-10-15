@@ -1733,6 +1733,9 @@ export type Database = {
           created_at: string
           error: string | null
           id: string
+          last_event: string | null
+          opened_at: string | null
+          resend_id: string | null
           sent_at: string | null
           sent_by: string | null
           status: string
@@ -1744,6 +1747,9 @@ export type Database = {
           created_at?: string
           error?: string | null
           id?: string
+          last_event?: string | null
+          opened_at?: string | null
+          resend_id?: string | null
           sent_at?: string | null
           sent_by?: string | null
           status?: string
@@ -1755,6 +1761,9 @@ export type Database = {
           created_at?: string
           error?: string | null
           id?: string
+          last_event?: string | null
+          opened_at?: string | null
+          resend_id?: string | null
           sent_at?: string | null
           sent_by?: string | null
           status?: string

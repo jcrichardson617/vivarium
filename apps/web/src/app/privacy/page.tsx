@@ -81,6 +81,10 @@ export default function PrivacyPage() {
         We count page visits with Vercel Web Analytics, which uses no cookies and does not identify you. It records the
         page, the referring site, and your country, browser and device type, in aggregate only.
       </p>
+      <p>
+        Emails we send can include a tiny image that tells us whether the email was opened. Blocking images in your
+        mail app turns this off.
+      </p>
 
       <h2>Your choices</h2>
       <ul>

@@ -1,6 +1,7 @@
 // Welcome emails (every 15 minutes), the weekly digest (Mondays) and one-off
 // emails from Admin → Email ("outbox"), sent through Resend. Called with the
-// shared cron secret and a body of {"kind":"welcome" | "digest" | "outbox"}.
+// shared cron secret and a body of {"kind":"welcome" | "digest" | "outbox" | "opens"}.
+// "opens" refreshes open status of recent outbox emails (every 30 minutes).
 // Needs the RESEND_API_KEY secret.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -26,7 +27,8 @@ Deno.serve(async (req) => {
   if (kind === "welcome") return Response.json(await sendWelcomes(key));
   if (kind === "digest") return Response.json(await sendDigests(key));
   if (kind === "outbox") return Response.json(await sendOutbox(key));
-  return Response.json({ error: "kind must be welcome, digest or outbox" }, { status: 400 });
+  if (kind === "opens") return Response.json(await refreshOpens(key));
+  return Response.json({ error: "kind must be welcome, digest, outbox or opens" }, { status: 400 });
 });
 
 async function sendWelcomes(key: string) {
@@ -47,7 +49,7 @@ async function sendWelcomes(key: string) {
       <a href="${SITE}/tools">prey size, hatch date and enclosure size calculators</a>, and the
       <a href="${SITE}/research">research library</a>.</p>
       <p>Something missing or broken? Just reply to this email.</p>`);
-    if ((await send(key, u.email, "Welcome to Reptilytics", html)) === true) {
+    if ((await send(key, u.email, "Welcome to Reptilytics", html)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "welcome" });
       sent++;
     }
@@ -92,7 +94,7 @@ async function sendDigests(key: string) {
       `<p>${u.display_name ? `Hi ${esc(u.display_name)},` : "Hi,"} here's your week.</p>${sections.join("")}`,
       `<a href="${unsubscribe}" style="color:#888">Unsubscribe from the weekly digest</a> or change it in <a href="${SITE}/settings" style="color:#888">Settings</a>.`,
     );
-    if ((await send(key, u.email, subject, html, unsubscribe)) === true) {
+    if ((await send(key, u.email, subject, html, unsubscribe)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "digest" });
       sent++;
     }
@@ -115,11 +117,44 @@ async function sendOutbox(key: string) {
     const result = await send(key, m.to_email, m.subject, html, undefined, m.body);
     await admin
       .from("outbound_emails")
-      .update(result === true ? { status: "sent", sent_at: new Date().toISOString(), error: null } : { status: "error", error: String(result) })
+      .update(
+        result.ok
+          ? { status: "sent", sent_at: new Date().toISOString(), error: null, resend_id: result.id, last_event: "sent" }
+          : { status: "error", error: result.error },
+      )
       .eq("id", m.id);
-    if (result === true) sent++;
+    if (result.ok) sent++;
   }
   return { kind: "outbox", sent };
+}
+
+// Latest Resend event (delivered, opened, bounced…) for outbox emails from
+// the last 30 days that haven't been opened yet.
+async function refreshOpens(key: string) {
+  const { data, error } = await admin
+    .from("outbound_emails")
+    .select("id, resend_id")
+    .eq("status", "sent")
+    .is("opened_at", null)
+    .not("resend_id", "is", null)
+    .gte("sent_at", new Date(Date.now() - 30 * 86400000).toISOString())
+    .order("sent_at", { ascending: false })
+    .limit(40);
+  if (error) return { error: error.message };
+  let opened = 0;
+  for (const m of data ?? []) {
+    const res = await fetch(`https://api.resend.com/emails/${m.resend_id}`, { headers: { Authorization: `Bearer ${key}` } });
+    if (!res.ok) continue;
+    const event = String((await res.json()).last_event ?? "");
+    const isOpen = event === "opened" || event === "clicked";
+    await admin
+      .from("outbound_emails")
+      .update({ last_event: event || null, ...(isOpen && { opened_at: new Date().toISOString() }) })
+      .eq("id", m.id);
+    if (isOpen) opened++;
+    await new Promise((r) => setTimeout(r, 250)); // stay under Resend's rate limit
+  }
+  return { kind: "opens", checked: data?.length ?? 0, opened };
 }
 
 async function send(key: string, to: string, subject: string, html: string, unsubscribe?: string, text?: string) {
@@ -138,10 +173,10 @@ async function send(key: string, to: string, subject: string, html: string, unsu
       }),
     }),
   });
-  if (res.ok) return true;
+  if (res.ok) return { ok: true as const, id: String((await res.json()).id ?? "") || null };
   const detail = `Resend ${res.status}: ${await res.text()}`;
   console.error(detail);
-  return detail;
+  return { ok: false as const, error: detail };
 }
 
 function layout(body: string, footer = "") {

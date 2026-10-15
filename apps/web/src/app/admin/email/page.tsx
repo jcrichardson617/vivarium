@@ -17,7 +17,7 @@ export default async function EmailAdminPage({ searchParams }: { searchParams: P
 
   const { data: log } = await supabase
     .from("outbound_emails")
-    .select("id, to_email, subject, body, status, error, created_at")
+    .select("id, to_email, subject, body, status, error, created_at, last_event, opened_at")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -28,6 +28,7 @@ export default async function EmailAdminPage({ searchParams }: { searchParams: P
         <h1 className="text-2xl font-bold">Email</h1>
         <p className="text-muted">
           Sends from info@reptilytics.com. Replies go to info@reptilytics.com. Plain text, sent exactly as written.
+          Opens are checked every 30 minutes and are approximate: some mail apps load images automatically, others block them.
         </p>
       </div>
       {error && <p className="rounded-md bg-red-500/10 p-3 text-sm text-red-600">{error}</p>}
@@ -57,9 +58,7 @@ export default async function EmailAdminPage({ searchParams }: { searchParams: P
             <li key={m.id} className="rounded-lg border border-border p-3 text-sm">
               <details>
                 <summary className="cursor-pointer">
-                  <span className={m.status === "sent" ? "text-brand-dark" : m.status === "error" ? "text-red-600" : "text-muted"}>
-                    {m.status === "sent" ? "✓ Sent" : m.status === "error" ? "✕ Failed" : "… Pending"}
-                  </span>{" "}
+                  <EmailStatus status={m.status} event={m.last_event} opened={!!m.opened_at} />{" "}
                   · {m.to_email} · <strong>{m.subject}</strong>{" "}
                   <span className="text-muted">· {new Date(m.created_at).toLocaleString("en-US")}</span>
                 </summary>
@@ -72,4 +71,21 @@ export default async function EmailAdminPage({ searchParams }: { searchParams: P
       </div>
     </section>
   );
+}
+
+const EVENT_LABEL: Record<string, [string, string]> = {
+  opened: ["👁 Opened", "text-brand-dark font-semibold"],
+  clicked: ["👁 Opened", "text-brand-dark font-semibold"],
+  delivered: ["✓ Delivered", "text-muted"],
+  sent: ["✓ Sent", "text-muted"],
+  delivery_delayed: ["⏳ Delayed", "text-amber-600"],
+  bounced: ["✕ Bounced", "text-red-600"],
+  complained: ["⚠ Marked as spam", "text-red-600"],
+};
+
+function EmailStatus({ status, event, opened }: { status: string; event: string | null; opened: boolean }) {
+  if (status === "pending") return <span className="text-muted">… Pending</span>;
+  if (status === "error") return <span className="text-red-600">✕ Failed</span>;
+  const [label, cls] = EVENT_LABEL[opened ? "opened" : (event ?? "sent")] ?? EVENT_LABEL.sent;
+  return <span className={cls}>{label}</span>;
 }
