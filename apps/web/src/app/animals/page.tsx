@@ -29,6 +29,22 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   );
   const dueCount = [...dueById.values()].filter((d) => d && d.days <= 0).length;
 
+  // Main photo per animal (or its first photo if none is marked), via signed URLs.
+  const { data: photos } = animals?.length
+    ? await supabase
+        .from("animal_photos")
+        .select("animal_id, storage_path, is_primary, created_at")
+        .in("animal_id", animals.map((a) => a.id))
+        .order("is_primary", { ascending: false })
+        .order("created_at")
+    : { data: [] };
+  const coverPath = new Map<string, string>();
+  for (const p of photos ?? []) if (!coverPath.has(p.animal_id)) coverPath.set(p.animal_id, p.storage_path);
+  const { data: signed } = coverPath.size
+    ? await supabase.storage.from("animal-photos").createSignedUrls([...coverPath.values()], 3600)
+    : { data: [] };
+  const urlByPath = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+
   return (
     <section>
       <div className="mb-6 flex items-center justify-between">
@@ -58,8 +74,22 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
           <li key={animal.id}>
             <Link
               href={`/animals/${animal.id}`}
-              className="block rounded-lg border border-border bg-card p-4 transition hover:border-brand"
+              className="flex gap-4 rounded-lg border border-border bg-card p-4 transition hover:border-brand"
             >
+            {coverPath.has(animal.id) && urlByPath.get(coverPath.get(animal.id)!) ? (
+              // Signed URL from private storage; plain img avoids configuring remote image domains.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={urlByPath.get(coverPath.get(animal.id)!)!}
+                alt=""
+                className="h-16 w-16 shrink-0 rounded-md object-cover"
+              />
+            ) : (
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-border/50 text-2xl text-muted">
+                🦎
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
               <p className="font-semibold">{animal.name ?? "Unnamed"}</p>
               {dueById.get(animal.id) && (
@@ -79,6 +109,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
             {animal.status !== "active" && (
               <p className="mt-1 text-xs uppercase tracking-wide text-muted">{animal.status}</p>
             )}
+            </div>
             </Link>
           </li>
         ))}
