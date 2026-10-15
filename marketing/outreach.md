@@ -48,7 +48,7 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 ## Email 1 — Herp society
 
-**Subject:** Free reptile tools for [Society name] members
+**Subject:** Introducing REPTILYTICS
 
 Hi [Name],
 
@@ -61,8 +61,8 @@ I thought it might be useful for your members, and wondered if you'd consider ad
 
 https://www.reptilytics.com/tools
 
-Everything's free, no account needed for the tools. If anything's wrong or missing for the
-species your members keep, I'd genuinely like to hear it.
+Everything's free, no account needed for the tools. If anything's missing or could be improved
+upon for the species your members keep, I'd genuinely like to hear it.
 
 Thanks,
 [Your name]
