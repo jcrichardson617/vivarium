@@ -264,7 +264,8 @@ export function GeneticsCalculator({
         <p className="mt-2 text-xs text-muted">
           Odds per egg, assuming genes are inherited independently. Real clutches vary. Genes and health notes come
           from our {current.name.toLowerCase()} list, which is still being reviewed: always check with experienced
-          breeders.
+          breeders. Unsure what het, super or allelic mean? See the{" "}
+          <a href="/glossary#genetics-morphs" className="text-brand hover:underline">glossary</a>.
         </p>
       </section>
     </div>

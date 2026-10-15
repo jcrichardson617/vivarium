@@ -2202,6 +2202,78 @@ export type Database = {
         }
         Relationships: []
       }
+      species_care: {
+        Row: {
+          species_id: string
+          length_cm_min: number | null
+          length_cm_max: number | null
+          weight_g_min: number | null
+          weight_g_max: number | null
+          lifespan_min: number | null
+          lifespan_max: number | null
+          hot_c_min: number | null
+          hot_c_max: number | null
+          cool_c_min: number | null
+          cool_c_max: number | null
+          night_c_min: number | null
+          humidity_min: number | null
+          humidity_max: number | null
+          diet: string | null
+          activity: string | null
+          habitat: string | null
+          uvb: string | null
+          notes: string | null
+          verified: boolean
+          updated_at: string
+        }
+        Insert: {
+          species_id: string
+          length_cm_min?: number | null
+          length_cm_max?: number | null
+          weight_g_min?: number | null
+          weight_g_max?: number | null
+          lifespan_min?: number | null
+          lifespan_max?: number | null
+          hot_c_min?: number | null
+          hot_c_max?: number | null
+          cool_c_min?: number | null
+          cool_c_max?: number | null
+          night_c_min?: number | null
+          humidity_min?: number | null
+          humidity_max?: number | null
+          diet?: string | null
+          activity?: string | null
+          habitat?: string | null
+          uvb?: string | null
+          notes?: string | null
+          verified?: boolean
+          updated_at?: string
+        }
+        Update: {
+          species_id?: string
+          length_cm_min?: number | null
+          length_cm_max?: number | null
+          weight_g_min?: number | null
+          weight_g_max?: number | null
+          lifespan_min?: number | null
+          lifespan_max?: number | null
+          hot_c_min?: number | null
+          hot_c_max?: number | null
+          cool_c_min?: number | null
+          cool_c_max?: number | null
+          night_c_min?: number | null
+          humidity_min?: number | null
+          humidity_max?: number | null
+          diet?: string | null
+          activity?: string | null
+          habitat?: string | null
+          uvb?: string | null
+          notes?: string | null
+          verified?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       species_submissions: {
         Row: {
           common_name: string | null

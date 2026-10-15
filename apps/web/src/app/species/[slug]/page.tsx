@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { CareFacts } from "@/components/care-facts";
+import { ENCLOSURES } from "@/lib/husbandry-data";
 import { geneSlug } from "@/lib/morphs";
 import { speciesSlug } from "@/lib/slug";
 
@@ -27,9 +29,12 @@ async function findSpecies(slug: string) {
 
 // Pages with neither morph genes nor research are too thin to be worth indexing yet.
 async function hasContent(supabase: Awaited<ReturnType<typeof createClient>>, speciesId: string) {
-  const { data } = await supabase.rpc("fn48_species_content_counts");
+  const [{ data }, { count: care }] = await Promise.all([
+    supabase.rpc("fn48_species_content_counts"),
+    supabase.from("species_care").select("species_id", { count: "exact", head: true }).eq("species_id", speciesId),
+  ]);
   const row = data?.find((r) => r.species_id === speciesId);
-  return !!row && (row.gene_count > 0 || row.paper_count > 0);
+  return !!care || (!!row && (row.gene_count > 0 || row.paper_count > 0));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -38,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!species) return { title: "Species not found | Reptilytics" };
   const name = species.common_name ?? species.scientific_name;
   return {
-    title: `${name} (${species.scientific_name}): Morphs, Research & Care Tracking | Reptilytics`,
-    description: `${name} (${species.scientific_name}): morph genes, published research and husbandry tracking. Log feedings, weights, sheds, genetics and breeding with Reptilytics.`,
+    title: `${name} (${species.scientific_name}) Care, Morphs & Research | Reptilytics`,
+    description: `${name} (${species.scientific_name}) care at a glance (temperatures, humidity, size, lifespan, diet), morph genetics and published research. Track yours free with Reptilytics.`,
     alternates: { canonical: `/species/${slug}` },
     robots: (await hasContent(supabase, species.id)) ? undefined : { index: false, follow: true },
   };
@@ -57,6 +62,8 @@ export default async function SpeciesPage({ params }: Props) {
     .eq("species_id", species.id)
     .eq("active", true)
     .order("name");
+
+  const { data: care } = await supabase.from("species_care").select("*").eq("species_id", species.id).maybeSingle();
 
   // Most-cited papers tagged with this species in the HerpAtlas library.
   const { data: papers, count: paperCount } = await supabase
@@ -97,6 +104,8 @@ export default async function SpeciesPage({ params }: Props) {
         <div><dt className="text-xs uppercase tracking-wide text-muted">Genus</dt><dd className="font-medium italic">{species.genus ?? "—"}</dd></div>
         <div><dt className="text-xs uppercase tracking-wide text-muted">Also known as</dt><dd className="font-medium">{aliases.length ? aliases.join(", ") : "—"}</dd></div>
       </dl>
+
+      {care && <CareFacts care={care} name={name} enclosureTool={ENCLOSURES.some((e) => e.slug === slug)} />}
 
       {!!genes?.length && (
         <section>

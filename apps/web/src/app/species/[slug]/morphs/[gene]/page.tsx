@@ -108,6 +108,9 @@ export default async function MorphPage({ params }: Props) {
       <section className="flex flex-col gap-3">
         <h2 className="text-2xl font-semibold">How {g.name} is inherited</h2>
         <p>{inheritanceExplainer(g, speciesName)}</p>
+        <p className="text-sm text-muted">
+          New to these terms? See the <Link href="/glossary#genetics-morphs" className="text-brand hover:underline">genetics glossary</Link>.
+        </p>
         {siblings.length > 0 && (
           <p>
             {g.name} is allelic with {siblings.map((s) => s.name).join(", ")}: they sit at the same spot on the chromosome, so an animal can
