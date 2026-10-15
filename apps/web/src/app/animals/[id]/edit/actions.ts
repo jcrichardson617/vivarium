@@ -46,6 +46,13 @@ export async function updateDetails(formData: FormData) {
     .upsert({ animal_id: animalId, user_id: user!.id, acquired_date: acquired }, { onConflict: "animal_id,user_id" });
   if (acqError) back(animalId, `error=${encodeURIComponent(acqError.message)}`);
 
+  // Tags are the keeper's own labels for organizing their list.
+  const { error: tagError } = await supabase.rpc("fn58_set_animal_tags", {
+    p_animal_id: animalId,
+    p_tags: String(formData.get("tags") ?? "").split(","),
+  });
+  if (tagError) back(animalId, `error=${encodeURIComponent(tagError.message)}`);
+
   back(animalId, "saved=Details+saved");
 }
 

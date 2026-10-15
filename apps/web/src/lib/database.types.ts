@@ -376,6 +376,7 @@ export type Database = {
           id: string
           is_current_owner: boolean | null
           start_date: string | null
+          tags: string[]
           user_id: string | null
         }
         Insert: {
@@ -384,6 +385,7 @@ export type Database = {
           id?: string
           is_current_owner?: boolean | null
           start_date?: string | null
+          tags?: string[]
           user_id?: string | null
         }
         Update: {
@@ -392,6 +394,7 @@ export type Database = {
           id?: string
           is_current_owner?: boolean | null
           start_date?: string | null
+          tags?: string[]
           user_id?: string | null
         }
         Relationships: [
@@ -3310,6 +3313,36 @@ export type Database = {
         }[]
       }
       fn56_unsubscribe: { Args: { p_token: string }; Returns: boolean }
+      fn57_my_animals: {
+        Args: never
+        Returns: {
+          animal_code: string
+          created_at: string
+          enclosure_id: string
+          enclosure_name: string
+          feeding_interval_days: number
+          hatch_date: string
+          id: string
+          last_fed_at: string
+          name: string
+          pending_species: string
+          pending_species_status: string
+          photo_path: string
+          sex: string
+          species_common_name: string
+          species_scientific_name: string
+          status: string
+          tags: string[]
+        }[]
+      }
+      fn58_set_animal_tags: {
+        Args: { p_animal_id: string; p_tags: string[] }
+        Returns: undefined
+      }
+      fn59_tag_animals: {
+        Args: { p_add: boolean; p_animal_ids: string[]; p_tag: string }
+        Returns: number
+      }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {

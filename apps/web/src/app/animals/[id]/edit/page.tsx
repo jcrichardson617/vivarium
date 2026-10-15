@@ -37,7 +37,7 @@ export default async function EditAnimalPage({
   ]);
   if (!animal || !isOwner) notFound();
 
-  const [{ data: acquisition }, { data: genes }, { data: animalGenes }, { data: relatives }, { data: morph }] =
+  const [{ data: acquisition }, { data: genes }, { data: animalGenes }, { data: relatives }, { data: morph }, { data: ownership }] =
     await Promise.all([
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).eq("user_id", user!.id).maybeSingle(),
       animal.species_id
@@ -56,6 +56,7 @@ export default async function EditAnimalPage({
             .order("name")
         : Promise.resolve({ data: [] as { id: string; name: string | null; sex: string | null }[] }),
       supabase.rpc("morph_name", { p_animal_id: id }),
+      supabase.from("animal_ownership").select("tags").eq("animal_id", id).eq("user_id", user!.id).eq("is_current_owner", true).maybeSingle(),
     ]);
 
   const sires = (relatives ?? []).filter((r) => r.sex !== "female");
@@ -96,6 +97,16 @@ export default async function EditAnimalPage({
         <label className="flex flex-col gap-1 text-sm">
           Acquisition date
           <input name="acquired_date" type="date" defaultValue={acquisition?.acquired_date ?? ""} className="field" />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          Tags
+          <input
+            name="tags"
+            defaultValue={(ownership?.tags ?? []).join(", ")}
+            placeholder="e.g. Holdback, 2026 breeders, For sale"
+            className="field"
+          />
+          <span className="text-xs text-muted">Your own labels, separated by commas. Filter by them on My animals. Only you see them.</span>
         </label>
         <label className="flex flex-col gap-1 text-sm">
           Feed every (days)
