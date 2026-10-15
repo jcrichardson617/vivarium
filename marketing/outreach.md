@@ -52,8 +52,7 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 Hi [Name],
 
-I'm a reptile keeper (my Argentine tegu, Monty, is the reason this exists) and I've built
-Reptilytics, a free site for reptile and amphibian keepers. It has a morph genetics calculator,
+I've built Reptilytics, a free site for reptile and amphibian keepers. It has a morph genetics calculator,
 prey-size, hatch-date and enclosure-size calculators, and a library of published research for
 over 180 species.
 
