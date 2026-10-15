@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { SiteFooter } from "@/components/site-footer";
@@ -33,15 +32,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  // Embeddable widgets render bare, inside other sites' iframes.
-  if ((await headers()).get("x-pathname")?.startsWith("/embed/")) {
-    return (
-      <html lang="en">
-        <body className={`${geistSans.variable} font-sans antialiased`}>{children}</body>
-      </html>
-    );
-  }
-
   const supabase = await createClient();
   const {
     data: { user },

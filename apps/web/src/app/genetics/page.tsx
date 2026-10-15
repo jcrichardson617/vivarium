@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EmbedSnippet } from "@/components/embed-snippet";
 import { GeneticsCalculator, type CalcAnimal } from "@/components/genetics-calculator";
 import type { GeneStatus } from "@/lib/genetics";
 import { loadCalculatorSpecies } from "@/lib/genetics-data";
@@ -79,7 +78,6 @@ export default async function GeneticsPage({
       ) : (
         <p className="text-muted">No species have genes yet.</p>
       )}
-      {species.length > 0 && <EmbedSnippet species={species.map((s) => ({ slug: s.slug, name: s.name }))} />}
     </section>
   );
 }
