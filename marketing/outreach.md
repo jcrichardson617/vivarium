@@ -17,7 +17,7 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 | Audience | Link them to | Why they'd care |
 |---|---|---|
-| Herp societies | /tools and /species | Free resources for members; the society's links page |
+| Herp societies | Home page (record keeping), then /tools | A free place for members to log their animals, plus free tools; the society's links page |
 | Reptile vets | /tools/prey-size, /tools/enclosure-size | Handouts for clients; fewer husbandry-related visits |
 | Care-sheet & resource sites | /genetics, species morph pages, /research | Cite-able data and tools for their readers |
 | Breeders | /genetics, morph pages for their species | Explain pairings to buyers; and we ask what software they use and what they'd change |
@@ -52,17 +52,22 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 Hi [Name],
 
-We've built Reptilytics, a free site for reptile and amphibian keepers. It has a morph genetics calculator,
+We've built Reptilytics, a free record-keeping site for reptile and amphibian keepers and
+breeders. Keepers can log feedings, weights, sheds and health notes for each animal in seconds,
+get reminders when an animal is due to eat, track their enclosures, and follow breeding projects
+from pairing through clutches to hatchlings.
+
+There are also free tools anyone can use without an account: a morph genetics calculator,
 prey-size, hatch-date and enclosure-size calculators, and a library of published research for
 over 180 species.
 
 We thought it might be useful for your members, and wondered if you'd consider adding it to
 [Society name]'s resources page:
 
-https://www.reptilytics.com/tools
+https://www.reptilytics.com
 
-Everything's free, no account needed for the tools. If anything's missing or could be improved
-upon for the species your members keep, we'd genuinely like to hear it.
+Everything's free. If anything's missing or could be improved upon for the species your members
+keep, we'd genuinely like to hear it.
 
 Thanks,
 The Reptilytics Team
