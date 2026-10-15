@@ -7,8 +7,8 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 - **5–10 emails a week**, each personalised (use their name, mention something on their site).
   Mass emails get ignored or marked as spam.
-- Send from **info@reptilytics.com** once Gmail "send as" is set up (on the README to-do list);
-  until then your own address is fine.
+- Send from **Admin → Email** on reptilytics.com (goes out from info@reptilytics.com; replies
+  land in your Gmail). Sign as "The Reptilytics Team".
 - **Point each audience at the page that helps *them*** (see the table) — not the home page.
 - No attachments. One link per email is best, two at most.
 - Track who you emailed and when in a simple spreadsheet. **Follow up once** after ~10 days, then stop.
@@ -52,21 +52,21 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 
 Hi [Name],
 
-I've built Reptilytics, a free site for reptile and amphibian keepers. It has a morph genetics calculator,
+We've built Reptilytics, a free site for reptile and amphibian keepers. It has a morph genetics calculator,
 prey-size, hatch-date and enclosure-size calculators, and a library of published research for
 over 180 species.
 
-I thought it might be useful for your members, and wondered if you'd consider adding it to
+We thought it might be useful for your members, and wondered if you'd consider adding it to
 [Society name]'s resources page:
 
 https://www.reptilytics.com/tools
 
 Everything's free, no account needed for the tools. If anything's missing or could be improved
-upon for the species your members keep, I'd genuinely like to hear it.
+upon for the species your members keep, we'd genuinely like to hear it.
 
 Thanks,
-[Your name]
-Reptilytics — https://www.reptilytics.com
+The Reptilytics Team
+https://www.reptilytics.com
 
 ---
 
@@ -76,19 +76,19 @@ Reptilytics — https://www.reptilytics.com
 
 Hi Dr. [Name],
 
-I run Reptilytics, a free site for reptile keepers. A lot of what brings reptiles to the vet
-starts with husbandry, so I built a few simple tools owners can use at home:
+We run Reptilytics, a free site for reptile keepers. A lot of what brings reptiles to the vet
+starts with husbandry, so we built a few simple tools owners can use at home:
 
 - Prey size by body weight: https://www.reptilytics.com/tools/prey-size
 - Enclosure sizes by species: https://www.reptilytics.com/tools/enclosure-size
 
 If they'd be useful, would you consider linking them from your client resources page? And if
-you see anything you'd change from a veterinary point of view, I'd be grateful for the feedback —
-I'd rather the advice be right than mine.
+you see anything you'd change from a veterinary point of view, we'd be grateful for the feedback —
+we'd rather the advice be right than ours.
 
 Best,
-[Your name]
-Reptilytics — https://www.reptilytics.com
+The Reptilytics Team
+https://www.reptilytics.com
 
 ---
 
@@ -98,20 +98,20 @@ Reptilytics — https://www.reptilytics.com
 
 Hi [Name],
 
-I really liked your [specific article/care sheet] — especially [one specific detail].
+We really liked your [specific article/care sheet] — especially [one specific detail].
 
-I've built Reptilytics, a free site with a morph genetics calculator and a research library
+We've built Reptilytics, a free site with a morph genetics calculator and a research library
 that collects published papers by species. For example, the [species] page lists [N] papers and
 every known morph with breeding odds:
 
 https://www.reptilytics.com/species/[species-slug]
 
-If you think your readers would find it useful, I'd be glad if you linked it from your
+If you think your readers would find it useful, we'd be glad if you linked it from your
 [article / resources page]. Happy to return the favour where it fits.
 
 Cheers,
-[Your name]
-Reptilytics — https://www.reptilytics.com
+The Reptilytics Team
+https://www.reptilytics.com
 
 ---
 
@@ -121,10 +121,10 @@ Reptilytics — https://www.reptilytics.com
 
 Hi [Name],
 
-I've been admiring your [species] — [genuine compliment about a specific animal/project].
+We've been admiring your [species] — [genuine compliment about a specific animal/project].
 
-I'm building Reptilytics, a record-keeping site for keepers and breeders, and before I go
-further I'd love to learn from people who actually run collections. Would you mind answering
+We're building Reptilytics, a record-keeping site for keepers and breeders, and before we go
+further we'd love to learn from people who actually run collections. Would you mind answering
 three quick questions?
 
 1. What do you use to keep records today (iHerp, Husbandry.Pro, MorphMarket's Animal Manager,
@@ -137,12 +137,12 @@ calculator — it handles supers, allelic combos and possible hets, and flags le
 
 https://www.reptilytics.com/genetics
 
-If you're up for trying Reptilytics itself, I'd happily give you free premium for life as an
+If you're up for trying Reptilytics itself, we'd happily give you free premium for life as an
 early tester.
 
 Thanks,
-[Your name]
-Reptilytics — https://www.reptilytics.com
+The Reptilytics Team
+https://www.reptilytics.com
 
 ---
 
@@ -154,4 +154,4 @@ Hi [Name],
 
 Just bumping this in case it got buried — no worries at all if it's not a fit.
 
-[Your name]
+The Reptilytics Team
