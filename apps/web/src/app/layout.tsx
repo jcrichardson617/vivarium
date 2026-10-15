@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { SiteFooter } from "@/components/site-footer";
+import { SubNav } from "@/components/sub-nav";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -44,7 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body className={`${geistSans.variable} flex min-h-screen flex-col font-sans antialiased`}>
-        <header className="border-b border-border bg-card">
+        <header className="bg-card">
           <nav className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <Image src="/logo.png" alt="" width={28} height={28} />
@@ -53,38 +54,30 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 Beta
               </span>
             </Link>
-            {user ? (
-              <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm">
-                <Link href="/animals" className="hover:text-brand">
-                  My animals
-                </Link>
-                <Link href="/enclosures" className="hover:text-brand">
-                  Enclosures
-                </Link>
-                <Link href="/breeding" className="hover:text-brand">
-                  Breeding
-                </Link>
-                {isModerator && (
-                  <Link href="/admin/library" className="hover:text-brand">
-                    Admin
+            <div className="flex items-center gap-4 text-sm">
+              {user ? (
+                <>
+                  {isModerator && (
+                    <Link href="/admin/library" className="hover:text-brand">
+                      Admin
+                    </Link>
+                  )}
+                  <Link href="/settings" className="hover:text-brand">
+                    Settings
                   </Link>
-                )}
-                <Link href="/settings" className="hover:text-brand">
-                  Settings
+                  <form action={signOut}>
+                    <button className="text-muted hover:text-foreground">Sign out</button>
+                  </form>
+                </>
+              ) : (
+                <Link href="/login" className="font-medium hover:text-brand">
+                  Sign in
                 </Link>
-                <form action={signOut}>
-                  <button className="text-muted hover:text-foreground">Sign out</button>
-                </form>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4 text-sm">
-                <Link href="/species" className="hover:text-brand">Species</Link>
-                <Link href="/tools" className="hover:text-brand">Tools</Link>
-                <Link href="/login" className="font-medium hover:text-brand">Sign in</Link>
-              </div>
-            )}
+              )}
+            </div>
           </nav>
         </header>
+        <SubNav signedIn={!!user} />
         <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">{children}</main>
         <SiteFooter signedIn={!!user} />
       </body>
