@@ -2975,6 +2975,10 @@ export type Database = {
       }
       fn40_delete_animal: { Args: { p_animal_id: string }; Returns: undefined }
       fn41_delete_my_account: { Args: never; Returns: undefined }
+      fn48_species_content_counts: {
+        Args: never
+        Returns: { gene_count: number; paper_count: number; species_id: string }[]
+      }
       fn42_hatch_egg: {
         Args: {
           p_egg_id: string

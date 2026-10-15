@@ -24,15 +24,23 @@ async function findSpecies(slug: string) {
   return { supabase, species: data?.find((s) => speciesSlug(s) === slug) };
 }
 
+// Pages with neither morph genes nor research are too thin to be worth indexing yet.
+async function hasContent(supabase: Awaited<ReturnType<typeof createClient>>, speciesId: string) {
+  const { data } = await supabase.rpc("fn48_species_content_counts");
+  const row = data?.find((r) => r.species_id === speciesId);
+  return !!row && (row.gene_count > 0 || row.paper_count > 0);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { species } = await findSpecies(slug);
+  const { supabase, species } = await findSpecies(slug);
   if (!species) return { title: "Species not found | Reptilytics" };
   const name = species.common_name ?? species.scientific_name;
   return {
-    title: `${name} (${species.scientific_name}) | Reptilytics`,
-    description: `${name} (${species.scientific_name}): family ${species.family ?? "—"}. Track your ${name.toLowerCase()}'s feedings, weights, sheds, genetics and breeding with Reptilytics.`,
+    title: `${name} (${species.scientific_name}): Morphs, Research & Care Tracking | Reptilytics`,
+    description: `${name} (${species.scientific_name}): morph genes, published research and husbandry tracking. Log feedings, weights, sheds, genetics and breeding with Reptilytics.`,
     alternates: { canonical: `/species/${slug}` },
+    robots: (await hasContent(supabase, species.id)) ? undefined : { index: false, follow: true },
   };
 }
 
@@ -48,6 +56,17 @@ export default async function SpeciesPage({ params }: Props) {
     .eq("species_id", species.id)
     .eq("active", true)
     .order("name");
+
+  // Most-cited papers tagged with this species in the HerpAtlas library.
+  const { data: papers, count: paperCount } = await supabase
+    .from("research_documents")
+    .select("id, title, source_url, publisher, published_date, cited_by_count, content_rights, research_document_species!inner(species_id)", {
+      count: "exact",
+    })
+    .eq("research_document_species.species_id", species.id)
+    .eq("ingest_status", "ready")
+    .order("cited_by_count", { ascending: false, nullsFirst: false })
+    .limit(8);
 
   const byType = new Map<string, NonNullable<typeof genes>>();
   for (const g of genes ?? []) byType.set(g.inheritance, [...(byType.get(g.inheritance) ?? []), g]);
@@ -100,6 +119,29 @@ export default async function SpeciesPage({ params }: Props) {
               </div>
             ) : null,
           )}
+        </section>
+      )}
+
+      {!!papers?.length && (
+        <section>
+          <h2 className="mb-1 text-2xl font-semibold">{name} research</h2>
+          <p className="mb-4 text-sm text-muted">
+            {paperCount?.toLocaleString()} published paper{paperCount === 1 ? "" : "s"} in the HerpAtlas library. Most cited:
+          </p>
+          <ul className="flex flex-col gap-2">
+            {papers.map((p) => (
+              <li key={p.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                <a href={p.source_url} target="_blank" rel="noreferrer" className="font-medium hover:text-brand">
+                  {p.title}
+                </a>
+                <p className="mt-1 text-xs text-muted">
+                  {[p.publisher, p.published_date?.slice(0, 4)].filter(Boolean).join(" · ")}
+                  {p.cited_by_count ? ` · cited ${p.cited_by_count.toLocaleString()} times` : ""}
+                  {p.content_rights === "full_text" ? " · open access" : ""}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
