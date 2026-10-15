@@ -1887,6 +1887,7 @@ export type Database = {
           email_digest: boolean
           email_token: string
           id: string
+          onboarding_skipped: string[]
           plan: string
           role: string
           share_gear: boolean
@@ -1903,6 +1904,7 @@ export type Database = {
           email_digest?: boolean
           email_token?: string
           id: string
+          onboarding_skipped?: string[]
           plan?: string
           role?: string
           share_gear?: boolean
@@ -1919,6 +1921,7 @@ export type Database = {
           email_digest?: boolean
           email_token?: string
           id?: string
+          onboarding_skipped?: string[]
           plan?: string
           role?: string
           share_gear?: boolean

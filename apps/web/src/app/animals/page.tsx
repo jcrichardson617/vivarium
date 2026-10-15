@@ -18,9 +18,10 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: rows, error }, { count: enclosureCount }] = await Promise.all([
+  const [{ data: rows, error }, { count: enclosureCount }, { data: profile }] = await Promise.all([
     supabase.rpc("fn57_my_animals"),
     supabase.from("enclosures").select("id", { count: "exact", head: true }).eq("owner_id", user!.id),
+    supabase.from("profiles").select("onboarding_skipped").eq("id", user!.id).single(),
   ]);
   const all = (rows ?? []).map((a) => ({
     ...a,
@@ -128,6 +129,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
           enclosureCount={enclosureCount ?? 0}
           hasReminder={all.some((a) => a.feeding_interval_days)}
           firstAnimalId={all[0]?.id}
+          skipped={profile?.onboarding_skipped ?? []}
         />
       )}
 
