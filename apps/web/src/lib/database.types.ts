@@ -3395,6 +3395,32 @@ export type Database = {
         Args: { p_body: string; p_subject: string; p_to: string }
         Returns: string
       }
+      fn61_dashboard: { Args: never; Returns: Json }
+      fn62_my_animals: {
+        Args: never
+        Returns: {
+          animal_code: string
+          created_at: string
+          enclosure_id: string
+          enclosure_name: string
+          feeding_interval_days: number
+          hatch_date: string
+          id: string
+          last_fed_at: string
+          latest_weight_g: number
+          morph: string
+          name: string
+          pending_species: string
+          pending_species_status: string
+          photo_path: string
+          sex: string
+          species_common_name: string
+          species_scientific_name: string
+          status: string
+          tags: string[]
+          weights_g: number[]
+        }[]
+      }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {

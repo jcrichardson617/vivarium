@@ -8,6 +8,12 @@
   --border: #dfe7e2;
   --brand: #15935a;
   --brand-dark: #0b5e44;
+  /* Amber second accent: highlights and attention, never a primary button. */
+  --accent: #d97706;
+  --accent-ink: #b45309;
+  /* Feeding chart (validated pair, CVD-safe): fed / refused. */
+  --chart-fed: #0f7a4a;
+  --chart-refused: #e8930c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +25,10 @@
     --border: #24322c;
     --brand: #2bc77c;
     --brand-dark: #1ea566;
+    --accent: #f59e0b;
+    --accent-ink: #fbbf24;
+    --chart-fed: #22a865;
+    --chart-refused: #d97706;
   }
 }
 
@@ -30,6 +40,10 @@
   --color-border: var(--border);
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-chart-fed: var(--chart-fed);
+  --color-chart-refused: var(--chart-refused);
   --font-sans: var(--font-geist-sans);
 }
 

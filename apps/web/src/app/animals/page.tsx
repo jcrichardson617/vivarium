@@ -19,7 +19,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   } = await supabase.auth.getUser();
 
   const [{ data: rows, error }, { count: enclosureCount }, { data: profile }] = await Promise.all([
-    supabase.rpc("fn57_my_animals"),
+    supabase.rpc("fn62_my_animals"),
     supabase.from("enclosures").select("id", { count: "exact", head: true }).eq("owner_id", user!.id),
     supabase.from("profiles").select("onboarding_skipped").eq("id", user!.id).single(),
   ]);
@@ -208,8 +208,10 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                       <th className="p-2">Name</th>
                       <th className="p-2">ID</th>
                       {!grouped && <th className="p-2">Species</th>}
+                      <th className="p-2">Morph</th>
                       <th className="p-2">Sex</th>
-                      <th className="p-2">Hatched</th>
+                      <th className="p-2">Age</th>
+                      <th className="p-2">Weight</th>
                       <th className="p-2">Enclosure</th>
                       <th className="p-2">Feeding</th>
                       <th className="p-2">Tags</th>
@@ -231,8 +233,17 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                             </td>
                             <td className="p-2 text-muted">{a.animal_code}</td>
                             {!grouped && <td className="p-2 text-muted">{a.speciesLabel}</td>}
+                            <td className="p-2 text-muted">{a.morph && a.morph !== "Normal" ? a.morph : ""}</td>
                             <td className="p-2 text-muted">{a.sex && a.sex !== "unknown" ? a.sex : ""}</td>
-                            <td className="whitespace-nowrap p-2 text-muted">{a.hatch_date ?? ""}</td>
+                            <td className="whitespace-nowrap p-2 text-muted" title={a.hatch_date ?? undefined}>{age(a.hatch_date)}</td>
+                            <td className="whitespace-nowrap p-2">
+                              {a.latest_weight_g !== null && (
+                                <span className="flex items-center gap-2">
+                                  <span>{Number(a.latest_weight_g).toLocaleString("en-US")} g</span>
+                                  <Sparkline values={(a.weights_g ?? []).map(Number)} />
+                                </span>
+                              )}
+                            </td>
                             <td className="p-2 text-muted">{a.enclosure_name}</td>
                             <td className="p-2"><DueBadge due={a.due} /></td>
                             <td className="p-2"><Tags tags={a.tags} /></td>
@@ -270,6 +281,32 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   );
 }
 
+// "8 mo", "2 yr 3 mo" from a hatch date.
+function age(hatch: string | null) {
+  if (!hatch) return "";
+  const h = new Date(`${hatch}T12:00:00`);
+  const now = new Date();
+  const months = (now.getFullYear() - h.getFullYear()) * 12 + now.getMonth() - h.getMonth() - (now.getDate() < h.getDate() ? 1 : 0);
+  if (months < 1) return `${Math.max(0, Math.floor((now.getTime() - h.getTime()) / 86400000))} d`;
+  if (months < 24) return `${months} mo`;
+  return `${Math.floor(months / 12)} yr${months % 12 ? ` ${months % 12} mo` : ""}`;
+}
+
+// Tiny weight trend: last eight weights, oldest to newest.
+function Sparkline({ values }: { values: number[] }) {
+  if (values.length < 2) return null;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const points = values.map((v, i) => `${(i / (values.length - 1)) * 48},${14 - ((v - min) / range) * 12}`).join(" ");
+  const down = values[values.length - 1] < values[0];
+  return (
+    <svg viewBox="0 0 48 16" className="h-4 w-12" aria-label={`Weight trend: ${values.join(", ")} g`}>
+      <polyline points={points} fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={down ? "stroke-accent" : "stroke-brand"} />
+    </svg>
+  );
+}
+
 function uniqueOptions(pairs: string[][]) {
   const map = new Map(pairs.map(([value, label]) => [value, label]));
   return [...map].map(([value, label]) => ({ value, label })).sort((x, y) => x.label.localeCompare(y.label));
@@ -296,7 +333,7 @@ function TableSection({ label, count, grouped, children }: { label: string | nul
     <>
       {grouped && label && (
         <tr className="border-t border-border bg-border/30">
-          <td colSpan={8} className="p-2 text-xs font-semibold uppercase tracking-wide text-muted">
+          <td colSpan={10} className="p-2 text-xs font-semibold uppercase tracking-wide text-muted">
             {label} ({count})
           </td>
         </tr>

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 
 function safeNext(value: FormDataEntryValue | null) {
   const next = typeof value === "string" ? value : "";
-  return next.startsWith("/") && !next.startsWith("//") ? next : "/animals";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
 }
 
 function verifyUrl(email: string, extra: string) {

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 type Item = { href: string; label: string };
 
 const APP: Item[] = [
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/animals", label: "My animals" },
   { href: "/enclosures", label: "Enclosures" },
   { href: "/breeding", label: "Breeding" },
