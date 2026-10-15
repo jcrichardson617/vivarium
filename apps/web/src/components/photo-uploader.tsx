@@ -21,51 +21,62 @@ async function shrink(file: File): Promise<Blob> {
 
 export function PhotoUploader({ animalId, remaining, hasPrimary }: { animalId: string; remaining: number; hasPrimary: boolean }) {
   const router = useRouter();
-  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const busy = progress !== null;
 
   if (remaining <= 0) {
     return <p className="text-sm text-muted">Photo limit reached for your plan.</p>;
   }
 
+  // Uploads the chosen photos one after another, up to the plan's remaining slots.
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+    const picked = Array.from(event.target.files ?? []);
     event.target.value = "";
-    if (!file) return;
-    setBusy(true);
+    if (!picked.length) return;
+    const files = picked.slice(0, remaining);
     setError(null);
+    setProgress({ done: 0, total: files.length });
+    const supabase = createClient();
+    const { data: userData } = await supabase.auth.getUser();
+    let primaryTaken = hasPrimary;
     try {
-      const supabase = createClient();
-      const blob = await shrink(file);
-      const path = `${animalId}/${crypto.randomUUID()}.webp`;
-      const { error: uploadError } = await supabase.storage
-        .from("animal-photos")
-        .upload(path, blob, { contentType: "image/webp" });
-      if (uploadError) throw uploadError;
-      const { data: userData } = await supabase.auth.getUser();
-      const { error: rowError } = await supabase.from("animal_photos").insert({
-        animal_id: animalId,
-        storage_path: path,
-        is_primary: !hasPrimary,
-        uploaded_by: userData.user?.id,
-      });
-      if (rowError) {
-        await supabase.storage.from("animal-photos").remove([path]);
-        throw rowError;
+      for (const [i, file] of files.entries()) {
+        const blob = await shrink(file);
+        const path = `${animalId}/${crypto.randomUUID()}.webp`;
+        const { error: uploadError } = await supabase.storage
+          .from("animal-photos")
+          .upload(path, blob, { contentType: "image/webp" });
+        if (uploadError) throw uploadError;
+        const { error: rowError } = await supabase.from("animal_photos").insert({
+          animal_id: animalId,
+          storage_path: path,
+          is_primary: !primaryTaken,
+          uploaded_by: userData.user?.id,
+        });
+        if (rowError) {
+          await supabase.storage.from("animal-photos").remove([path]);
+          throw rowError;
+        }
+        primaryTaken = true;
+        setProgress({ done: i + 1, total: files.length });
       }
-      router.refresh();
+      if (picked.length > files.length) {
+        setError(`Only ${files.length} of ${picked.length} photos were added: your plan allows ${remaining} more.`);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
-      setBusy(false);
+      setProgress(null);
+      router.refresh();
     }
   }
 
   return (
     <div>
       <label className={`btn-secondary inline-block cursor-pointer text-sm ${busy ? "opacity-60" : ""}`}>
-        {busy ? "Uploading…" : "Add photo"}
-        <input type="file" accept="image/*" className="sr-only" disabled={busy} onChange={upload} />
+        {progress ? `Uploading ${Math.min(progress.done + 1, progress.total)} of ${progress.total}…` : remaining > 1 ? "Add photos" : "Add photo"}
+        <input type="file" accept="image/*" multiple={remaining > 1} className="sr-only" disabled={busy} onChange={upload} />
       </label>
       <span className="ml-2 text-xs text-muted">{remaining} left on your plan</span>
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
