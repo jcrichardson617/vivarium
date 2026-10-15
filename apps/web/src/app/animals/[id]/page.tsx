@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { moveAnimal } from "@/app/enclosures/actions";
+import { cancelTransfer, requestTransfer } from "@/app/transfers/actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { ShareButton } from "@/components/share-button";
 import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
@@ -93,6 +94,14 @@ export default async function AnimalPage({
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).maybeSingle(),
       supabase.from("profiles").select("plan").eq("id", user!.id).single(),
     ]);
+  const { data: pendingTransfer } = isOwner
+    ? await supabase
+        .from("ownership_transfers")
+        .select("id, created_at, to:profiles!ownership_transfers_to_user_id_fkey(username)")
+        .eq("animal_id", id)
+        .eq("status", "pending")
+        .maybeSingle()
+    : { data: null };
 
   const parentIds = [animal.sire_id, animal.dam_id].filter((v): v is string => !!v);
   const { data: parentRows } = parentIds.length
@@ -354,6 +363,47 @@ export default async function AnimalPage({
               <textarea name="note_text" required rows={3} placeholder="Anything worth remembering" className="field" />
             </LogCard>
           </div>
+        </section>
+      )}
+
+      {isOwner && (
+        <section className="rounded-lg border border-border bg-card p-4 text-sm">
+          {pendingTransfer ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <span>
+                Transfer to{" "}
+                <Link href={`/u/${pendingTransfer.to?.username}`} className="text-brand hover:underline">
+                  @{pendingTransfer.to?.username}
+                </Link>{" "}
+                pending since {fmt(pendingTransfer.created_at)}. It stays yours until they accept.
+              </span>
+              <form action={cancelTransfer} className="ml-auto">
+                <input type="hidden" name="id" value={pendingTransfer.id} />
+                <input type="hidden" name="back" value={`/animals/${id}`} />
+                <button className="text-red-600 hover:underline">Cancel transfer</button>
+              </form>
+            </div>
+          ) : (
+            <details>
+              <summary className="cursor-pointer select-none font-medium">Transfer to another keeper</summary>
+              <form action={requestTransfer} className="mt-3 flex flex-col gap-3">
+                <input type="hidden" name="animal_id" value={id} />
+                <p className="text-muted">
+                  Sold, traded or rehomed? Send it to their Reptilytics account. When they accept, it moves to their
+                  collection with its full history, and leaves yours. Your tags, enclosure and purchase details stay with you.
+                </p>
+                <label className="flex flex-col gap-1">
+                  Their username
+                  <input name="username" required placeholder="e.g. jane_reptiles" autoComplete="off" className="field" />
+                </label>
+                <label className="flex flex-col gap-1">
+                  Note (optional)
+                  <textarea name="note" rows={2} maxLength={500} placeholder="Feeding schedule, last meal, anything they should know" className="field" />
+                </label>
+                <button className="btn-primary self-start">Send transfer</button>
+              </form>
+            </details>
+          )}
         </section>
       )}
 

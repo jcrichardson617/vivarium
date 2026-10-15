@@ -42,6 +42,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     ? await supabase.from("profiles").select("role").eq("id", user.id).single()
     : { data: null };
   const isModerator = profile?.role === "moderator" || profile?.role === "admin";
+  const { count: incoming } = user
+    ? await supabase
+        .from("ownership_transfers")
+        .select("id", { count: "exact", head: true })
+        .eq("to_user_id", user.id)
+        .eq("status", "pending")
+    : { count: 0 };
 
   return (
     <html lang="en">
@@ -79,6 +86,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </nav>
         </header>
         <SubNav signedIn={!!user} />
+        {!!incoming && (
+          <div className="border-b border-accent/40 bg-accent/10">
+            <p className="mx-auto max-w-4xl px-4 py-2 text-sm">
+              {incoming === 1 ? "An animal is" : `${incoming} animals are`} waiting for you to accept.{" "}
+              <Link href="/transfers" className="font-medium text-brand hover:underline">Review</Link>
+            </p>
+          </div>
+        )}
         <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">{children}</main>
         <SiteFooter signedIn={!!user} />
         <Analytics />
