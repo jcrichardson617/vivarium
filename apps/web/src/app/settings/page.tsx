@@ -13,7 +13,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, display_name, country, unit_system, share_gear")
+    .select("username, display_name, country, unit_system, share_gear, email_digest")
     .eq("id", user!.id)
     .single();
 
@@ -53,6 +53,13 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           <span>
             Count my enclosure gear in anonymous &ldquo;popular with keepers&rdquo; totals
             <span className="block text-xs text-muted">Only totals are ever shown, and only once 5+ keepers use a product.</span>
+          </span>
+        </label>
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="email_digest" defaultChecked={profile?.email_digest ?? true} className="mt-1" />
+          <span>
+            Weekly email digest
+            <span className="block text-xs text-muted">Mondays: who&apos;s due to eat and new research for the species you keep. Skipped when there&apos;s nothing new.</span>
           </span>
         </label>
         <button className="btn-primary self-start">Save</button>

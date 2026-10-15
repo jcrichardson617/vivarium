@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GettingStarted } from "@/components/getting-started";
 import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
 import { createClient } from "@/lib/supabase/server";
 
@@ -27,6 +28,10 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   const dueById = new Map(
     (animals ?? []).map((a) => [a.id, a.status === "active" ? feedingDue(lastMeal.get(a.id), a.feeding_interval_days) : null]),
   );
+  const { count: enclosureCount } = await supabase
+    .from("enclosures")
+    .select("id", { count: "exact", head: true })
+    .eq("owner_id", user!.id);
   const dueCount = [...dueById.values()].filter((d) => d && d.days <= 0).length;
 
   // Main photo per animal (or its first photo if none is marked), via signed URLs.
@@ -60,6 +65,14 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
         <p className="mb-4 rounded-md bg-amber-500/15 p-3 text-sm text-amber-800 dark:text-amber-300">
           🍽️ {dueCount} {dueCount === 1 ? "animal is" : "animals are"} due to eat.
         </p>
+      )}
+      {!error && (
+        <GettingStarted
+          animalCount={animals?.length ?? 0}
+          enclosureCount={enclosureCount ?? 0}
+          hasReminder={(animals ?? []).some((a) => a.feeding_interval_days)}
+          firstAnimalId={animals?.[0]?.id}
+        />
       )}
       {error && <p className="text-red-600">Could not load animals: {error.message}</p>}
 

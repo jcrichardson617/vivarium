@@ -1879,37 +1879,49 @@ export type Database = {
           animal_limit: number
           country: string | null
           created_at: string | null
+          digest_sent_at: string | null
           display_name: string | null
+          email_digest: boolean
+          email_token: string
           id: string
           plan: string
           role: string
           share_gear: boolean
           unit_system: string | null
           username: string
+          welcome_sent_at: string | null
         }
         Insert: {
           animal_limit?: number
           country?: string | null
           created_at?: string | null
+          digest_sent_at?: string | null
           display_name?: string | null
+          email_digest?: boolean
+          email_token?: string
           id: string
           plan?: string
           role?: string
           share_gear?: boolean
           unit_system?: string | null
           username: string
+          welcome_sent_at?: string | null
         }
         Update: {
           animal_limit?: number
           country?: string | null
           created_at?: string | null
+          digest_sent_at?: string | null
           display_name?: string | null
+          email_digest?: boolean
+          email_token?: string
           id?: string
           plan?: string
           role?: string
           share_gear?: boolean
           unit_system?: string | null
           username?: string
+          welcome_sent_at?: string | null
         }
         Relationships: []
       }
@@ -3274,6 +3286,30 @@ export type Database = {
         Args: { p_from: string; p_into: string }
         Returns: undefined
       }
+      fn53_pending_welcomes: {
+        Args: { p_limit?: number }
+        Returns: {
+          display_name: string
+          email: string
+          user_id: string
+        }[]
+      }
+      fn54_mark_emailed: {
+        Args: { p_kind: string; p_user_id: string }
+        Returns: undefined
+      }
+      fn55_digest_batch: {
+        Args: { p_limit?: number }
+        Returns: {
+          display_name: string
+          due: Json
+          email: string
+          email_token: string
+          papers: Json
+          user_id: string
+        }[]
+      }
+      fn56_unsubscribe: { Args: { p_token: string }; Returns: boolean }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
