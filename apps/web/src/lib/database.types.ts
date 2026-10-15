@@ -1727,6 +1727,42 @@ export type Database = {
           },
         ]
       }
+      outbound_emails: {
+        Row: {
+          body: string
+          created_at: string
+          error: string | null
+          id: string
+          sent_at: string | null
+          sent_by: string | null
+          status: string
+          subject: string
+          to_email: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string
+          subject: string
+          to_email: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string
+          subject?: string
+          to_email?: string
+        }
+        Relationships: []
+      }
       ownership_transfers: {
         Row: {
           animal_id: string
@@ -3345,6 +3381,10 @@ export type Database = {
       fn59_tag_animals: {
         Args: { p_add: boolean; p_animal_ids: string[]; p_tag: string }
         Returns: number
+      }
+      fn60_send_email: {
+        Args: { p_body: string; p_subject: string; p_to: string }
+        Returns: string
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
