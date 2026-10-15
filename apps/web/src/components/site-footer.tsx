@@ -4,7 +4,7 @@ export const CONTACT_EMAIL = "info@reptilytics.com";
 
 const LINKS = [
   { href: "/species", label: "Species" },
-  { href: "/genetics", label: "Genetics calculator" },
+  { href: "/tools", label: "Free tools" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/terms", label: "Terms of Service" },

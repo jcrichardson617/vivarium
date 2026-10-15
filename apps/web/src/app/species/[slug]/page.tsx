@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { geneSlug } from "@/lib/morphs";
 import { speciesSlug } from "@/lib/slug";
 
 export const revalidate = 3600;
@@ -110,9 +111,14 @@ export default async function SpeciesPage({ params }: Props) {
                 <h3 className="mb-2 font-semibold">{INHERITANCE[type]}</h3>
                 <ul className="flex flex-wrap gap-2">
                   {byType.get(type)!.map((g) => (
-                    <li key={g.name} className="rounded-full border border-border bg-card px-3 py-1 text-sm">
-                      {g.name}
-                      {g.super_name && <span className="text-muted"> · super: {g.super_name}</span>}
+                    <li key={g.name}>
+                      <Link
+                        href={`/species/${slug}/morphs/${geneSlug(g.name)}`}
+                        className="block rounded-full border border-border bg-card px-3 py-1 text-sm hover:border-brand"
+                      >
+                        {g.name}
+                        {g.super_name && <span className="text-muted"> · super: {g.super_name}</span>}
+                      </Link>
                     </li>
                   ))}
                 </ul>

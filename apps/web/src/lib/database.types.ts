@@ -2975,6 +2975,17 @@ export type Database = {
       }
       fn40_delete_animal: { Args: { p_animal_id: string }; Returns: undefined }
       fn41_delete_my_account: { Args: never; Returns: undefined }
+      fn49_species_term_papers: {
+        Args: { p_species_id: string; p_term: string; p_limit?: number }
+        Returns: {
+          cited_by_count: number | null
+          id: string
+          published_date: string | null
+          publisher: string | null
+          source_url: string
+          title: string
+        }[]
+      }
       fn48_species_content_counts: {
         Args: never
         Returns: { gene_count: number; paper_count: number; species_id: string }[]

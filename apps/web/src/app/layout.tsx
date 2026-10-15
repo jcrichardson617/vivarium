@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { SiteFooter } from "@/components/site-footer";
@@ -32,6 +33,15 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Embeddable widgets render bare, inside other sites' iframes.
+  if ((await headers()).get("x-pathname")?.startsWith("/embed/")) {
+    return (
+      <html lang="en">
+        <body className={`${geistSans.variable} font-sans antialiased`}>{children}</body>
+      </html>
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -77,9 +87,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 </form>
               </div>
             ) : (
-              <Link href="/login" className="text-sm hover:text-brand">
-                Sign in
-              </Link>
+              <div className="flex items-center gap-4 text-sm">
+                <Link href="/species" className="hover:text-brand">Species</Link>
+                <Link href="/tools" className="hover:text-brand">Tools</Link>
+                <Link href="/login" className="font-medium hover:text-brand">Sign in</Link>
+              </div>
             )}
           </nav>
         </header>
