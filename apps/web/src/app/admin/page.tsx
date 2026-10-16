@@ -10,10 +10,7 @@ export const metadata: Metadata = { title: "Admin | Reptilytics" };
 // (the library page itself is heavy, so it is no longer the entry point).
 export default async function AdminHome() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
   const [species, products, requests, emails, papers] = await Promise.all([

@@ -23,10 +23,7 @@ const ago = (d: string | null) => {
 export default async function LibraryPage({ searchParams }: { searchParams: Promise<{ error?: string; started?: string; q?: string }> }) {
   const { error, started, q } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
   const docCount = (build: (q: ReturnType<typeof docsHead>) => ReturnType<typeof docsHead> = (q) => q) =>

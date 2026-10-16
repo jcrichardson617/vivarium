@@ -10,10 +10,7 @@ const TYPES = ["Tank / terrarium", "PVC enclosure", "Front-opening glass", "Rack
 export default async function NewEnclosurePage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single();
+  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
   const u = unitSystemFor(profile);
   const L = lengthUnit(u);
   const T = tempUnit(u);

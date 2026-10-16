@@ -546,6 +546,100 @@ export type Database = {
           },
         ]
       }
+      animal_shares: {
+        Row: {
+          animal_id: string
+          created_at: string
+          id: string
+          notified_at: string | null
+          role: string
+          shared_by: string | null
+          user_id: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          id?: string
+          notified_at?: string | null
+          role: string
+          shared_by?: string | null
+          user_id: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          id?: string
+          notified_at?: string | null
+          role?: string
+          shared_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animal_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "collection_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_percentile_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "husbandry_metrics_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_shares_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations_view"
+            referencedColumns: ["animal_id"]
+          },
+          {
+            foreignKeyName: "animal_shares_shared_by_fkey"
+            columns: ["shared_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animal_shares_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       animals: {
         Row: {
           animal_code: string | null
@@ -1779,6 +1873,8 @@ export type Database = {
           created_at: string | null
           from_user_id: string
           id: string
+          note: string | null
+          notified_at: string | null
           status: string
           to_user_id: string
         }
@@ -1788,6 +1884,8 @@ export type Database = {
           created_at?: string | null
           from_user_id: string
           id?: string
+          note?: string | null
+          notified_at?: string | null
           status?: string
           to_user_id: string
         }
@@ -1797,6 +1895,8 @@ export type Database = {
           created_at?: string | null
           from_user_id?: string
           id?: string
+          note?: string | null
+          notified_at?: string | null
           status?: string
           to_user_id?: string
         }
@@ -1982,8 +2082,7 @@ export type Database = {
           content: string
           created_at: string
           document_id: string
-          embedding: string | null
-          fts: unknown
+          embedding: unknown
           id: number
         }
         Insert: {
@@ -1991,8 +2090,7 @@ export type Database = {
           content: string
           created_at?: string
           document_id: string
-          embedding?: string | null
-          fts?: unknown
+          embedding?: unknown
           id?: never
         }
         Update: {
@@ -2000,8 +2098,7 @@ export type Database = {
           content?: string
           created_at?: string
           document_id?: string
-          embedding?: string | null
-          fts?: unknown
+          embedding?: unknown
           id?: never
         }
         Relationships: [
@@ -3420,6 +3517,123 @@ export type Database = {
           tags: string[]
           weights_g: number[]
         }[]
+      }
+      fn63_database_size_mb: { Args: never; Returns: number }
+      fn63_request_transfer: {
+        Args: { p_animal_id: string; p_note?: string; p_username: string }
+        Returns: string
+      }
+      fn64_my_transfers: {
+        Args: never
+        Returns: {
+          animal_id: string
+          animal_name: string
+          completed_at: string
+          created_at: string
+          direction: string
+          hatch_date: string
+          id: string
+          note: string
+          other_display_name: string
+          other_username: string
+          sex: string
+          species_common_name: string
+          species_scientific_name: string
+          status: string
+        }[]
+      }
+      fn65_pending_transfer_emails: {
+        Args: { p_limit?: number }
+        Returns: {
+          animal_name: string
+          email: string
+          from_display_name: string
+          from_username: string
+          note: string
+          species: string
+          to_name: string
+          transfer_id: string
+        }[]
+      }
+      fn66_mark_transfer_notified: {
+        Args: { p_transfer_id: string }
+        Returns: undefined
+      }
+      fn67_my_animals: {
+        Args: never
+        Returns: {
+          access: string
+          animal_code: string
+          created_at: string
+          enclosure_id: string
+          enclosure_name: string
+          feeding_interval_days: number
+          hatch_date: string
+          id: string
+          last_fed_at: string
+          latest_weight_g: number
+          morph: string
+          name: string
+          owner_username: string
+          pending_species: string
+          pending_species_status: string
+          photo_path: string
+          sex: string
+          species_common_name: string
+          species_scientific_name: string
+          status: string
+          tags: string[]
+          weights_g: number[]
+        }[]
+      }
+      fn68_share_animal: {
+        Args: { p_animal_id: string; p_role: string; p_username: string }
+        Returns: string
+      }
+      fn69_animal_access: {
+        Args: { p_animal_id: string }
+        Returns: {
+          access: string
+          owner_display_name: string
+          owner_username: string
+        }[]
+      }
+      fn70_pending_share_emails: {
+        Args: { p_limit?: number }
+        Returns: {
+          animal_id: string
+          animal_name: string
+          email: string
+          from_display_name: string
+          from_username: string
+          role: string
+          share_id: string
+          species: string
+          to_name: string
+        }[]
+      }
+      fn71_mark_share_notified: {
+        Args: { p_share_id: string }
+        Returns: undefined
+      }
+      fn72_my_profile: {
+        Args: never
+        Returns: {
+          animal_limit: number
+          country: string
+          display_name: string
+          email_digest: boolean
+          onboarding_skipped: string[]
+          plan: string
+          role: string
+          share_gear: boolean
+          unit_system: string
+          username: string
+        }[]
+      }
+      fn73_animal_photo_limit: {
+        Args: { p_animal_id: string }
+        Returns: number
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { moveAnimal } from "@/app/enclosures/actions";
+import { cancelTransfer, requestTransfer } from "@/app/transfers/actions";
+import { removeShare, shareAnimal } from "./share-actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { ShareButton } from "@/components/share-button";
 import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
@@ -25,7 +27,9 @@ const FEEDERS = ["Mouse", "Rat", "Chick", "Quail", "Rabbit", "Fish", "Crickets",
 const SIZES = ["Pinky", "Fuzzy", "Hopper", "Weaned", "Small", "Medium", "Large", "Jumbo", "XL"];
 const HEALTH_TYPES = ["Vet visit", "Medication", "Injury", "Parasites", "Mites", "Respiratory", "Regurgitation", "Prolapse", "Stuck shed", "Weight loss", "Other"];
 
-type TimelineItem = { id: string; table: string; at: string; title: string; detail: string | null };
+type TimelineItem = { id: string; table: string; at: string; title: string; detail: string | null; by: string | null };
+
+const ROLE_LABEL = { caretaker: "Caretaker", viewer: "Viewer" } as const;
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -79,20 +83,43 @@ export default async function AnimalPage({
     supabase.from("animal_enclosures").select("enclosure_id, enclosures(name)").eq("animal_id", id).is("end_date", null).maybeSingle(),
   ]);
 
-  const [{ data: isOwner }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition, profile] =
+  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition] =
     await Promise.all([
-      supabase.rpc("fn06_is_current_owner", { p_animal_id: id, p_user_id: user!.id }),
+      supabase.rpc("fn69_animal_access", { p_animal_id: id }),
       supabase.rpc("morph_name", { p_animal_id: id }),
-      supabase.from("animal_photos").select("id, storage_path, is_primary, caption").eq("animal_id", id).order("created_at"),
-      supabase.from("feedings").select("id, fed_at, feeder_type, feeder_size, quantity, accepted, notes").eq("animal_id", id).order("fed_at", { ascending: false }).limit(50),
-      supabase.from("weight_logs").select("id, recorded_at, weight_grams, notes").eq("animal_id", id).order("recorded_at", { ascending: false }).limit(50),
-      supabase.from("length_logs").select("id, recorded_at, length_cm, notes").eq("animal_id", id).order("recorded_at", { ascending: false }).limit(50),
-      supabase.from("sheds").select("id, shed_date, complete_shed, retained_eye_caps, retained_tail_tip, notes").eq("animal_id", id).order("shed_date", { ascending: false }).limit(50),
-      supabase.from("health_events").select("id, event_date, event_type, severity, notes").eq("animal_id", id).order("event_date", { ascending: false }).limit(50),
-      supabase.from("animal_notes").select("id, created_at, note_text").eq("animal_id", id).order("created_at", { ascending: false }).limit(50),
+      supabase.from("animal_photos").select("id, storage_path, is_primary, caption, uploaded_by").eq("animal_id", id).order("created_at"),
+      supabase.from("feedings").select("id, fed_at, feeder_type, feeder_size, quantity, accepted, notes, fed_by").eq("animal_id", id).order("fed_at", { ascending: false }).limit(50),
+      supabase.from("weight_logs").select("id, recorded_at, weight_grams, notes, recorded_by").eq("animal_id", id).order("recorded_at", { ascending: false }).limit(50),
+      supabase.from("length_logs").select("id, recorded_at, length_cm, notes, recorded_by").eq("animal_id", id).order("recorded_at", { ascending: false }).limit(50),
+      supabase.from("sheds").select("id, shed_date, complete_shed, retained_eye_caps, retained_tail_tip, notes, recorded_by").eq("animal_id", id).order("shed_date", { ascending: false }).limit(50),
+      supabase.from("health_events").select("id, event_date, event_type, severity, notes, recorded_by").eq("animal_id", id).order("event_date", { ascending: false }).limit(50),
+      supabase.from("animal_notes").select("id, created_at, note_text, created_by").eq("animal_id", id).order("created_at", { ascending: false }).limit(50),
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).maybeSingle(),
-      supabase.from("profiles").select("plan").eq("id", user!.id).single(),
     ]);
+  // Owner, caretaker (can log) or viewer (read only), and whose animal it is.
+  const access = accessRows?.[0];
+  const isOwner = access?.access === "owner";
+  const canLog = isOwner || access?.access === "caretaker";
+  const role = !isOwner && (access?.access === "caretaker" || access?.access === "viewer") ? access.access : null;
+  const mine = (by: string | null) => isOwner || (canLog && by === user!.id);
+  const [{ data: shares }, { data: photoLimit }] = await Promise.all([
+    isOwner
+      ? supabase
+          .from("animal_shares")
+          .select("id, role, user_id, created_at, profiles!animal_shares_user_id_fkey(username, display_name)")
+          .eq("animal_id", id)
+          .order("created_at")
+      : Promise.resolve({ data: null }),
+    canLog ? supabase.rpc("fn73_animal_photo_limit", { p_animal_id: id }) : Promise.resolve({ data: null }),
+  ]);
+  const { data: pendingTransfer } = isOwner
+    ? await supabase
+        .from("ownership_transfers")
+        .select("id, created_at, to:profiles!ownership_transfers_to_user_id_fkey(username)")
+        .eq("animal_id", id)
+        .eq("status", "pending")
+        .maybeSingle()
+    : { data: null };
 
   const parentIds = [animal.sire_id, animal.dam_id].filter((v): v is string => !!v);
   const { data: parentRows } = parentIds.length
@@ -108,7 +135,8 @@ export default async function AnimalPage({
     ? (await supabase.storage.from("animal-photos").createSignedUrls(photoRows.map((p) => p.storage_path), 3600)).data ?? []
     : [];
   const photoUrls = new Map(signed.map((s) => [s.path, s.signedUrl]));
-  const limit = profile.data?.plan === "premium" ? 10 : 3;
+  // The owner's plan sets the photo limit, whoever uploads.
+  const limit = photoLimit ?? 3;
 
   const latestWeight = weights.data?.[0];
   const latestFeeding = feedings.data?.find((f) => f.accepted);
@@ -119,17 +147,17 @@ export default async function AnimalPage({
     ...(feedings.data ?? []).map((f) => ({
       id: f.id, table: "feedings", at: f.fed_at,
       title: `${f.accepted ? "Fed" : "Refused"} ${f.quantity && f.quantity > 1 ? `${f.quantity} × ` : ""}${[f.feeder_size, f.feeder_type].filter(Boolean).join(" ")}`,
-      detail: f.notes,
+      detail: f.notes, by: f.fed_by,
     })),
-    ...(weights.data ?? []).map((w) => ({ id: w.id, table: "weight_logs", at: w.recorded_at!, title: `Weighed ${w.weight_grams} g`, detail: w.notes })),
-    ...(lengths.data ?? []).map((l) => ({ id: l.id, table: "length_logs", at: l.recorded_at, title: `Measured ${l.length_cm} cm`, detail: l.notes })),
+    ...(weights.data ?? []).map((w) => ({ id: w.id, table: "weight_logs", at: w.recorded_at!, title: `Weighed ${w.weight_grams} g`, detail: w.notes, by: w.recorded_by })),
+    ...(lengths.data ?? []).map((l) => ({ id: l.id, table: "length_logs", at: l.recorded_at, title: `Measured ${l.length_cm} cm`, detail: l.notes, by: l.recorded_by })),
     ...(sheds.data ?? []).map((s) => ({
       id: s.id, table: "sheds", at: s.shed_date,
       title: `${s.complete_shed ? "Complete shed" : "Incomplete shed"}${s.retained_eye_caps ? " · retained eye caps" : ""}${s.retained_tail_tip ? " · retained tail tip" : ""}`,
-      detail: s.notes,
+      detail: s.notes, by: s.recorded_by,
     })),
-    ...(health.data ?? []).map((h) => ({ id: h.id, table: "health_events", at: h.event_date, title: `${h.event_type}${h.severity ? ` (${h.severity})` : ""}`, detail: h.notes })),
-    ...(notes.data ?? []).map((n) => ({ id: n.id, table: "animal_notes", at: n.created_at, title: "Note", detail: n.note_text })),
+    ...(health.data ?? []).map((h) => ({ id: h.id, table: "health_events", at: h.event_date, title: `${h.event_type}${h.severity ? ` (${h.severity})` : ""}`, detail: h.notes, by: h.recorded_by })),
+    ...(notes.data ?? []).map((n) => ({ id: n.id, table: "animal_notes", at: n.created_at, title: "Note", detail: n.note_text, by: n.created_by })),
   ].sort((a, b) => b.at.localeCompare(a.at));
 
   const speciesLabel =
@@ -145,6 +173,24 @@ export default async function AnimalPage({
         <Link href="/animals" className="text-sm text-muted hover:text-foreground">
           ← My animals
         </Link>
+        {role && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+            <span>
+              Shared with you by{" "}
+              <Link href={`/u/${access?.owner_username}`} className="text-brand hover:underline">@{access?.owner_username}</Link>
+              {" · "}
+              <span className="font-medium">{ROLE_LABEL[role]}</span>
+              <span className="text-muted">
+                {role === "caretaker" ? " · you can log care and add photos" : " · read only"}
+              </span>
+            </span>
+            <form action={removeShare} className="ml-auto">
+              <input type="hidden" name="animal_id" value={id} />
+              <input type="hidden" name="user_id" value={user!.id} />
+              <button className="text-muted hover:text-red-600">Leave</button>
+            </form>
+          </div>
+        )}
         <div className="mt-2 flex items-center justify-between gap-3">
           <h1 className="text-3xl font-bold">{animal.name ?? "Unnamed"}</h1>
           {isOwner && (
@@ -246,10 +292,12 @@ export default async function AnimalPage({
               {/* Signed URLs from private storage; plain img avoids configuring remote image domains. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photoUrls.get(photo.storage_path) ?? ""} alt={animal.name ?? "Animal photo"} className="aspect-square w-full object-cover" />
-              {isOwner && (
+              {mine(photo.uploaded_by) && (
                 <figcaption className="flex items-center justify-between gap-2 p-2 text-xs">
                   {photo.is_primary ? (
                     <span className="font-medium text-brand">Main photo</span>
+                  ) : !isOwner ? (
+                    <span />
                   ) : (
                     <form action={makePrimaryPhoto}>
                       <input type="hidden" name="animal_id" value={id} />
@@ -268,12 +316,12 @@ export default async function AnimalPage({
             </figure>
           ))}
         </div>
-        {isOwner && (
+        {canLog && (
           <PhotoUploader animalId={id} remaining={limit - photoRows.length} hasPrimary={photoRows.some((p) => p.is_primary)} />
         )}
       </section>
 
-      {isOwner && (
+      {canLog && (
         <section>
           <h2 className="mb-3 text-xl font-semibold">Log</h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -357,6 +405,101 @@ export default async function AnimalPage({
         </section>
       )}
 
+      {isOwner && (
+        <section className="rounded-lg border border-border bg-card p-4 text-sm">
+          <details open={!!shares?.length}>
+            <summary className="cursor-pointer select-none font-medium">
+              Share with other keepers{shares?.length ? ` (${shares.length})` : ""}
+            </summary>
+            <p className="mt-3 text-muted">
+              Caretakers can log feedings, weights, sheds, health and notes and add photos, like a partner or pet-sitter.
+              Viewers can see everything but change nothing. The animal stays yours.
+            </p>
+            {!!shares?.length && (
+              <ul className="mt-3 flex flex-col divide-y divide-border rounded-md border border-border">
+                {shares.map((sh) => (
+                  <li key={sh.id} className="flex flex-wrap items-center gap-2 px-3 py-2">
+                    <Link href={`/u/${sh.profiles?.username}`} className="text-brand hover:underline">
+                      @{sh.profiles?.username}
+                    </Link>
+                    <form action={shareAnimal} className="ml-auto flex items-center gap-2">
+                      <input type="hidden" name="animal_id" value={id} />
+                      <input type="hidden" name="username" value={sh.profiles?.username ?? ""} />
+                      <select name="role" defaultValue={sh.role} className="field py-1" aria-label="Role">
+                        <option value="caretaker">Caretaker</option>
+                        <option value="viewer">Viewer</option>
+                      </select>
+                      <button className="btn-secondary py-1">Update</button>
+                    </form>
+                    <form action={removeShare}>
+                      <input type="hidden" name="animal_id" value={id} />
+                      <input type="hidden" name="user_id" value={sh.user_id} />
+                      <button className="text-red-600 hover:underline">Remove</button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <form action={shareAnimal} className="mt-3 flex flex-wrap items-end gap-2">
+              <input type="hidden" name="animal_id" value={id} />
+              <label className="flex flex-1 flex-col gap-1">
+                Their username
+                <input name="username" required placeholder="e.g. jane_reptiles" autoComplete="off" className="field" />
+              </label>
+              <label className="flex flex-col gap-1">
+                Access
+                <select name="role" defaultValue="caretaker" className="field">
+                  <option value="caretaker">Caretaker</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+              </label>
+              <button className="btn-primary">Share</button>
+            </form>
+          </details>
+        </section>
+      )}
+
+      {isOwner && (
+        <section className="rounded-lg border border-border bg-card p-4 text-sm">
+          {pendingTransfer ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <span>
+                Transfer to{" "}
+                <Link href={`/u/${pendingTransfer.to?.username}`} className="text-brand hover:underline">
+                  @{pendingTransfer.to?.username}
+                </Link>{" "}
+                pending since {fmt(pendingTransfer.created_at)}. It stays yours until they accept.
+              </span>
+              <form action={cancelTransfer} className="ml-auto">
+                <input type="hidden" name="id" value={pendingTransfer.id} />
+                <input type="hidden" name="back" value={`/animals/${id}`} />
+                <button className="text-red-600 hover:underline">Cancel transfer</button>
+              </form>
+            </div>
+          ) : (
+            <details>
+              <summary className="cursor-pointer select-none font-medium">Transfer to another keeper</summary>
+              <form action={requestTransfer} className="mt-3 flex flex-col gap-3">
+                <input type="hidden" name="animal_id" value={id} />
+                <p className="text-muted">
+                  Sold, traded or rehomed? Send it to their Reptilytics account. When they accept, it moves to their
+                  collection with its full history, and leaves yours. Your tags, enclosure and purchase details stay with you.
+                </p>
+                <label className="flex flex-col gap-1">
+                  Their username
+                  <input name="username" required placeholder="e.g. jane_reptiles" autoComplete="off" className="field" />
+                </label>
+                <label className="flex flex-col gap-1">
+                  Note (optional)
+                  <textarea name="note" rows={2} maxLength={500} placeholder="Feeding schedule, last meal, anything they should know" className="field" />
+                </label>
+                <button className="btn-primary self-start">Send transfer</button>
+              </form>
+            </details>
+          )}
+        </section>
+      )}
+
       <section>
         <h2 className="mb-3 text-xl font-semibold">History</h2>
         {!timeline.length && <p className="text-muted">Nothing logged yet.</p>}
@@ -369,7 +512,7 @@ export default async function AnimalPage({
               </div>
               <div className="flex shrink-0 items-center gap-3 text-muted">
                 <time dateTime={item.at}>{fmt(item.at)}</time>
-                {isOwner && (
+                {(item.table === "animal_notes" ? item.by === user!.id : mine(item.by)) && (
                   <form action={deleteEntry}>
                     <input type="hidden" name="animal_id" value={id} />
                     <input type="hidden" name="table" value={item.table} />

@@ -28,14 +28,14 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const [{ data: raw, error }, { data: animals }] = await Promise.all([
     supabase.rpc("fn61_dashboard"),
-    supabase.rpc("fn62_my_animals"),
+    supabase.rpc("fn67_my_animals"),
   ]);
   if (error) return <p className="text-red-600">Could not load the dashboard: {error.message}</p>;
   const d = raw as unknown as Dashboard;
 
-  // Due or overdue to eat, most overdue first.
+  // Due or overdue to eat, most overdue first. Includes animals you look after for someone else.
   const due = (animals ?? [])
-    .filter((a) => a.status === "active")
+    .filter((a) => a.status === "active" && a.access !== "viewer")
     .map((a) => ({ ...a, due: feedingDue(a.last_fed_at, a.feeding_interval_days) }))
     .filter((a) => a.due && a.due.days <= 0)
     .sort((x, y) => x.due!.days - y.due!.days);
