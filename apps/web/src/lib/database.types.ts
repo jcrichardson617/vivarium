@@ -1983,7 +1983,6 @@ export type Database = {
           created_at: string
           document_id: string
           embedding: string | null
-          fts: unknown
           id: number
         }
         Insert: {
@@ -1992,7 +1991,6 @@ export type Database = {
           created_at?: string
           document_id: string
           embedding?: string | null
-          fts?: unknown
           id?: never
         }
         Update: {
@@ -2001,7 +1999,6 @@ export type Database = {
           created_at?: string
           document_id?: string
           embedding?: string | null
-          fts?: unknown
           id?: never
         }
         Relationships: [
@@ -3421,6 +3418,7 @@ export type Database = {
           weights_g: number[]
         }[]
       }
+      fn63_database_size_mb: { Args: never; Returns: number }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
