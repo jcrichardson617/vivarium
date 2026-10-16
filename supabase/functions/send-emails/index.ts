@@ -1,6 +1,7 @@
 // Welcome emails (every 15 minutes), the weekly digest (Mondays) and one-off
 // emails from Admin → Email ("outbox"), sent through Resend. Called with the
-// shared cron secret and a body of {"kind":"welcome" | "digest" | "outbox" | "opens"}.
+// shared cron secret and a body of {"kind":"welcome" | "digest" | "outbox" | "opens" | "transfers"}.
+// "transfers" tells keepers an animal is waiting for them (every 5 minutes).
 // "opens" refreshes open status of recent outbox emails (every 30 minutes).
 // Needs the RESEND_API_KEY secret.
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -28,7 +29,8 @@ Deno.serve(async (req) => {
   if (kind === "digest") return Response.json(await sendDigests(key));
   if (kind === "outbox") return Response.json(await sendOutbox(key));
   if (kind === "opens") return Response.json(await refreshOpens(key));
-  return Response.json({ error: "kind must be welcome, digest, outbox or opens" }, { status: 400 });
+  if (kind === "transfers") return Response.json(await sendTransfers(key));
+  return Response.json({ error: "kind must be welcome, digest, outbox, opens or transfers" }, { status: 400 });
 });
 
 async function sendWelcomes(key: string) {
@@ -100,6 +102,30 @@ async function sendDigests(key: string) {
     }
   }
   return { kind: "digest", candidates: data?.length ?? 0, sent, quiet };
+}
+
+async function sendTransfers(key: string) {
+  const { data, error } = await admin.rpc("fn65_pending_transfer_emails", { p_limit: BATCH });
+  if (error) return { error: error.message };
+  let sent = 0;
+  for (const t of data ?? []) {
+    const from = t.from_display_name && t.from_display_name !== t.from_username
+      ? `${esc(t.from_display_name)} (@${esc(t.from_username)})`
+      : `@${esc(t.from_username)}`;
+    const animal = `${esc(t.animal_name)}${t.species ? `, ${esc(t.species)}` : ""}`;
+    const html = layout(`
+      <p>${t.to_name ? `Hi ${esc(t.to_name)},` : "Hi,"}</p>
+      <p>${from} wants to transfer <strong>${animal}</strong> to you on Reptilytics.
+      If you accept, the animal moves into your collection with its full history: feedings, weights, sheds, health and notes.</p>
+      ${t.note ? `<p style="border-left:3px solid #ddd;padding-left:12px;color:#444">${esc(t.note).replace(/\n/g, "<br>")}</p>` : ""}
+      <p><a href="${SITE}/transfers" style="display:inline-block;background:#0b5e44;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none">Review the transfer</a></p>
+      <p style="color:#666">Not expecting this? You can decline it on the same page.</p>`);
+    if ((await send(key, t.email, `${t.from_username} is transferring ${t.animal_name} to you`, html)).ok) {
+      await admin.rpc("fn66_mark_transfer_notified", { p_transfer_id: t.transfer_id });
+      sent++;
+    }
+  }
+  return { kind: "transfers", candidates: data?.length ?? 0, sent };
 }
 
 // Emails written by an admin: plain text, sent as written (no branding).

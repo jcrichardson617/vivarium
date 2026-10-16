@@ -1779,6 +1779,8 @@ export type Database = {
           created_at: string | null
           from_user_id: string
           id: string
+          note: string | null
+          notified_at: string | null
           status: string
           to_user_id: string
         }
@@ -1788,6 +1790,8 @@ export type Database = {
           created_at?: string | null
           from_user_id: string
           id?: string
+          note?: string | null
+          notified_at?: string | null
           status?: string
           to_user_id: string
         }
@@ -1797,6 +1801,8 @@ export type Database = {
           created_at?: string | null
           from_user_id?: string
           id?: string
+          note?: string | null
+          notified_at?: string | null
           status?: string
           to_user_id?: string
         }
@@ -3419,6 +3425,46 @@ export type Database = {
         }[]
       }
       fn63_database_size_mb: { Args: never; Returns: number }
+      fn63_request_transfer: {
+        Args: { p_animal_id: string; p_note?: string; p_username: string }
+        Returns: string
+      }
+      fn64_my_transfers: {
+        Args: never
+        Returns: {
+          animal_id: string
+          animal_name: string
+          completed_at: string
+          created_at: string
+          direction: string
+          hatch_date: string
+          id: string
+          note: string
+          other_display_name: string
+          other_username: string
+          sex: string
+          species_common_name: string
+          species_scientific_name: string
+          status: string
+        }[]
+      }
+      fn65_pending_transfer_emails: {
+        Args: { p_limit?: number }
+        Returns: {
+          animal_name: string
+          email: string
+          from_display_name: string
+          from_username: string
+          note: string
+          species: string
+          to_name: string
+          transfer_id: string
+        }[]
+      }
+      fn66_mark_transfer_notified: {
+        Args: { p_transfer_id: string }
+        Returns: undefined
+      }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
