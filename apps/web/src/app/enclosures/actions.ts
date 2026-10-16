@@ -19,7 +19,7 @@ async function units() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single();
+  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
   return { supabase, user: user!, u: unitSystemFor(profile) };
 }
 

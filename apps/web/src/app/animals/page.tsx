@@ -21,7 +21,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   const [{ data: rows, error }, { count: enclosureCount }, { data: profile }] = await Promise.all([
     supabase.rpc("fn67_my_animals"),
     supabase.from("enclosures").select("id", { count: "exact", head: true }).eq("owner_id", user!.id),
-    supabase.from("profiles").select("onboarding_skipped").eq("id", user!.id).single(),
+    supabase.rpc("fn72_my_profile").single(),
   ]);
   const all = (rows ?? []).map((a) => ({
     ...a,

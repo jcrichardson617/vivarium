@@ -10,10 +10,7 @@ export const metadata: Metadata = { title: "Products | Reptilytics" };
 export default async function ProductsAdminPage({ searchParams }: { searchParams: Promise<{ error?: string; saved?: string; all?: string }> }) {
   const { error, saved, all } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
   const { data: products } = await supabase.from("products").select("*").neq("status", "rejected").order("status", { ascending: false }).order("name");

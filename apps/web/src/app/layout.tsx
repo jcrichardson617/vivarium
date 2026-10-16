@@ -39,7 +39,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     data: { user },
   } = await supabase.auth.getUser();
   const { data: profile } = user
-    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+    ? await supabase.rpc("fn72_my_profile").single()
     : { data: null };
   const isModerator = profile?.role === "moderator" || profile?.role === "admin";
   const { count: incoming } = user

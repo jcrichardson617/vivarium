@@ -83,7 +83,7 @@ export default async function AnimalPage({
     supabase.from("animal_enclosures").select("enclosure_id, enclosures(name)").eq("animal_id", id).is("end_date", null).maybeSingle(),
   ]);
 
-  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition, profile] =
+  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition] =
     await Promise.all([
       supabase.rpc("fn69_animal_access", { p_animal_id: id }),
       supabase.rpc("morph_name", { p_animal_id: id }),
@@ -95,7 +95,6 @@ export default async function AnimalPage({
       supabase.from("health_events").select("id, event_date, event_type, severity, notes, recorded_by").eq("animal_id", id).order("event_date", { ascending: false }).limit(50),
       supabase.from("animal_notes").select("id, created_at, note_text, created_by").eq("animal_id", id).order("created_at", { ascending: false }).limit(50),
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).maybeSingle(),
-      supabase.from("profiles").select("plan").eq("id", user!.id).single(),
     ]);
   // Owner, caretaker (can log) or viewer (read only), and whose animal it is.
   const access = accessRows?.[0];
@@ -103,7 +102,7 @@ export default async function AnimalPage({
   const canLog = isOwner || access?.access === "caretaker";
   const role = !isOwner && (access?.access === "caretaker" || access?.access === "viewer") ? access.access : null;
   const mine = (by: string | null) => isOwner || (canLog && by === user!.id);
-  const [{ data: shares }, { data: ownerProfile }] = await Promise.all([
+  const [{ data: shares }, { data: photoLimit }] = await Promise.all([
     isOwner
       ? supabase
           .from("animal_shares")
@@ -111,9 +110,7 @@ export default async function AnimalPage({
           .eq("animal_id", id)
           .order("created_at")
       : Promise.resolve({ data: null }),
-    role === "caretaker" && access?.owner_username
-      ? supabase.from("profiles").select("plan").eq("username", access.owner_username).maybeSingle()
-      : Promise.resolve({ data: null }),
+    canLog ? supabase.rpc("fn73_animal_photo_limit", { p_animal_id: id }) : Promise.resolve({ data: null }),
   ]);
   const { data: pendingTransfer } = isOwner
     ? await supabase
@@ -139,7 +136,7 @@ export default async function AnimalPage({
     : [];
   const photoUrls = new Map(signed.map((s) => [s.path, s.signedUrl]));
   // The owner's plan sets the photo limit, whoever uploads.
-  const limit = (isOwner ? profile.data?.plan : ownerProfile?.plan) === "premium" ? 10 : 3;
+  const limit = photoLimit ?? 3;
 
   const latestWeight = weights.data?.[0];
   const latestFeeding = feedings.data?.find((f) => f.accepted);

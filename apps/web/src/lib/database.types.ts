@@ -3616,6 +3616,25 @@ export type Database = {
         Args: { p_share_id: string }
         Returns: undefined
       }
+      fn72_my_profile: {
+        Args: never
+        Returns: {
+          animal_limit: number
+          country: string
+          display_name: string
+          email_digest: boolean
+          onboarding_skipped: string[]
+          plan: string
+          role: string
+          share_gear: boolean
+          unit_system: string
+          username: string
+        }[]
+      }
+      fn73_animal_photo_limit: {
+        Args: { p_animal_id: string }
+        Returns: number
+      }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
