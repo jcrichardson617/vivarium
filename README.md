@@ -27,17 +27,16 @@ functions), so every client gets the same rules.
 
 ## To do later
 
-- **Google sign-in** (code is ready, hidden): from a non-work computer, create a
-  Google OAuth client (Web application) with redirect URI
-  `https://megvsfrjvmjpujarjksx.supabase.co/auth/v1/callback`, paste its ID and
-  secret into Supabase → Authentication → Providers → Google, then set
-  `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel and redeploy.
+- **Google sign-in branding** (from home): the Google screen says "Sign in to
+  megvsfrjvmjpujarjksx.supabase.co"; verified branding makes it say Reptilytics.
+  In Google Cloud → Google Auth Platform → Branding, set app name `Reptilytics`,
+  a 120×120 logo, home page `https://reptilytics.com`, privacy
+  `https://reptilytics.com/privacy`, terms `https://reptilytics.com/terms`. Prove
+  ownership of reptilytics.com in Google Search Console (Domain property, TXT
+  record in DNS), then click Verify branding (Google takes ~2–3 business days).
+  Paid alternative: Supabase custom domain (`auth.reptilytics.com`, Pro + $10/mo).
 - Turn on leaked-password protection in Supabase → Authentication (requires
   the Supabase Pro plan).
-- Send email as info@reptilytics.com (from home; Resend is already set up):
-  create a second Resend API key, then Gmail → Settings → Accounts and Import → Send mail as →
-  info@reptilytics.com via smtp.resend.com, port 465, username `resend`,
-  password = the API key. Incoming mail already forwards to Gmail.
 - Review the 49 seeded ball python genes and mark them verified.
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
 
