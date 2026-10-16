@@ -1,7 +1,8 @@
 // Welcome emails (every 15 minutes), the weekly digest (Mondays) and one-off
 // emails from Admin → Email ("outbox"), sent through Resend. Called with the
 // shared cron secret and a body of {"kind":"welcome" | "digest" | "outbox" | "opens" | "transfers"}.
-// "transfers" tells keepers an animal is waiting for them (every 5 minutes).
+// "transfers" tells keepers an animal is waiting for them, or that someone
+// shared an animal with them (every 5 minutes).
 // "opens" refreshes open status of recent outbox emails (every 30 minutes).
 // Needs the RESEND_API_KEY secret.
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -29,7 +30,7 @@ Deno.serve(async (req) => {
   if (kind === "digest") return Response.json(await sendDigests(key));
   if (kind === "outbox") return Response.json(await sendOutbox(key));
   if (kind === "opens") return Response.json(await refreshOpens(key));
-  if (kind === "transfers") return Response.json(await sendTransfers(key));
+  if (kind === "transfers") return Response.json({ ...(await sendTransfers(key)), shares: await sendShares(key) });
   return Response.json({ error: "kind must be welcome, digest, outbox, opens or transfers" }, { status: 400 });
 });
 
@@ -126,6 +127,32 @@ async function sendTransfers(key: string) {
     }
   }
   return { kind: "transfers", candidates: data?.length ?? 0, sent };
+}
+
+async function sendShares(key: string) {
+  const { data, error } = await admin.rpc("fn70_pending_share_emails", { p_limit: BATCH });
+  if (error) return { error: error.message };
+  let sent = 0;
+  for (const s of data ?? []) {
+    const from = s.from_display_name && s.from_display_name !== s.from_username
+      ? `${esc(s.from_display_name)} (@${esc(s.from_username)})`
+      : `@${esc(s.from_username)}`;
+    const animal = `${esc(s.animal_name)}${s.species ? `, ${esc(s.species)}` : ""}`;
+    const can = s.role === "caretaker"
+      ? "You can see its history and log feedings, weights, sheds, health events, notes and photos."
+      : "You can see its history: feedings, weights, sheds, health and notes.";
+    const html = layout(`
+      <p>${s.to_name ? `Hi ${esc(s.to_name)},` : "Hi,"}</p>
+      <p>${from} shared <strong>${animal}</strong> with you on Reptilytics as a ${s.role}. ${can}
+      It's in your collection now, and stays theirs.</p>
+      <p><a href="${SITE}/animals/${s.animal_id}" style="display:inline-block;background:#0b5e44;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none">Open ${esc(s.animal_name)}</a></p>
+      <p style="color:#666">Don't want it? Choose Leave on the animal's page.</p>`);
+    if ((await send(key, s.email, `${s.from_username} shared ${s.animal_name} with you`, html)).ok) {
+      await admin.rpc("fn71_mark_share_notified", { p_share_id: s.share_id });
+      sent++;
+    }
+  }
+  return { candidates: data?.length ?? 0, sent };
 }
 
 // Emails written by an admin: plain text, sent as written (no branding).

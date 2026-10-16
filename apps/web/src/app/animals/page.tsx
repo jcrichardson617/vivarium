@@ -19,7 +19,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
   } = await supabase.auth.getUser();
 
   const [{ data: rows, error }, { count: enclosureCount }, { data: profile }] = await Promise.all([
-    supabase.rpc("fn62_my_animals"),
+    supabase.rpc("fn67_my_animals"),
     supabase.from("enclosures").select("id", { count: "exact", head: true }).eq("owner_id", user!.id),
     supabase.from("profiles").select("onboarding_skipped").eq("id", user!.id).single(),
   ]);
@@ -49,7 +49,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
     if (params.tag && !a.tags?.includes(params.tag)) return false;
     if (params.due === "1" && !(a.due && a.due.days <= 0)) return false;
     if (q) {
-      const hay = [a.name, a.animal_code, a.speciesLabel, a.species_scientific_name, a.enclosure_name, ...(a.tags ?? [])]
+      const hay = [a.name, a.animal_code, a.speciesLabel, a.species_scientific_name, a.enclosure_name, a.owner_username, ...(a.tags ?? [])]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
@@ -188,6 +188,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                             {a.animal_code ? ` · ${a.animal_code}` : ""}
                           </p>
                           {a.enclosure_name && <p className="truncate text-xs text-muted">🏠 {a.enclosure_name}</p>}
+                          <SharedBadge access={a.access} owner={a.owner_username} />
                           {a.status !== "active" && <p className="mt-1 text-xs uppercase tracking-wide text-muted">{a.status.replace("_", " ")}</p>}
                           <Tags tags={a.tags} />
                         </div>
@@ -223,13 +224,16 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                         {s.animals.map((a) => (
                           <tr key={a.id} className="border-t border-border hover:bg-card">
                             <td className="p-2">
-                              <input type="checkbox" name="ids" value={a.id} aria-label={`Select ${a.name ?? "animal"}`} />
+                              {a.access === "owner" && (
+                                <input type="checkbox" name="ids" value={a.id} aria-label={`Select ${a.name ?? "animal"}`} />
+                              )}
                             </td>
                             <td className="p-2 font-medium">
                               <Link href={`/animals/${a.id}`} className="hover:text-brand hover:underline">
                                 {a.name ?? "Unnamed"}
                               </Link>
                               {a.status !== "active" && <span className="ml-1 text-xs uppercase text-muted">{a.status.replace("_", " ")}</span>}
+                              <SharedBadge access={a.access} owner={a.owner_username} />
                             </td>
                             <td className="p-2 text-muted">{a.animal_code}</td>
                             {!grouped && <td className="p-2 text-muted">{a.speciesLabel}</td>}
@@ -315,6 +319,16 @@ function uniqueOptions(pairs: string[][]) {
 function DueBadge({ due }: { due: FeedingDue | null }) {
   if (!due) return null;
   return <span className={`shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${DUE_TONE_CLASS[due.tone]}`}>{due.label}</span>;
+}
+
+// Animals other keepers have shared with you.
+function SharedBadge({ access, owner }: { access: string; owner: string | null }) {
+  if (access === "owner") return null;
+  return (
+    <p className="text-xs text-muted">
+      Shared by @{owner} · {access === "caretaker" ? "Caretaker" : "Viewer"}
+    </p>
+  );
 }
 
 function Tags({ tags }: { tags: string[] | null }) {
