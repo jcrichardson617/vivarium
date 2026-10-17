@@ -8,6 +8,8 @@ import { chunk, plain } from "./text.ts";
 const SEARCH = "https://www.ebi.ac.uk/europepmc/webservices/rest/search";
 const PAGE_SIZE = 100;
 const MAX_PAGES = 5;
+// Stop adding papers well before the free plan's 500 MB database limit.
+const DB_CAP_MB = 420;
 // Licenses that allow storing full text in a commercial product. Full text is
 // only queued for papers found by topic sweeps (husbandry, veterinary, disease…),
 // which keeps storage within the free plan; fetch-fulltext also enforces a cap.
@@ -24,6 +26,9 @@ type Target = { kind: "species" | "topic"; id: string; name: string; query: stri
 Deno.serve(async (req) => {
   const { data: ok } = await admin.rpc("fn45_check_cron_secret", { p_secret: req.headers.get("x-cron-secret") ?? "" });
   if (!ok) return new Response("Unauthorized", { status: 401 });
+
+  const { data: sizeMb } = await admin.rpc("fn63_database_size_mb");
+  if ((sizeMb ?? 0) >= DB_CAP_MB) return Response.json({ capped: true, size_mb: sizeMb });
 
   const target = await nextTarget();
   if (!target) return Response.json({ done: true, message: "Everything harvested recently" });

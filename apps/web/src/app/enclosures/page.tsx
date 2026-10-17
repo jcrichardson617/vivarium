@@ -12,7 +12,7 @@ export default async function EnclosuresPage() {
   } = await supabase.auth.getUser();
   const [{ data: enclosures }, { data: profile }] = await Promise.all([
     supabase.from("enclosure_detail_view").select("*").eq("owner_id", user!.id).order("name"),
-    supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single(),
+    supabase.rpc("fn72_my_profile").single(),
   ]);
   const u = unitSystemFor(profile);
 

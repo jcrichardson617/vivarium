@@ -33,9 +33,6 @@ export default async function PairingPage({
   const { id } = await params;
   const { error, saved } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const [{ data: p }, { data: profile }] = await Promise.all([
     supabase
@@ -45,7 +42,7 @@ export default async function PairingPage({
       )
       .eq("id", id)
       .maybeSingle(),
-    supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single(),
+    supabase.rpc("fn72_my_profile").single(),
   ]);
   if (!p) notFound();
   const u = unitSystemFor(profile);

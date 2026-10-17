@@ -10,6 +10,7 @@ const APP: Item[] = [
   { href: "/animals", label: "My animals" },
   { href: "/enclosures", label: "Enclosures" },
   { href: "/breeding", label: "Breeding" },
+  { href: "/transfers", label: "Transfers" },
 ];
 
 const EXPLORE: Item[] = [

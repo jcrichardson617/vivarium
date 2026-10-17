@@ -19,15 +19,12 @@ export default async function EnclosurePage({
   const { id } = await params;
   const { error, saved } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const [{ data: e }, { data: housed }, { data: logs }, { data: profile }, { data: gear }, { data: products }] = await Promise.all([
     supabase.from("enclosures").select("*").eq("id", id).maybeSingle(),
     supabase.from("animal_enclosures").select("animal_id, start_date, animals(name)").eq("enclosure_id", id).is("end_date", null),
     supabase.from("environment_logs").select("*").eq("enclosure_id", id).order("recorded_at", { ascending: false }).limit(50),
-    supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single(),
+    supabase.rpc("fn72_my_profile").single(),
     supabase
       .from("enclosure_gear")
       .select("id, products(id, name, brand, category, note, blocked, block_reason, status)")

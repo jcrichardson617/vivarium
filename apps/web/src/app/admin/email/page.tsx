@@ -9,10 +9,7 @@ export const metadata: Metadata = { title: "Email | Reptilytics" };
 export default async function EmailAdminPage({ searchParams }: { searchParams: Promise<{ error?: string; sent?: string }> }) {
   const { error, sent } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
   const { data: log } = await supabase

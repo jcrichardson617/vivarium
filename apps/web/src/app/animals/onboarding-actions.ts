@@ -13,7 +13,7 @@ export async function skipOnboarding(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await supabase.from("profiles").select("onboarding_skipped").eq("id", user!.id).single();
+  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
   const skipped = [...new Set([...(profile?.onboarding_skipped ?? []), step])];
   await supabase.from("profiles").update({ onboarding_skipped: skipped }).eq("id", user!.id);
   revalidatePath("/animals");

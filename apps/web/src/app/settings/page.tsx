@@ -8,14 +8,7 @@ export const metadata: Metadata = { title: "Settings | Reptilytics" };
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ error?: string; saved?: string }> }) {
   const { error, saved } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username, display_name, country, unit_system, share_gear, email_digest")
-    .eq("id", user!.id)
-    .single();
+  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
 
   return (
     <section className="mx-auto max-w-md">

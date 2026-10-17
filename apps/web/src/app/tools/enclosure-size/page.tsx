@@ -16,7 +16,7 @@ export default async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
   const { data: profile } = user
-    ? await supabase.from("profiles").select("unit_system, country").eq("id", user.id).single()
+    ? await supabase.rpc("fn72_my_profile").single()
     : { data: null };
 
   return (

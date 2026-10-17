@@ -85,10 +85,7 @@ export async function deletePairing(formData: FormData) {
 export async function addClutch(formData: FormData) {
   const supabase = await createClient();
   const pairingId = String(formData.get("pairing_id"));
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase.from("profiles").select("unit_system, country").eq("id", user!.id).single();
+  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
   const u = unitSystemFor(profile);
 
   const eggCount = num(formData, "egg_count");
