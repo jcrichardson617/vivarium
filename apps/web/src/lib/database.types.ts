@@ -2159,6 +2159,7 @@ export type Database = {
           added_by: string | null
           authors: string[]
           chunk_count: number
+          citation: string | null
           cited_by_count: number | null
           content: string | null
           content_rights: string
@@ -2173,6 +2174,7 @@ export type Database = {
           ingest_error: string | null
           ingest_status: string
           license: string | null
+          note_topic: string | null
           open_access: boolean
           pmcid: string | null
           published_date: string | null
@@ -2189,6 +2191,7 @@ export type Database = {
           added_by?: string | null
           authors?: string[]
           chunk_count?: number
+          citation?: string | null
           cited_by_count?: number | null
           content?: string | null
           content_rights?: string
@@ -2203,6 +2206,7 @@ export type Database = {
           ingest_error?: string | null
           ingest_status?: string
           license?: string | null
+          note_topic?: string | null
           open_access?: boolean
           pmcid?: string | null
           published_date?: string | null
@@ -2219,6 +2223,7 @@ export type Database = {
           added_by?: string | null
           authors?: string[]
           chunk_count?: number
+          citation?: string | null
           cited_by_count?: number | null
           content?: string | null
           content_rights?: string
@@ -2233,6 +2238,7 @@ export type Database = {
           ingest_error?: string | null
           ingest_status?: string
           license?: string | null
+          note_topic?: string | null
           open_access?: boolean
           pmcid?: string | null
           published_date?: string | null

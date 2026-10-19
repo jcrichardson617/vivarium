@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const name = species.common_name ?? species.scientific_name;
   return {
     title: `${name} (${species.scientific_name}) Care, Morphs & Research | Reptilytics`,
-    description: `${name} (${species.scientific_name}) care at a glance (temperatures, humidity, size, lifespan, diet), morph genetics and published research. Track yours free with Reptilytics.`,
+    description: `${name} (${species.scientific_name}) care at a glance (temperatures, humidity, size, lifespan, diet), morph genetics, published research and natural history notes. Track yours free with Reptilytics.`,
     alternates: { canonical: `/species/${slug}` },
     robots: (await hasContent(supabase, species.id)) ? undefined : { index: false, follow: true },
   };
@@ -77,8 +77,23 @@ export default async function SpeciesPage({ params }: Props) {
     })
     .eq("research_document_species.species_id", species.id)
     .eq("ingest_status", "ready")
+    .or("external_source.is.null,external_source.neq.herp_review")
     .order("cited_by_count", { ascending: false, nullsFirst: false })
     .limit(8);
+
+  // Herpetological Review natural history notes: citation, our summary and a link to the PDF.
+  const { data: notes } = await supabase
+    .from("research_documents")
+    .select("id, note_topic, authors, published_date, citation, summary, source_url, research_document_species!inner(species_id)")
+    .eq("research_document_species.species_id", species.id)
+    .eq("external_source", "herp_review")
+    .order("published_date", { ascending: false })
+    .limit(100);
+  const notesByTopic = new Map<string, NonNullable<typeof notes>>();
+  for (const n of notes ?? []) {
+    const topic = n.note_topic?.split(". ")[0] ?? "Other";
+    notesByTopic.set(topic, [...(notesByTopic.get(topic) ?? []), n]);
+  }
 
   const byType = new Map<string, NonNullable<typeof genes>>();
   for (const g of genes ?? []) byType.set(g.inheritance, [...(byType.get(g.inheritance) ?? []), g]);
@@ -164,6 +179,33 @@ export default async function SpeciesPage({ params }: Props) {
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {!!notes?.length && (
+        <section>
+          <h2 className="mb-1 text-2xl font-semibold">{name} natural history notes</h2>
+          <p className="mb-4 text-sm text-muted">
+            Field and captive observations published in Herpetological Review&apos;s Natural History Notes. Each is a single
+            observation, summarized by us, with a link to the original.
+          </p>
+          {[...notesByTopic.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([topic, items]) => (
+            <div key={topic} className="mb-5">
+              <h3 className="mb-2 font-semibold">{topic}</h3>
+              <ul className="flex flex-col gap-2">
+                {items.map((n) => (
+                  <li key={n.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                    {n.summary && <p>{n.summary}</p>}
+                    <p className={`text-xs text-muted ${n.summary ? "mt-1" : ""}`}>
+                      {n.note_topic !== topic && n.note_topic ? `${n.note_topic} · ` : ""}
+                      {[n.authors[0], n.published_date?.slice(0, 4), n.citation].filter(Boolean).join(" · ")} ·{" "}
+                      <a href={n.source_url} target="_blank" rel="noreferrer" className="text-brand hover:underline">Read the note</a>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </section>
       )}
 

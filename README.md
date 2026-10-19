@@ -49,5 +49,6 @@ Papers are harvested automatically into `research_documents` / `research_chunks`
 - `embed-chunks` (every 20 s) embeds passages with Supabase's built-in gte-small model (384 dims).
 - `fn43_search_research` does hybrid (semantic + keyword) retrieval for Monty.
 - Admin → Library shows progress and has run-now buttons.
+- Herpetological Review Natural History Notes are added by hand in Admin → NH notes (paste citations, one per line). They are stored as summary-only documents (`external_source = 'herp_review'`): citation, topic, link to SSAR's PDF and our own summary, never the note text. They show on species pages and are searchable by Monty.
 
 Later: semantic chunking (needs a faster/paid embedding API), care-sheet sources (only with permission, otherwise link + our own summary).
