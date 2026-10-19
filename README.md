@@ -27,6 +27,10 @@ functions), so every client gets the same rules.
 
 ## To do later
 
+- **Search Console (check ~Oct 21):** Indexing → Pages: note indexed / not-indexed counts and the not-indexed reasons. Sitemaps: confirm `https://www.reptilytics.com/sitemap.xml` shows Success. URL inspection → Request indexing for `/`, `/features` and a species page. Then Bing Webmaster Tools → Import from Google Search Console.
+- **OpenAlex API key:** get a free key at https://openalex.org/settings/api, then Supabase → Edge Functions → Secrets → `OPENALEX_API_KEY`. The OpenAlex harvester skips every run until it's set.
+- **Review the comparison page** (`/compare/reptile-husbandry-apps`, noindex for now); once approved, remove the noindex and add it to the sitemap.
+
 - **Google sign-in branding** (from home): the Google screen says "Sign in to
   megvsfrjvmjpujarjksx.supabase.co"; verified branding makes it say Reptilytics.
   In Google Cloud → Google Auth Platform → Branding, set app name `Reptilytics`,
