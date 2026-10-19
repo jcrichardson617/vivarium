@@ -13,14 +13,14 @@ import "./globals.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 const DESCRIPTION =
-  "The record-keeping hub for reptile and amphibian keepers and breeders. Log feedings, weights and sheds, track genetics and lineage, and learn from community data.";
+  "Reptile and amphibian husbandry software for keepers and breeders. Log feedings, weights and sheds, track genetics and lineage, and learn from community data.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Reptilytics | Intelligence for Modern Herpetoculture",
   description: DESCRIPTION,
   applicationName: "Reptilytics",
-  keywords: ["reptile tracker", "reptile care log", "ball python morphs", "herp record keeping", "reptile breeding software", "amphibian care"],
+  keywords: ["reptile husbandry software", "husbandry app", "reptile tracker", "reptile care log", "ball python morphs", "herp record keeping", "reptile breeding software", "enclosure temperature log", "amphibian care"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",

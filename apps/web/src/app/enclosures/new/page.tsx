@@ -50,10 +50,11 @@ export default async function NewEnclosurePage({ searchParams }: { searchParams:
             <input name="uvb_type" placeholder="e.g. T5 HO 6%" className="field" />
           </label>
         </div>
-        <fieldset className="grid grid-cols-3 gap-2">
+        <fieldset className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <legend className="mb-1 text-sm">Targets (optional)</legend>
-          <input name="target_hot" type="number" step="0.1" placeholder={`Hot ${T}`} className="field" />
-          <input name="target_cool" type="number" step="0.1" placeholder={`Cool ${T}`} className="field" />
+          <input name="target_basking" type="number" step="0.1" placeholder={`Basking ${T}`} className="field" />
+          <input name="target_hot" type="number" step="0.1" placeholder={`Hot side ${T}`} className="field" />
+          <input name="target_cool" type="number" step="0.1" placeholder={`Cool side ${T}`} className="field" />
           <input name="target_humidity" type="number" min={0} max={100} placeholder="RH %" className="field" />
         </fieldset>
         <textarea name="notes" rows={2} placeholder="Notes (optional)" className="field" />

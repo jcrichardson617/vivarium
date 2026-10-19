@@ -1105,6 +1105,7 @@ export type Database = {
           notes: string | null
           owner_id: string | null
           substrate: string | null
+          target_basking_temp_c: number | null
           target_cool_temp_c: number | null
           target_hot_temp_c: number | null
           target_humidity_pct: number | null
@@ -1123,6 +1124,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           substrate?: string | null
+          target_basking_temp_c?: number | null
           target_cool_temp_c?: number | null
           target_hot_temp_c?: number | null
           target_humidity_pct?: number | null
@@ -1141,6 +1143,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           substrate?: string | null
+          target_basking_temp_c?: number | null
           target_cool_temp_c?: number | null
           target_hot_temp_c?: number | null
           target_humidity_pct?: number | null
@@ -1165,6 +1168,7 @@ export type Database = {
           id: string
           notes: string | null
           recorded_at: string | null
+          temperature_basking_c: number | null
           temperature_cool_c: number | null
           temperature_hot_c: number | null
           uv_index: number | null
@@ -1175,6 +1179,7 @@ export type Database = {
           id?: string
           notes?: string | null
           recorded_at?: string | null
+          temperature_basking_c?: number | null
           temperature_cool_c?: number | null
           temperature_hot_c?: number | null
           uv_index?: number | null
@@ -1185,6 +1190,7 @@ export type Database = {
           id?: string
           notes?: string | null
           recorded_at?: string | null
+          temperature_basking_c?: number | null
           temperature_cool_c?: number | null
           temperature_hot_c?: number | null
           uv_index?: number | null

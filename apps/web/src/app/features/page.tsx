@@ -4,7 +4,12 @@ import Link from "next/link";
 import { MontyDemo } from "@/components/monty-demo";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Features | Reptilytics" };
+export const metadata: Metadata = {
+  title: "Reptile Husbandry Software Features | Reptilytics",
+  description:
+    "Husbandry software for reptile and amphibian keepers: feeding, weight and shed logs, enclosure basking, hot and cool side temperatures, breeding projects, genetics and research.",
+  alternates: { canonical: "/features" },
+};
 
 const FEATURES = [
   {
