@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 
-export function ShareButton({ url, title }: { url: string; title: string }) {
+export function ShareButton({
+  url,
+  title,
+  label = "Share",
+  className = "text-brand hover:underline",
+}: {
+  url: string;
+  title: string;
+  label?: string;
+  className?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
@@ -20,8 +30,8 @@ export function ShareButton({ url, title }: { url: string; title: string }) {
   }
 
   return (
-    <button type="button" onClick={share} className="text-brand hover:underline">
-      {copied ? "Link copied ✓" : "Share"}
+    <button type="button" onClick={share} className={className}>
+      {copied ? "Link copied ✓" : label}
     </button>
   );
 }
