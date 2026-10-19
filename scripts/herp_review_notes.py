@@ -51,7 +51,7 @@ GROUPS = {
     "CROCODYLIA", "CROCODILIANS", "SQUAMATA", "LIZARDS", "SNAKES", "AMPHISBAENIA", "AMPHISBAENIANS", "RHYNCHOCEPHALIA",
 }
 # Running header on every page; removed so it doesn't run into note text.
-RUNNING_HEADER = re.compile(r"NATURAL HISTORY NOTES|Herpetological Review \d+\(\d\),? \d{4}", re.I)
+RUNNING_HEADER = re.compile(r"(?:NATURAL|LIFE) HISTORY NOTES|Herp(?:etological|\.)? Review \d+\(\d\),? \d{4}", re.I)
 PARTICLES = {"DE", "DA", "DOS", "DAS", "DO", "DI", "DEL", "LA", "VAN", "VON", "DER", "DEN", "LE"}
 UPPER = "A-ZÀ-ÖØ-Þ"
 
@@ -152,7 +152,8 @@ def normalize(text: str) -> str:
 
 # Section headings in capitals, wherever they sit on the line (older scans put the
 # running header or page number beside them). Body text says "natural history" in lower case.
-NOTES_HEADING = re.compile(r"NATURAL\s+HISTORY\s+NOTES")
+# ("LIFE HISTORY NOTES" in the early 1980s.)
+NOTES_HEADING = re.compile(r"(?:NATURAL|LIFE)\s+HISTORY\s+NOTES")
 NEXT_SECTION = re.compile(r"GEOGRAPHIC\s+DISTRIBUTION|BOOK\s+REVIEWS?|HERPETOLOGICAL\s+HUSBANDRY|NEW(?:LY)?\s+PUBLICATIONS?|MEETINGS")
 
 
