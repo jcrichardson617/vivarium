@@ -89,7 +89,7 @@ async function sendWelcomes(key: string) {
 
       <p style="margin-top:28px">Something missing, confusing or broken? Just reply to this email. Every message is
       read by a person, and keeper feedback decides what we build next.</p>
-      <p>Happy herping,<br>The Reptilytics team</p>`);
+      <p>Happy herping,<br>The Reptilytics Team</p>`);
     if ((await send(key, u.email, "Welcome to Reptilytics", html)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "welcome" });
       sent++;
