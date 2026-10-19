@@ -1,6 +1,7 @@
 # Weekly import of Herpetological Review Natural History Notes citations
-# (scripts/herp_review_notes.py). Pull requests that touch the importer get a
-# dry run against the real PDFs, which writes nothing.
+# (scripts/herp_review_notes.py): the 8 newest PDFs each Monday. Run it by hand
+# with "All issues" to (re)read every issue back to 1967. Pull requests that
+# touch the importer get a dry run of the newest issues, which writes nothing.
 name: Herpetological Review notes
 
 on:
@@ -12,6 +13,14 @@ on:
         description: "Dry run (print, don't save)"
         type: boolean
         default: false
+      all_issues:
+        description: "All issues back to 1967 (takes a few hours)"
+        type: boolean
+        default: false
+      volumes:
+        description: "Only these volumes, e.g. 30-35 (blank = newest issues)"
+        type: string
+        default: ""
   pull_request:
     paths:
       - scripts/herp_review_notes.py
@@ -20,7 +29,7 @@ on:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,4 +39,8 @@ jobs:
       - name: Import
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ github.event_name != 'pull_request' && secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
-        run: python scripts/herp_review_notes.py ${{ (github.event_name == 'pull_request' || inputs.dry_run) && '--dry-run' || '' }}
+        run: >-
+          python scripts/herp_review_notes.py
+          ${{ (github.event_name == 'pull_request' || inputs.dry_run) && '--dry-run' || '' }}
+          ${{ inputs.all_issues && '--issues 0' || '' }}
+          ${{ inputs.volumes && format('--volumes {0}', inputs.volumes) || '' }}
