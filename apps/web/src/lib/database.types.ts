@@ -3748,6 +3748,25 @@ export type Database = {
           email_research: boolean
         }[]
       }
+      fn77_admin_users: {
+        Args: never
+        Returns: {
+          animals: number
+          confirmed: boolean
+          country: string
+          display_name: string
+          email: string
+          id: string
+          joined: string
+          last_log: string
+          last_sign_in: string
+          logs_30d: number
+          plan: string
+          role: string
+          username: string
+        }[]
+      }
+      fn78_admin_animal_stats: { Args: never; Returns: Json }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {

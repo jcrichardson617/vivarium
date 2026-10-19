@@ -13,17 +13,25 @@ export default async function AdminHome() {
   const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
-  const [species, products, requests, emails, papers, notes] = await Promise.all([
+  const [species, products, requests, emails, papers, notes, totals] = await Promise.all([
     supabase.from("species_submissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.rpc("fn36_feature_requests_admin"),
     supabase.from("outbound_emails").select("id", { count: "exact", head: true }).eq("status", "sent"),
     supabase.from("research_documents").select("id", { count: "estimated", head: true }),
     supabase.from("research_documents").select("id", { count: "exact", head: true }).eq("external_source", "herp_review").is("summary", null),
+    me.role === "admin" ? supabase.rpc("fn78_admin_animal_stats") : Promise.resolve({ data: null }),
   ]);
+  const t = (totals.data ?? null) as { users: number; users_7d: number; animals: number; animals_7d: number } | null;
   const newRequests = (requests.data ?? []).filter((r) => r.status === "new").length;
 
   const cards = [
+    ...(t
+      ? [
+          { href: "/admin/users", label: "Users", value: t.users, note: `${t.users_7d} joined this week` },
+          { href: "/admin/animals", label: "Animals", value: t.animals, note: `${t.animals_7d} added this week` },
+        ]
+      : []),
     { href: "/admin/species", label: "Species requests", value: species.count ?? 0, note: "waiting for review", alert: (species.count ?? 0) > 0 },
     { href: "/admin/requests", label: "Feature requests", value: newRequests, note: "new", alert: newRequests > 0 },
     { href: "/admin/products", label: "Products", value: products.count ?? 0, note: "suggested, waiting for review", alert: (products.count ?? 0) > 0 },
