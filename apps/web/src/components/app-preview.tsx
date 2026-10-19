@@ -1,10 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
-// A static preview of the app with made-up data, for the Features page.
-// Nothing here reads the database; dates are written relatively so the server
-// and browser render the same thing.
+// A static preview of the app for the Features page. Nothing here reads the
+// database; dates are written relatively so the server and browser render the same.
+// Photos in /public/demo are CC0 / public domain, from Wikimedia Commons:
+// Queen Alphabet the ball python (Capen Hill Nature Sanctuary), Ball python and rock,
+// Ball Python (Python regius), Killer bee ball python snake, Leopard gecko wink,
+// Super Empty Back Crested Gecko, Western hognose at a pet store.
 
 const TABS = ["Animal", "Collection", "Enclosure"] as const;
 type Tab = (typeof TABS)[number];
@@ -33,12 +37,14 @@ const HISTORY = [
 ];
 
 const COLLECTION = [
-  { name: "Mango", species: "Ball Python", morph: "Pastel Clown", sex: "F", weight: "702 g", due: "Due in 4 days", tone: "ok" },
-  { name: "Biscuit", species: "Leopard Gecko", morph: "Tremper Albino", sex: "M", weight: "68 g", due: "Due today", tone: "due" },
-  { name: "Juno", species: "Crested Gecko", morph: "Harlequin", sex: "F", weight: "41 g", due: "Due in 2 days", tone: "ok" },
-  { name: "Atlas", species: "Ball Python", morph: "Het Clown", sex: "M", weight: "1,140 g", due: "Overdue 3 days", tone: "late" },
-  { name: "Pepper", species: "Western Hognose", morph: "Anaconda", sex: "F", weight: "212 g", due: "Due in 5 days", tone: "ok" },
+  { name: "Mango", photo: "/demo/mango.jpg", species: "Ball Python", morph: "Normal, het Clown", sex: "F", weight: "702 g", due: "Due in 4 days", tone: "ok" },
+  { name: "Biscuit", photo: "/demo/biscuit.jpg", species: "Leopard Gecko", morph: "Normal", sex: "M", weight: "68 g", due: "Due today", tone: "due" },
+  { name: "Juno", photo: "/demo/juno.jpg", species: "Crested Gecko", morph: "Super Empty Back", sex: "F", weight: "41 g", due: "Due in 2 days", tone: "ok" },
+  { name: "Atlas", photo: "/demo/atlas.jpg", species: "Ball Python", morph: "Killer Bee", sex: "M", weight: "1,140 g", due: "Overdue 3 days", tone: "late" },
+  { name: "Pepper", photo: "/demo/pepper.jpg", species: "Western Hognose", morph: "Normal", sex: "F", weight: "212 g", due: "Due in 5 days", tone: "ok" },
 ] as const;
+
+const MANGO_PHOTOS = ["/demo/mango-1.jpg", "/demo/mango-2.jpg", "/demo/mango-3.jpg"];
 
 const READINGS = [
   { when: "Today, 8:10 am", basking: 34.1, hot: 32.0, cool: 26.5, rh: 62 },
@@ -78,7 +84,7 @@ function GrowthChart() {
     <div>
       <div className="mb-1 flex flex-wrap items-center gap-4 text-xs text-muted">
         <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 rounded bg-brand" aria-hidden /> Mango</span>
-        <span className="flex items-center gap-1.5"><span className="h-2.5 w-4 rounded-sm bg-brand/15" aria-hidden /> Typical for her age (412 keepers)</span>
+        <span className="flex items-center gap-1.5"><span className="h-2.5 w-4 rounded-sm bg-brand/15" aria-hidden /> Typical for her age</span>
       </div>
       <svg viewBox={`0 0 ${W} ${H + 16}`} className="w-full" role="img" aria-label="Mango's weight, 78 g to 702 g over 16 months, at the upper end of the typical range">
         <path d={band} className="fill-brand/15" />
@@ -122,8 +128,15 @@ function AnimalView() {
     <div className="flex flex-col gap-4">
       <div>
         <h3 className="text-2xl font-bold">Mango</h3>
-        <p className="text-sm text-muted">Ball Python <span className="italic">· Python regius</span> · female · Pastel Clown</p>
+        <p className="text-sm text-muted">Ball Python <span className="italic">· Python regius</span> · female · Normal, het Clown</p>
         <p className="text-xs text-muted">Hatched Apr 2024 · Sire: Atlas · Dam: Saffron · Rack A, tub 3</p>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {MANGO_PHOTOS.map((src, i) => (
+          <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border">
+            <Image src={src} alt={i === 0 ? "Mango, a ball python, on aspen bedding" : "Mango"} fill sizes="(min-width: 768px) 240px, 33vw" className="object-cover" />
+          </div>
+        ))}
       </div>
       <div className="grid grid-cols-3 gap-2 text-sm">
         <Tile label="Last meal" value="3 days ago" note="Next due in 4 days" />
@@ -165,9 +178,7 @@ function CollectionView() {
       <ul className="divide-y divide-border rounded-lg border border-border bg-background text-sm">
         {COLLECTION.map((a) => (
           <li key={a.name} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2.5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 font-semibold text-brand-dark">
-              {a.name[0]}
-            </span>
+            <Image src={a.photo} alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full object-cover" />
             <span className="min-w-0 flex-1">
               <span className="font-medium">{a.name}</span>{" "}
               <span className="text-muted">{a.sex}</span>
@@ -219,7 +230,7 @@ function EnclosureView() {
   );
 }
 
-export function SampleRecord() {
+export function AppPreview() {
   const [tab, setTab] = useState<Tab>("Animal");
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -230,11 +241,9 @@ export function SampleRecord() {
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
         </span>
         <span className="mx-auto truncate rounded-md bg-background px-3 py-0.5 text-xs text-muted">reptilytics.com</span>
-        <span className="rounded-full border border-amber-500/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-          Sample data
-        </span>
+        <span className="w-12" aria-hidden />
       </div>
-      <div role="tablist" aria-label="Sample screens" className="flex gap-1 border-b border-border px-3 pt-2">
+      <div role="tablist" aria-label="App screens" className="flex gap-1 border-b border-border px-3 pt-2">
         {TABS.map((t) => (
           <button
             key={t}
