@@ -150,22 +150,27 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text)
 
 
-NOTES_HEADING = re.compile(r"^\s*NATURAL HISTORY NOTES\s*$", re.M)
-# Sections that follow Natural History Notes in a whole issue.
-NEXT_SECTION = re.compile(r"^\s*(GEOGRAPHIC DISTRIBUTION|BOOK REVIEWS?|HERPETOLOGICAL HUSBANDRY|NEW(LY)? PUBLICATIONS?|MEETINGS)\s*$", re.M)
+# Section headings in capitals, wherever they sit on the line (older scans put the
+# running header or page number beside them). Body text says "natural history" in lower case.
+NOTES_HEADING = re.compile(r"NATURAL\s+HISTORY\s+NOTES")
+NEXT_SECTION = re.compile(r"GEOGRAPHIC\s+DISTRIBUTION|BOOK\s+REVIEWS?|HERPETOLOGICAL\s+HUSBANDRY|NEW(?:LY)?\s+PUBLICATIONS?|MEETINGS")
 
 
 def notes_pages(pages):
-    """Pages of a whole issue from the NATURAL HISTORY NOTES heading to the next section heading.
-    Older issues print the heading once; newer ones also use it as the running header."""
-    start = next((i for i, t in enumerate(pages) if NOTES_HEADING.search(t)), None)
+    """Pages of a whole issue from the NATURAL HISTORY NOTES section heading to the next section.
+    The start is the first mention followed by an actual note (not the table of contents)."""
+    start = None
+    for i, t in enumerate(pages):
+        m = NOTES_HEADING.search(t)
+        if m and HEADING.search(normalize(t[m.end():] + " " + (pages[i + 1] if i + 1 < len(pages) else ""))):
+            start = i
+            break
     if start is None:
         return []
     end = len(pages)
     for i in range(start, len(pages)):
-        m = NEXT_SECTION.search(pages[i])
-        # The next section can begin on the last Notes page; keep that page, stop after it.
-        if m and not (i == start and m.start() < NOTES_HEADING.search(pages[i]).start()):
+        text = pages[i][NOTES_HEADING.search(pages[i]).end():] if i == start else pages[i]
+        if NEXT_SECTION.search(text):
             end = i + 1
             break
     return list(range(start, end))
@@ -180,7 +185,8 @@ def parse_issue(vol, iss, pdf, whole=False, part=1):
     if whole and keep:
         first, last = keep[0], keep[-1]
         texts[first] = texts[first][NOTES_HEADING.search(texts[first]).start():]  # drop the article before
-        end = NEXT_SECTION.search(texts[last])
+        offset_in_last = NOTES_HEADING.search(texts[last]).end() if last == first else 0
+        end = NEXT_SECTION.search(texts[last], offset_in_last)
         if end:
             texts[last] = texts[last][: end.start()]  # and the next section after
     full, starts = "", []
@@ -339,12 +345,10 @@ def main():
         print(f"HR {vol}({iss}) {year}{' part ' + str(item['part']) if item['part'] > 1 else ''}: "
               f"{n_pages} PDF pages, page offset {offset}, {len(notes)} notes, {hits} for our species")
         if dry and item["whole"] and not notes:
-            hits_nh = [i for i, t in enumerate(pages) if re.search(r"natural history", t, re.I)]
-            print(f"    no notes: 'natural history' on PDF pages {hits_nh[:8]}")
-            for i in hits_nh[:1]:
-                t = pages[i]
-                k = re.search(r"natural history", t, re.I).start()
-                print(f"    context: {t[max(0, k - 150):k + 450]!r}")
+            lines = [l.strip() for t in pages for l in t.splitlines() if re.search(r"history\s+notes", l, re.I)]
+            print(f"    no notes; lines mentioning 'history notes': {lines[:6]!r}")
+            caps = [m.group(0) for t in pages for m in re.finditer(r"[A-Z]{3,} [A-Z]{3,} \([^)]{3,40}\)\.[^.]{0,40}\.", t)]
+            print(f"    capitalized name-like headings: {caps[:6]!r}")
         if dry and offset is None and item is found[0]:
             for i in (1, 2):
                 if i < len(pages):
