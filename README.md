@@ -44,9 +44,9 @@ functions), so every client gets the same rules.
 
 Papers are harvested automatically into `research_documents` / `research_chunks`:
 
-- `harvest-research` edge function (pg_cron, every 10 min) alternates between the next species and the next topic sweep (`research_harvest_topics`), pulling from Europe PMC. Each target is re-harvested every 30 days.
+- `harvest-research` edge function (pg_cron, nightly: every 10 min from 07:00 to 07:50 UTC, one target per run) alternates between the next species and the next topic sweep (`research_harvest_topics`), pulling from Europe PMC. Each target is re-harvested every 30 days; with ~200 targets and 6 runs a night, a full pass takes about a month.
 - `fetch-fulltext` (every 2 min) adds full text for open-access papers under CC BY / CC BY-SA / CC0. Non-commercial (NC) and paywalled papers keep only their abstract.
-- `embed-chunks` (every 20 s) embeds passages with Supabase's built-in gte-small model (384 dims).
+- `embed-chunks` (every 2 min; was every 20 s, which starved sign-ins on the free plan) embeds passages with Supabase's built-in gte-small model (384 dims).
 - `fn43_search_research` does hybrid (semantic + keyword) retrieval for Monty.
 - Admin → Library shows progress and has run-now buttons.
 
