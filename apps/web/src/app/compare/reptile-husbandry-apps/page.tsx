@@ -39,6 +39,33 @@ const SOURCES = [
   { name: "Herpville", url: "https://apps.apple.com/app/id1499428714" },
 ];
 
+const REASONS = [
+  {
+    title: "Free, with room for your whole collection",
+    body: "No credit card, no 10-animal cap and no paywall on breeding tools. Track up to 500 animals, reptiles and amphibians alike.",
+  },
+  {
+    title: "Your records tell you something",
+    body: "Growth charts, missed-meal and stalled-weight warnings, and anonymous community benchmarks show how your animals compare with others of their species.",
+  },
+  {
+    title: "The whole enclosure, not just the animal",
+    body: "Log basking, hot-side and cool-side temperatures, humidity and UV index against targets, and keep a record of the gear in each enclosure.",
+  },
+  {
+    title: "Breeding and genetics done properly",
+    body: "Pairings, clutches, individual eggs and incubation in one record. Hatchlings inherit their parents, family trees build themselves, and morph names come from a curated gene list with a built-in genetics calculator.",
+  },
+  {
+    title: "Science next to your animals",
+    body: "Every species page brings together care facts, published research and natural history notes from the herpetological literature, each linked to its source.",
+  },
+  {
+    title: "Any device, nothing to install",
+    body: "Reptilytics runs in your browser on phone, tablet or computer, so your records are the same wherever you open them.",
+  },
+];
+
 function Value({ v }: { v: Cell }) {
   if (v === "yes") return <span className="text-brand" aria-label="Yes">✓</span>;
   if (v === "no") return <span className="text-muted" aria-label="No">—</span>;
@@ -53,9 +80,9 @@ export default function CompareHusbandryApps() {
         <p className="text-sm text-muted">Comparison · checked {CHECKED}</p>
         <h1 className="mt-1 text-4xl font-bold">Reptile husbandry apps compared</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          Keepers ask this all the time: which app should I use to track feedings, weights, sheds and breeding? Here is an
-          honest look at the main options, including ours. We&apos;ve marked where an app doesn&apos;t list a feature rather
-          than guessing, and linked our sources. Spot something out of date?{" "}
+          Keepers ask this all the time: which app should I use to track feedings, weights, sheds and breeding? Here&apos;s how
+          Reptilytics compares with the other popular options. We&apos;ve marked where an app doesn&apos;t list a feature
+          rather than guessing, and linked our sources. Spot something out of date?{" "}
           <Link href="/contact" className="text-brand hover:underline">Tell us</Link> and we&apos;ll fix it.
         </p>
       </header>
@@ -84,52 +111,15 @@ export default function CompareHusbandryApps() {
       </section>
 
       <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-semibold">Which one fits you</h2>
+        <h2 className="text-2xl font-semibold">Why keepers switch to Reptilytics</h2>
+        {REASONS.map((r) => (
+          <div key={r.title}>
+            <h3 className="font-semibold">{r.title}</h3>
+            <p className="text-muted">{r.body}</p>
+          </div>
+        ))}
         <div>
-          <h3 className="font-semibold">Reptilytics</h3>
-          <p className="text-muted">
-            Best if you want your records to tell you something. Alongside the usual logs, it tracks enclosure basking,
-            hot-side and cool-side temperatures, builds family trees from your breeding records, names morphs from a curated
-            gene list, and puts species care facts, published research and natural history notes next to your animals.
-            It&apos;s free and covers reptiles and amphibians. There&apos;s no native app or label printing yet: it runs in any
-            browser, including your phone&apos;s.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold">Husbandry.Pro</h3>
-          <p className="text-muted">
-            A long-standing choice for breeders with racks. It has phone apps plus a web version, QR-code labels, feeding
-            reminders and weight charts. Forum users say it doesn&apos;t have a built-in genetics calculator.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold">ReptiCare</h3>
-          <p className="text-muted">
-            A simple iPhone tracker for pet keepers: feeding, weight, health, shedding and brumation, plus UVB bulb
-            replacement reminders and exportable records for vet visits. Free for up to 10 reptiles; breeding tools need
-            the paid Pro plan.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold">Reptile Buddy</h3>
-          <p className="text-muted">
-            A phone app (iPhone and Android) for tracking growth, feeding and breeding, with a barcode scanner and quick
-            rack-level entry. Users describe it as mobile-only, with no desktop version.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold">MorphMarket Husbandry</h3>
-          <p className="text-muted">
-            Free and built into MorphMarket, so it suits breeders who already sell there. It logs feeding, sheds, weights,
-            lengths and pairings, with bulk logging and QR scanning.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold">Herpville</h3>
-          <p className="text-muted">
-            Combines record keeping with a social marketplace: bulk feeding and shed logs, reminders, breeding cycles from
-            pairing to hatching, and QR label printing.
-          </p>
+          <Link href="/login" className="btn-primary inline-block px-6 py-3">Start free</Link>
         </div>
       </section>
 
