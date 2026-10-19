@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fromC, fromCm, lengthUnit, round, tempUnit, unitSystemFor } from "@/lib/units";
 import { GearPicker } from "@/components/gear-picker";
 import { categoryLabel } from "@/lib/gear";
-import { addGear, deleteEnvironmentLog, logEnvironment, removeGear } from "../actions";
+import { addGear, deleteEnvironmentLog, logEnvironment, removeGear, updateTargets } from "../actions";
 
 export const metadata: Metadata = { title: "Enclosure | Reptilytics" };
 
@@ -37,6 +37,7 @@ export default async function EnclosurePage({
   const u = unitSystemFor(profile);
   const T = tempUnit(u);
   const t = (v: number | null) => (v === null ? "—" : `${round(fromC(v, u))}${T}`);
+  const inUnits = (v: number | null) => (v === null ? undefined : round(fromC(v, u)));
 
   return (
     <div className="flex flex-col gap-8">
@@ -50,10 +51,6 @@ export default async function EnclosurePage({
               : null,
             e.substrate, e.heat_source, e.uvb_type ? `UVB: ${e.uvb_type}` : null,
           ].filter(Boolean).join(" · ")}
-        </p>
-        <p className="text-sm text-muted">
-          Targets: hot {t(e.target_hot_temp_c)} · cool {t(e.target_cool_temp_c)} · humidity{" "}
-          {e.target_humidity_pct === null ? "—" : `${e.target_humidity_pct}%`}
         </p>
       </div>
 
@@ -109,14 +106,39 @@ export default async function EnclosurePage({
       </section>
 
       <section>
-        <h2 className="mb-3 text-xl font-semibold">Log a reading</h2>
-        <form action={logEnvironment} className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-4">
+        <h2 className="mb-3 text-xl font-semibold">Targets</h2>
+        <form action={updateTargets} className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-5">
           <input type="hidden" name="enclosure_id" value={id} />
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Basking {T}
+            <input name="target_basking" type="number" step="0.1" defaultValue={inUnits(e.target_basking_temp_c)} className="field" />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Hot side {T}
+            <input name="target_hot" type="number" step="0.1" defaultValue={inUnits(e.target_hot_temp_c)} className="field" />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Cool side {T}
+            <input name="target_cool" type="number" step="0.1" defaultValue={inUnits(e.target_cool_temp_c)} className="field" />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Humidity %
+            <input name="target_humidity" type="number" min={0} max={100} defaultValue={e.target_humidity_pct ?? undefined} className="field" />
+          </label>
+          <button className="btn-secondary self-end">Save targets</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-xl font-semibold">Log a reading</h2>
+        <form action={logEnvironment} className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-5">
+          <input type="hidden" name="enclosure_id" value={id} />
+          <input name="basking" type="number" step="0.1" placeholder={`Basking ${T}`} className="field" />
           <input name="hot" type="number" step="0.1" placeholder={`Hot side ${T}`} className="field" />
           <input name="cool" type="number" step="0.1" placeholder={`Cool side ${T}`} className="field" />
           <input name="humidity" type="number" min={0} max={100} placeholder="Humidity %" className="field" />
           <input name="uv_index" type="number" step="0.1" min={0} placeholder="UV index" className="field" />
-          <input name="notes" placeholder="Notes (optional)" className="field col-span-2 sm:col-span-3" />
+          <input name="notes" placeholder="Notes (optional)" className="field col-span-2 sm:col-span-4" />
           <button className="btn-primary">Save</button>
         </form>
       </section>
@@ -129,6 +151,7 @@ export default async function EnclosurePage({
             <li key={l.id} className="flex items-start justify-between gap-3 p-3 text-sm">
               <div>
                 <p className="font-medium">
+                  {l.temperature_basking_c !== null ? `Basking ${t(l.temperature_basking_c)} · ` : ""}
                   Hot {t(l.temperature_hot_c)} · Cool {t(l.temperature_cool_c)} · {l.humidity_pct === null ? "—" : `${l.humidity_pct}%`} RH
                   {l.uv_index !== null ? ` · UVI ${l.uv_index}` : ""}
                 </p>

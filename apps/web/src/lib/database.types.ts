@@ -1105,6 +1105,7 @@ export type Database = {
           notes: string | null
           owner_id: string | null
           substrate: string | null
+          target_basking_temp_c: number | null
           target_cool_temp_c: number | null
           target_hot_temp_c: number | null
           target_humidity_pct: number | null
@@ -1123,6 +1124,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           substrate?: string | null
+          target_basking_temp_c?: number | null
           target_cool_temp_c?: number | null
           target_hot_temp_c?: number | null
           target_humidity_pct?: number | null
@@ -1141,6 +1143,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           substrate?: string | null
+          target_basking_temp_c?: number | null
           target_cool_temp_c?: number | null
           target_hot_temp_c?: number | null
           target_humidity_pct?: number | null
@@ -1165,6 +1168,7 @@ export type Database = {
           id: string
           notes: string | null
           recorded_at: string | null
+          temperature_basking_c: number | null
           temperature_cool_c: number | null
           temperature_hot_c: number | null
           uv_index: number | null
@@ -1175,6 +1179,7 @@ export type Database = {
           id?: string
           notes?: string | null
           recorded_at?: string | null
+          temperature_basking_c?: number | null
           temperature_cool_c?: number | null
           temperature_hot_c?: number | null
           uv_index?: number | null
@@ -1185,6 +1190,7 @@ export type Database = {
           id?: string
           notes?: string | null
           recorded_at?: string | null
+          temperature_basking_c?: number | null
           temperature_cool_c?: number | null
           temperature_hot_c?: number | null
           uv_index?: number | null
@@ -2153,6 +2159,7 @@ export type Database = {
           added_by: string | null
           authors: string[]
           chunk_count: number
+          citation: string | null
           cited_by_count: number | null
           content: string | null
           content_rights: string
@@ -2167,6 +2174,7 @@ export type Database = {
           ingest_error: string | null
           ingest_status: string
           license: string | null
+          note_topic: string | null
           open_access: boolean
           pmcid: string | null
           published_date: string | null
@@ -2183,6 +2191,7 @@ export type Database = {
           added_by?: string | null
           authors?: string[]
           chunk_count?: number
+          citation?: string | null
           cited_by_count?: number | null
           content?: string | null
           content_rights?: string
@@ -2197,6 +2206,7 @@ export type Database = {
           ingest_error?: string | null
           ingest_status?: string
           license?: string | null
+          note_topic?: string | null
           open_access?: boolean
           pmcid?: string | null
           published_date?: string | null
@@ -2213,6 +2223,7 @@ export type Database = {
           added_by?: string | null
           authors?: string[]
           chunk_count?: number
+          citation?: string | null
           cited_by_count?: number | null
           content?: string | null
           content_rights?: string
@@ -2227,6 +2238,7 @@ export type Database = {
           ingest_error?: string | null
           ingest_status?: string
           license?: string | null
+          note_topic?: string | null
           open_access?: boolean
           pmcid?: string | null
           published_date?: string | null
@@ -2258,6 +2270,48 @@ export type Database = {
             foreignKeyName: "research_documents_species_id_fkey"
             columns: ["species_id"]
             isOneToOne: false
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_harvest_openalex: {
+        Row: {
+          docs_added: number
+          hit_count: number | null
+          last_error: string | null
+          last_harvested_at: string | null
+          last_status: string | null
+          species_id: string
+        }
+        Insert: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id: string
+        }
+        Update: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_harvest_openalex_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_harvest_openalex_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
             referencedRelation: "species_detail_view"
             referencedColumns: ["id"]
           },
@@ -3634,6 +3688,15 @@ export type Database = {
       fn73_animal_photo_limit: {
         Args: { p_animal_id: string }
         Returns: number
+      }
+      fn74_next_openalex_species: {
+        Args: never
+        Returns: {
+          common_name: string
+          id: string
+          scientific_name: string
+          synonyms: string[]
+        }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }

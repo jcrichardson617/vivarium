@@ -27,6 +27,10 @@ functions), so every client gets the same rules.
 
 ## To do later
 
+- **Search Console (check ~Oct 21):** Indexing → Pages: note indexed / not-indexed counts and the not-indexed reasons. Sitemaps: confirm `https://www.reptilytics.com/sitemap.xml` shows Success. URL inspection → Request indexing for `/`, `/features` and a species page. Then Bing Webmaster Tools → Import from Google Search Console.
+- **OpenAlex API key:** get a free key at https://openalex.org/settings/api, then Supabase → Edge Functions → Secrets → `OPENALEX_API_KEY`. The OpenAlex harvester skips every run until it's set.
+- **Comparison page** (`/compare/reptile-husbandry-apps`): re-check competitors' features and prices every few months and update the "checked" date.
+
 - **Google sign-in branding** (from home): the Google screen says "Sign in to
   megvsfrjvmjpujarjksx.supabase.co"; verified branding makes it say Reptilytics.
   In Google Cloud → Google Auth Platform → Branding, set app name `Reptilytics`,
@@ -49,5 +53,6 @@ Papers are harvested automatically into `research_documents` / `research_chunks`
 - `embed-chunks` (every 20 s) embeds passages with Supabase's built-in gte-small model (384 dims).
 - `fn43_search_research` does hybrid (semantic + keyword) retrieval for Monty.
 - Admin → Library shows progress and has run-now buttons.
+- Herpetological Review Natural History Notes are added by hand in Admin → NH notes (paste citations, one per line). They are stored as summary-only documents (`external_source = 'herp_review'`): citation, topic, link to SSAR's PDF and our own summary, never the note text. They show on species pages and are searchable by Monty.
 
 Later: semantic chunking (needs a faster/paid embedding API), care-sheet sources (only with permission, otherwise link + our own summary).

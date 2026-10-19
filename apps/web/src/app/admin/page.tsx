@@ -13,12 +13,13 @@ export default async function AdminHome() {
   const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
-  const [species, products, requests, emails, papers] = await Promise.all([
+  const [species, products, requests, emails, papers, notes] = await Promise.all([
     supabase.from("species_submissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.rpc("fn36_feature_requests_admin"),
     supabase.from("outbound_emails").select("id", { count: "exact", head: true }).eq("status", "sent"),
     supabase.from("research_documents").select("id", { count: "estimated", head: true }),
+    supabase.from("research_documents").select("id", { count: "exact", head: true }).eq("external_source", "herp_review").is("summary", null),
   ]);
   const newRequests = (requests.data ?? []).filter((r) => r.status === "new").length;
 
@@ -28,6 +29,7 @@ export default async function AdminHome() {
     { href: "/admin/products", label: "Products", value: products.count ?? 0, note: "suggested, waiting for review", alert: (products.count ?? 0) > 0 },
     { href: "/admin/email", label: "Email", value: emails.count ?? 0, note: "sent from info@" },
     { href: "/admin/library", label: "Research library", value: papers.count ?? 0, note: "papers (approx.)" },
+    { href: "/admin/notes?todo=1", label: "Natural history notes", value: notes.count ?? 0, note: "need a summary" },
   ];
 
   return (

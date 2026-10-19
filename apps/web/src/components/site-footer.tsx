@@ -3,6 +3,7 @@ import Link from "next/link";
 export const CONTACT_EMAIL = "info@reptilytics.com";
 
 const LINKS = [
+  { href: "/compare/reptile-husbandry-apps", label: "Compare apps" },
   { href: "/glossary", label: "Glossary" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

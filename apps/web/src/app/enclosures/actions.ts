@@ -39,6 +39,7 @@ export async function createEnclosure(formData: FormData) {
       substrate: text(formData, "substrate"),
       heat_source: text(formData, "heat_source"),
       uvb_type: text(formData, "uvb_type"),
+      target_basking_temp_c: c(num(formData, "target_basking"), u),
       target_hot_temp_c: c(num(formData, "target_hot"), u),
       target_cool_temp_c: c(num(formData, "target_cool"), u),
       target_humidity_pct: num(formData, "target_humidity"),
@@ -50,11 +51,29 @@ export async function createEnclosure(formData: FormData) {
   redirect(`/enclosures/${data.id}`);
 }
 
+export async function updateTargets(formData: FormData) {
+  const { supabase, u } = await units();
+  const enclosureId = String(formData.get("enclosure_id"));
+  const { error } = await supabase
+    .from("enclosures")
+    .update({
+      target_basking_temp_c: c(num(formData, "target_basking"), u),
+      target_hot_temp_c: c(num(formData, "target_hot"), u),
+      target_cool_temp_c: c(num(formData, "target_cool"), u),
+      target_humidity_pct: num(formData, "target_humidity"),
+    })
+    .eq("id", enclosureId);
+  if (error) redirect(`/enclosures/${enclosureId}?error=${encodeURIComponent(error.message)}`);
+  revalidatePath(`/enclosures/${enclosureId}`);
+  redirect(`/enclosures/${enclosureId}?saved=Targets+saved`);
+}
+
 export async function logEnvironment(formData: FormData) {
   const { supabase, u } = await units();
   const enclosureId = String(formData.get("enclosure_id"));
   const { error } = await supabase.from("environment_logs").insert({
     enclosure_id: enclosureId,
+    temperature_basking_c: c(num(formData, "basking"), u),
     temperature_hot_c: c(num(formData, "hot"), u),
     temperature_cool_c: c(num(formData, "cool"), u),
     humidity_pct: num(formData, "humidity"),
