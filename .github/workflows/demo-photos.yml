@@ -1,0 +1,26 @@
+# One-off: download freely licensed demo photos listed in scripts/demo-photo-candidates.txt
+# into apps/web/public/demo/ and commit them to this branch.
+name: Demo photos
+on:
+  push:
+    branches: [claude/gracious-brown-t9amxs]
+    paths: [scripts/demo-photo-candidates.txt]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p apps/web/public/demo/candidates
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            curl -fsSL -A "HerpAtlas/1.0 (https://www.reptilytics.com; info@reptilytics.com)" -o "apps/web/public/demo/candidates/$name" "$url" || echo "failed: $name"
+            sleep 1
+          done < scripts/demo-photo-candidates.txt
+          ls -la apps/web/public/demo/candidates
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/public/demo/candidates
+          git commit -m "Demo photo candidates (Wikimedia Commons, CC0 / public domain)" && git push
