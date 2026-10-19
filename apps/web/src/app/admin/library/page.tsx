@@ -7,7 +7,8 @@ import { runJob } from "./actions";
 export const metadata: Metadata = { title: "Research library | Reptilytics" };
 
 const JOBS = [
-  { job: "harvest-research", label: "Harvest next", hint: "every 10 min" },
+  { job: "harvest-research", label: "Harvest next", hint: "Europe PMC, every 10 min" },
+  { job: "harvest-openalex", label: "Harvest OpenAlex", hint: "every 20 min" },
   { job: "fetch-fulltext", label: "Fetch full text", hint: "every 2 min" },
   { job: "embed-chunks", label: "Embed passages", hint: "every 20 s" },
 ];
@@ -38,7 +39,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
     .limit(30);
   if (q) docsQuery = docsQuery.ilike("title", `%${q}%`);
 
-  const [docs, ready, fullText, ftPending, passages, embedded, speciesTotal, { data: speciesRuns }, { data: topics }, { data: recent }] =
+  const [docs, ready, fullText, ftPending, passages, embedded, speciesTotal, { data: speciesRuns }, { data: topics }, { data: recent }, { data: openalexRuns }] =
     await Promise.all([
       docCount(),
       docCount((q) => q.eq("ingest_status", "ready")),
@@ -53,6 +54,10 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
         .order("last_harvested_at", { ascending: false }),
       supabase.from("research_harvest_topics").select("label, last_harvested_at, last_status, last_error, hit_count, docs_added").order("label"),
       docsQuery,
+      supabase
+        .from("research_harvest_openalex")
+        .select("last_harvested_at, last_status, last_error, hit_count, docs_added, species(common_name, scientific_name)")
+        .order("last_harvested_at", { ascending: false }),
     ]);
 
   const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
@@ -60,7 +65,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
     { label: "Papers", value: docs.toLocaleString(), sub: `${ready.toLocaleString()} searchable` },
     { label: "Full text", value: fullText.toLocaleString(), sub: `${ftPending.toLocaleString()} queued` },
     { label: "Passages", value: passages.toLocaleString(), sub: `${pct(embedded, passages)}% embedded` },
-    { label: "Species covered", value: `${speciesRuns?.length ?? 0} / ${speciesTotal}`, sub: `${topics?.filter((t) => t.last_harvested_at).length ?? 0} / ${topics?.length ?? 0} topics` },
+    { label: "Species covered", value: `${speciesRuns?.length ?? 0} / ${speciesTotal}`, sub: `${topics?.filter((t) => t.last_harvested_at).length ?? 0} / ${topics?.length ?? 0} topics · OpenAlex ${openalexRuns?.length ?? 0} / ${speciesTotal}` },
   ];
 
   return (
@@ -69,7 +74,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
         <AdminNav current="/admin/library" />
         <h1 className="text-2xl font-bold">Research library</h1>
         <p className="text-muted">
-          HerpAtlas pulls papers from Europe PMC automatically: species by species plus topic sweeps. Open-access papers
+          HerpAtlas pulls papers from Europe PMC automatically (species by species plus topic sweeps), and from OpenAlex
+          for journals PubMed doesn&apos;t index. Open-access papers
           under CC BY / CC BY-SA / CC0 get full text; everything else keeps its abstract.
         </p>
       </div>
@@ -103,6 +109,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
         <ul className="divide-y divide-border rounded-lg border border-border bg-card text-sm">
           {[
             ...(speciesRuns ?? []).map((r) => ({ name: r.species?.common_name ?? r.species?.scientific_name ?? "—", kind: "Species", ...r })),
+            ...(openalexRuns ?? []).map((r) => ({ name: r.species?.common_name ?? r.species?.scientific_name ?? "—", kind: "OpenAlex", ...r })),
             ...(topics ?? []).filter((t) => t.last_harvested_at).map((t) => ({ name: t.label, kind: "Topic", ...t })),
           ]
             .sort((a, b) => (b.last_harvested_at ?? "").localeCompare(a.last_harvested_at ?? ""))

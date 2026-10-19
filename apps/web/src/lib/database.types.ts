@@ -2275,6 +2275,48 @@ export type Database = {
           },
         ]
       }
+      research_harvest_openalex: {
+        Row: {
+          docs_added: number
+          hit_count: number | null
+          last_error: string | null
+          last_harvested_at: string | null
+          last_status: string | null
+          species_id: string
+        }
+        Insert: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id: string
+        }
+        Update: {
+          docs_added?: number
+          hit_count?: number | null
+          last_error?: string | null
+          last_harvested_at?: string | null
+          last_status?: string | null
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_harvest_openalex_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_harvest_openalex_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: true
+            referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       research_harvest_state: {
         Row: {
           docs_added: number
@@ -3646,6 +3688,15 @@ export type Database = {
       fn73_animal_photo_limit: {
         Args: { p_animal_id: string }
         Returns: number
+      }
+      fn74_next_openalex_species: {
+        Args: never
+        Returns: {
+          common_name: string
+          id: string
+          scientific_name: string
+          synonyms: string[]
+        }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
