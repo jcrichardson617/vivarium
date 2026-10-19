@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
   const withCare = new Set((care ?? []).map((c) => c.species_id));
 
-  const pages = ["", "/features", "/species", "/genetics", "/research", "/tools", "/glossary", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
+  const pages = ["", "/features", "/species", "/genetics", "/research", "/tools", "/compare/reptile-husbandry-apps", "/glossary", "/about", "/contact", "/terms", "/privacy", "/login"].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.6,

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-// Draft: noindex and left out of the sitemap until reviewed.
 export const metadata: Metadata = {
   title: "Best Reptile Husbandry Apps Compared (2026) | Reptilytics",
   description:
     "Reptilytics, Husbandry.Pro, ReptiCare, Reptile Buddy, MorphMarket Husbandry and Herpville compared: platforms, price, breeding, genetics and enclosure logging.",
   alternates: { canonical: "/compare/reptile-husbandry-apps" },
-  robots: { index: false, follow: true },
 };
 
 const CHECKED = "October 2026";
