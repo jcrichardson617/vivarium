@@ -8,7 +8,26 @@ export const metadata: Metadata = { title: "Settings | Reptilytics" };
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ error?: string; saved?: string }> }) {
   const { error, saved } = await searchParams;
   const supabase = await createClient();
-  const { data: profile } = await supabase.rpc("fn72_my_profile").single();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const [{ data: profile }, { data: prefs }, { data: owned }, { data: mutes }] = await Promise.all([
+    supabase.rpc("fn72_my_profile").single(),
+    supabase.rpc("fn76_my_email_prefs").maybeSingle(),
+    supabase
+      .from("animal_ownership")
+      .select("animals!inner(status, species(id, common_name, scientific_name))")
+      .eq("user_id", user!.id)
+      .eq("is_current_owner", true)
+      .eq("animals.status", "active"),
+    supabase.from("research_email_mutes").select("species_id"),
+  ]);
+  const keptSpecies = [
+    ...new Map(
+      (owned ?? []).flatMap((o) => (o.animals?.species ? [[o.animals.species.id, o.animals.species] as const] : [])),
+    ).values(),
+  ].sort((a, b) => (a.common_name ?? a.scientific_name).localeCompare(b.common_name ?? b.scientific_name));
+  const mutedIds = new Set((mutes ?? []).map((m) => m.species_id));
 
   return (
     <section className="mx-auto max-w-md">
@@ -48,13 +67,37 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             <span className="block text-xs text-muted">Only totals are ever shown, and only once 5+ keepers use a product.</span>
           </span>
         </label>
-        <label className="flex items-start gap-2 text-sm">
-          <input type="checkbox" name="email_digest" defaultChecked={profile?.email_digest ?? true} className="mt-1" />
-          <span>
-            Weekly email digest
-            <span className="block text-xs text-muted">Mondays: who&apos;s due to eat and new research for the species you keep. Skipped when there&apos;s nothing new.</span>
-          </span>
-        </label>
+        <fieldset className="flex flex-col gap-2 text-sm">
+          <label className="flex items-start gap-2">
+            <input type="checkbox" name="email_digest" defaultChecked={profile?.email_digest ?? true} className="mt-1" />
+            <span>
+              Weekly email digest
+              <span className="block text-xs text-muted">Mondays, and skipped when there&apos;s nothing new.</span>
+            </span>
+          </label>
+          <div className="ml-6 flex flex-col gap-2">
+            <label className="flex items-start gap-2">
+              <input type="checkbox" name="email_feeding" defaultChecked={prefs?.email_feeding ?? true} className="mt-1" />
+              <span>Feeding reminders <span className="block text-xs text-muted">Animals due or overdue to eat.</span></span>
+            </label>
+            <label className="flex items-start gap-2">
+              <input type="checkbox" name="email_research" defaultChecked={prefs?.email_research ?? true} className="mt-1" />
+              <span>New research <span className="block text-xs text-muted">Papers added that week for the species you keep.</span></span>
+            </label>
+            {keptSpecies.length > 0 && (
+              <div className="ml-6 flex flex-col gap-1">
+                <span className="text-xs text-muted">Research for:</span>
+                {keptSpecies.map((sp) => (
+                  <label key={sp.id} className="flex items-center gap-2">
+                    <input type="hidden" name="kept_species" value={sp.id} />
+                    <input type="checkbox" name="research_species" value={sp.id} defaultChecked={!mutedIds.has(sp.id)} />
+                    {sp.common_name ?? <i>{sp.scientific_name}</i>}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        </fieldset>
         <button className="btn-primary self-start">Save</button>
       </form>
 

@@ -21,8 +21,23 @@ export async function saveSettings(formData: FormData) {
       unit_system: unit === "metric" || unit === "imperial" ? unit : null,
       share_gear: formData.get("share_gear") === "on",
       email_digest: formData.get("email_digest") === "on",
+      email_feeding: formData.get("email_feeding") === "on",
+      email_research: formData.get("email_research") === "on",
     })
     .eq("id", user!.id);
+
+  // Research updates per species: every species kept is listed; unchecked ones are muted.
+  const kept = formData.getAll("kept_species").map(String);
+  const wanted = new Set(formData.getAll("research_species").map(String));
+  const muted = kept.filter((id) => !wanted.has(id));
+  if (!error && kept.length) {
+    await supabase.from("research_email_mutes").delete().eq("user_id", user!.id).in("species_id", kept.filter((id) => wanted.has(id)));
+    if (muted.length) {
+      await supabase
+        .from("research_email_mutes")
+        .upsert(muted.map((species_id) => ({ user_id: user!.id, species_id })), { onConflict: "user_id,species_id", ignoreDuplicates: true });
+    }
+  }
 
   if (error) {
     const message = error.code === "23505" ? `The username "${username}" is taken.` : error.message;
