@@ -140,7 +140,9 @@ def parse_issue(vol, iss, pdf):
 
 class Db:
     def __init__(self, key):
-        self.h = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        self.h = {"apikey": key, "Content-Type": "application/json"}
+        if not key.startswith("sb_"):  # legacy JWT keys also go in Authorization; new sb_ keys must not
+            self.h["Authorization"] = f"Bearer {key}"
 
     def get(self, path):
         r = requests.get(f"{SUPABASE_URL}/rest/v1/{path}", headers=self.h, timeout=60)
