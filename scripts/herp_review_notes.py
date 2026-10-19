@@ -34,14 +34,25 @@ ISSUE_LINK = re.compile(
     r"Herpetological Review (\d+)\((\d+)\)\. Natural History Notes \(<a href=\"([^\"]+)\"", re.I
 )
 # "CROTALUS HORRIDUS (Timber Rattlesnake). DIET." followed by the note's text.
+# Up to four capitalized words so a group heading ("SALAMANDERS") that runs into
+# the first note's name is caught and dropped (see GROUPS).
 HEADING = re.compile(
-    r"(?<![A-Za-z])([A-Z][A-Z\-]{2,}(?: [A-Z×][A-Z\-]{1,}){1,2}) ?\(([^()]{2,80})\)\. ?"
+    r"(?<![A-Za-z])([A-Z][A-Z\-]{2,}(?: [A-Z×][A-Z\-]{1,}){1,3}) ?\(([^()]{2,80})\)\. ?"
     r"([A-Z][A-Z0-9 ,;:/&'’\-–]{2,120}?)\. (?=[A-Z0-9“\"(])"
 )
+GROUPS = {
+    "CAUDATA", "SALAMANDERS", "ANURA", "FROGS", "TOADS", "GYMNOPHIONA", "CAECILIANS", "TESTUDINES", "TURTLES",
+    "CROCODYLIA", "CROCODILIANS", "SQUAMATA", "LIZARDS", "SNAKES", "AMPHISBAENIA", "AMPHISBAENIANS", "RHYNCHOCEPHALIA",
+}
+# Running header on every page; removed so it doesn't run into note text.
+RUNNING_HEADER = re.compile(r"NATURAL HISTORY NOTES|Herpetological Review \d+\(\d\),? \d{4}", re.I)
+PARTICLES = {"DE", "DA", "DOS", "DAS", "DO", "DI", "DEL", "LA", "VAN", "VON", "DER", "DEN", "LE"}
+UPPER = "A-ZÀ-ÖØ-Þ"
+
 # Authors' names in capitals, each followed by an address and usually an e-mail.
 # Only initials carry a period, so "USA. JOHN SMITH" doesn't swallow the country.
-NAME_PART = r"(?:[A-Z]\.|[A-Z][A-Z'’\-]+)"
-AUTHOR = re.compile(rf"(?<![A-Za-z.])({NAME_PART}(?: {NAME_PART}){{1,4}}), (?=[^;]{{0,300}}?e-?mail)")
+NAME_PART = rf"(?:[{UPPER}]\.|[{UPPER}][{UPPER}'’\-]+)"
+AUTHOR = re.compile(rf"(?<![A-Za-zÀ-ÿ.])({NAME_PART}(?: {NAME_PART}){{1,4}}), (?=[^;]{{0,300}}?e-?mail)")
 
 
 def sentence(s: str) -> str:
@@ -49,7 +60,17 @@ def sentence(s: str) -> str:
 
 
 def title_name(s: str) -> str:
-    return " ".join(w[:1] + w[1:].lower() if len(w) > 2 else w for w in s.split())
+    words = []
+    for i, w in enumerate(s.split()):
+        if i and w in PARTICLES:
+            words.append(w.lower())
+        elif re.fullmatch(r"I{2,3}|IV|JR\.?|SR\.?", w):
+            words.append(w if w.startswith("I") else w.title())
+        elif w.endswith(".") and len(w) <= 3:
+            words.append(w)
+        else:
+            words.append("-".join(p[:1] + p[1:].lower() for p in w.split("-")))
+    return " ".join(words)
 
 
 def join_names(names):
@@ -76,14 +97,25 @@ def page_texts(pdf: bytes):
     return out
 
 
+def edge_lines(text, n=6):
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    return lines[:n] + lines[-n:]
+
+
 def journal_page_offset(pages):
-    """Journal page = PDF page index + offset, by majority vote over printed page numbers."""
+    """Journal page = PDF page index + offset, by majority vote over printed page numbers
+    (a line that is just a number, or a number beside the running header)."""
     votes = Counter()
     for i, text in enumerate(pages):
-        lines = [l.strip() for l in text.splitlines() if l.strip()]
-        for line in lines[:4] + lines[-4:]:
+        for line in edge_lines(text):
+            nums = []
             if re.fullmatch(r"\d{1,4}", line):
-                votes[int(line) - i] += 1
+                nums = [int(line)]
+            elif RUNNING_HEADER.search(line):
+                rest = RUNNING_HEADER.sub(" ", line)
+                nums = [int(x) for x in re.findall(r"(?<![\d(])(\d{1,4})(?![\d)])", rest)]
+            for num in nums:
+                votes[num - i] += 1
     if not votes:
         return None
     offset, count = votes.most_common(1)[0]
@@ -101,7 +133,7 @@ def parse_issue(vol, iss, pdf):
     full, starts = "", []
     for text in pages:
         starts.append(len(full))
-        full += normalize(text) + " "
+        full += normalize(RUNNING_HEADER.sub(" ", text)) + " "
 
     def page_at(pos):
         i = max(k for k, s in enumerate(starts) if s <= pos)
@@ -113,10 +145,16 @@ def parse_issue(vol, iss, pdf):
         end = heads[n + 1].start() if n + 1 < len(heads) else len(full)
         body = full[m.end():end]
         words = m.group(1).split()
+        while len(words) > 2 and words[0] in GROUPS:
+            words = words[1:]
+        if len(words) > 3:
+            continue
         taxon = " ".join([sentence(words[0])] + [w.lower() for w in words[1:]])
         common = re.sub(r"\s+", " ", m.group(2)).strip()
         topic = ". ".join(sentence(t.strip()) for t in m.group(3).split(". ") if t.strip())
-        first, last = page_at(m.start()), page_at(max(m.start(), end - 1))
+        # Last page = where the note's own text ends (not a page number printed after it).
+        text_end = m.end() + len(body.rstrip(" 0123456789"))
+        first, last = page_at(m.start()), page_at(max(m.start(), text_end - 1))
         pages_str = None if first is None else (str(first) if first == last else f"{first}–{last}")
         names = []
         for a in AUTHOR.findall(body):
@@ -135,7 +173,7 @@ def parse_issue(vol, iss, pdf):
             "citation": f"Herpetological Review {vol}({iss})" + (f": {pages_str}" if pages_str else ""),
             "key": f"{vol}:{key_pages}:{taxon}:{topic}".lower(),
         })
-    return notes, len(pages), offset
+    return notes, len(pages), offset, pages
 
 
 class Db:
@@ -223,7 +261,7 @@ def main():
         try:
             res = requests.get(url, headers=UA, timeout=180)
             res.raise_for_status()
-            notes, n_pages, offset = parse_issue(vol, iss, res.content)
+            notes, n_pages, offset, pages = parse_issue(vol, iss, res.content)
         except Exception as e:  # one bad PDF shouldn't stop the rest
             print(f"HR {vol}({iss}): failed: {e}")
             continue
@@ -241,6 +279,10 @@ def main():
         total += len(notes)
         matched += hits
         print(f"HR {vol}({iss}): {n_pages} PDF pages, page offset {offset}, {len(notes)} notes, {hits} for our species")
+        if dry and offset is None and (vol, iss) == found[0][:2]:
+            for i in (1, 2):
+                if i < len(pages):
+                    print(f"    page {i} edges: {edge_lines(pages[i], 4)!r}")
         if dry:
             for note in notes[:5]:
                 print(f"    sample: {note['citation']} · {note['title']} · {note['authors'] or 'no authors found'}")
