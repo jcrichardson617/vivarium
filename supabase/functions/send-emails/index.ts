@@ -51,6 +51,9 @@ async function sendWelcomes(key: string) {
       <p>Free tools while you're here: the <a href="${SITE}/genetics">morph genetics calculator</a>,
       <a href="${SITE}/tools">prey size, hatch date and enclosure size calculators</a>, and the
       <a href="${SITE}/research">research library</a>.</p>
+      <p><strong>Help spread the word.</strong> Reptilytics gets better with every keeper who joins: the growth and care
+      comparisons come from the community. If you know other keepers, breeders or a local herp society, forward this
+      email or share <a href="${SITE}">reptilytics.com</a> with them. It's free for them too.</p>
       <p>Something missing or broken? Just reply to this email.</p>`);
     if ((await send(key, u.email, "Welcome to Reptilytics", html)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "welcome" });
