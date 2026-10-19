@@ -138,8 +138,11 @@ def journal_page_offset(pages):
                 votes[num - i] += 1
     if not votes:
         return None
-    offset, count = votes.most_common(1)[0]
-    return offset if count >= max(2, len(pages) // 3) else None
+    # Whole issues have many unnumbered pages (cover, ads), so require a clear winner rather than most pages.
+    top = votes.most_common(2)
+    offset, count = top[0]
+    runner_up = top[1][1] if len(top) > 1 else 0
+    return offset if count >= 3 and count >= 2 * runner_up else None
 
 
 def normalize(text: str) -> str:
@@ -147,18 +150,43 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text)
 
 
-NOTES_PAGE = re.compile(r"NATURAL HISTORY NOTES", re.I)
+NOTES_HEADING = re.compile(r"^\s*NATURAL HISTORY NOTES\s*$", re.M)
+# Sections that follow Natural History Notes in a whole issue.
+NEXT_SECTION = re.compile(r"^\s*(GEOGRAPHIC DISTRIBUTION|BOOK REVIEWS?|HERPETOLOGICAL HUSBANDRY|NEW(LY)? PUBLICATIONS?|MEETINGS)\s*$", re.M)
+
+
+def notes_pages(pages):
+    """Pages of a whole issue from the NATURAL HISTORY NOTES heading to the next section heading.
+    Older issues print the heading once; newer ones also use it as the running header."""
+    start = next((i for i, t in enumerate(pages) if NOTES_HEADING.search(t)), None)
+    if start is None:
+        return []
+    end = len(pages)
+    for i in range(start, len(pages)):
+        m = NEXT_SECTION.search(pages[i])
+        # The next section can begin on the last Notes page; keep that page, stop after it.
+        if m and not (i == start and m.start() < NOTES_HEADING.search(pages[i]).start()):
+            end = i + 1
+            break
+    return list(range(start, end))
 
 
 def parse_issue(vol, iss, pdf, whole=False, part=1):
     pages = page_texts(pdf)
     offset = journal_page_offset(pages)
     # In a whole issue only the Natural History Notes pages count (not articles or distribution notes).
-    keep = [i for i, t in enumerate(pages) if not whole or any(NOTES_PAGE.search(l) for l in edge_lines(t, 4))]
+    keep = notes_pages(pages) if whole else list(range(len(pages)))
+    texts = {i: pages[i] for i in keep}
+    if whole and keep:
+        first, last = keep[0], keep[-1]
+        texts[first] = texts[first][NOTES_HEADING.search(texts[first]).start():]  # drop the article before
+        end = NEXT_SECTION.search(texts[last])
+        if end:
+            texts[last] = texts[last][: end.start()]  # and the next section after
     full, starts = "", []
     for i in keep:
         starts.append((len(full), i))
-        full += normalize(RUNNING_HEADER.sub(" ", pages[i])) + " "
+        full += normalize(RUNNING_HEADER.sub(" ", texts[i])) + " "
 
     def page_at(pos):
         i = max(k for s, k in starts if s <= pos) if starts else 0
@@ -310,6 +338,13 @@ def main():
         matched += hits
         print(f"HR {vol}({iss}) {year}{' part ' + str(item['part']) if item['part'] > 1 else ''}: "
               f"{n_pages} PDF pages, page offset {offset}, {len(notes)} notes, {hits} for our species")
+        if dry and item["whole"] and not notes:
+            hits_nh = [i for i, t in enumerate(pages) if re.search(r"natural history", t, re.I)]
+            print(f"    no notes: 'natural history' on PDF pages {hits_nh[:8]}")
+            for i in hits_nh[:1]:
+                t = pages[i]
+                k = re.search(r"natural history", t, re.I).start()
+                print(f"    context: {t[max(0, k - 150):k + 450]!r}")
         if dry and offset is None and item is found[0]:
             for i in (1, 2):
                 if i < len(pages):
