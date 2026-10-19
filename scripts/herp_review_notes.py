@@ -2,13 +2,15 @@
 open-access PDFs into the HerpAtlas research library.
 
 For each issue listed on SSAR's PDF page, downloads the Natural History Notes
-section, splits it into notes by their headings ("GENUS SPECIES (Common Name).
+section (2021 on) or the whole issue (1967–2020, reading only its Natural History
+Notes pages), splits it into notes by their headings ("GENUS SPECIES (Common Name).
 TOPIC."), and saves a summary-only document per note whose species is in our
 list: citation, topic and a link to the PDF, never the note text (same shape as
 Admin -> NH notes). Safe to re-run: notes are keyed by volume, pages, taxon and
 topic, and summaries written by hand are kept.
 
-Usage: python scripts/herp_review_notes.py [--dry-run] [--issues N]
+Usage: python scripts/herp_review_notes.py [--dry-run] [--issues N | --volumes A-B]
+(--issues 0 reads every issue since 1967)
 Writes need SUPABASE_SERVICE_ROLE_KEY; --dry-run only reads and prints.
 """
 
@@ -30,8 +32,12 @@ PUBLISHABLE_KEY = "sb_publishable_H4uyBL0TXOgId15hh4l6Lg_JlUBS5R6"
 PDF_PAGE = "https://ssarherps.org/herpetological-review-pdfs/"
 UA = {"User-Agent": "Mozilla/5.0 (compatible; HerpAtlas/1.0; +https://www.reptilytics.com)"}
 
+# "Herpetological Review 51 (2020)" headings group the issue links by year.
+YEAR_HEADING = re.compile(r">\s*Herpetological Review (\d+) \((\d{4})\)\s*<")
+# "Herpetological Review 56(1). Natural History Notes (<a href=…>PDF</a>)" (2021 on: one PDF per section)
+# "Herpetological Review 50(1). (<a href=…>PDF</a>)" or "… 30(1). pp 1-34 (<a …>PDF</a>)" (to 2020: whole issues)
 ISSUE_LINK = re.compile(
-    r"Herpetological Review (\d+)\((\d+)\)\. Natural History Notes \(<a href=\"([^\"]+)\"", re.I
+    r"Herpetological Review (\d+)\((\d+)\)\.?\s*([^(<]*?)\s*\(<a href=\"([^\"]+)\"[^>]*>\s*PDF\s*</a>", re.I
 )
 # "CROTALUS HORRIDUS (Timber Rattlesnake). DIET." followed by the note's text.
 # Up to four capitalized words so a group heading ("SALAMANDERS") that runs into
@@ -80,13 +86,27 @@ def join_names(names):
 
 
 def issues():
+    """PDFs to read, newest first: dicts with vol, iss, year, url, part and whole (a whole issue,
+    so only its Natural History Notes pages are read)."""
     page = requests.get(PDF_PAGE, headers=UA, timeout=60).text
-    seen = set()
-    for vol, iss, href in ISSUE_LINK.findall(page):
-        if (vol, iss) in seen:
-            continue
-        seen.add((vol, iss))
-        yield int(vol), int(iss), html.unescape(href)
+    years = [(m.start(), int(m.group(1)), int(m.group(2))) for m in YEAR_HEADING.finditer(page)]
+    sections, wholes = {}, {}
+    for m in ISSUE_LINK.finditer(page):
+        vol, iss, label, href = int(m.group(1)), int(m.group(2)), m.group(3).strip(), html.unescape(m.group(4))
+        year = next((y for pos, v, y in reversed(years) if pos < m.start() and v == vol), vol + 1969)
+        item = {"vol": vol, "iss": iss, "year": year, "url": href}
+        if re.search(r"natural history notes", label, re.I):
+            sections.setdefault(vol, []).append({**item, "whole": False})
+        elif not label or re.match(r"pp?\.?\s*\d", label, re.I):
+            wholes.setdefault(vol, []).append({**item, "whole": True})
+    out = []
+    for vol in sorted(set(sections) | set(wholes), reverse=True):
+        items = sections.get(vol) or wholes.get(vol, [])  # prefer the Notes-only PDFs where SSAR has them
+        seen = Counter()
+        for item in items:
+            seen[item["iss"]] += 1
+            out.append({**item, "part": seen[item["iss"]]})
+    return sorted(out, key=lambda i: (i["vol"], i["iss"], i["part"]), reverse=True)
 
 
 def page_texts(pdf: bytes):
@@ -127,16 +147,21 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text)
 
 
-def parse_issue(vol, iss, pdf):
+NOTES_PAGE = re.compile(r"NATURAL HISTORY NOTES", re.I)
+
+
+def parse_issue(vol, iss, pdf, whole=False, part=1):
     pages = page_texts(pdf)
     offset = journal_page_offset(pages)
+    # In a whole issue only the Natural History Notes pages count (not articles or distribution notes).
+    keep = [i for i, t in enumerate(pages) if not whole or any(NOTES_PAGE.search(l) for l in edge_lines(t, 4))]
     full, starts = "", []
-    for text in pages:
-        starts.append(len(full))
-        full += normalize(RUNNING_HEADER.sub(" ", text)) + " "
+    for i in keep:
+        starts.append((len(full), i))
+        full += normalize(RUNNING_HEADER.sub(" ", pages[i])) + " "
 
     def page_at(pos):
-        i = max(k for k, s in enumerate(starts) if s <= pos)
+        i = max(k for s, k in starts if s <= pos) if starts else 0
         return i + offset if offset is not None else None
 
     heads = list(HEADING.finditer(full))
@@ -147,7 +172,8 @@ def parse_issue(vol, iss, pdf):
         words = m.group(1).split()
         while len(words) > 2 and words[0] in GROUPS:
             words = words[1:]
-        if len(words) > 3:
+        # Distribution notes ("USA: TEXAS: …") and other non-notes have colons in the "topic".
+        if len(words) > 3 or ":" in m.group(3):
             continue
         taxon = " ".join([sentence(words[0])] + [w.lower() for w in words[1:]])
         common = re.sub(r"\s+", " ", m.group(2)).strip()
@@ -161,7 +187,7 @@ def parse_issue(vol, iss, pdf):
             name = title_name(a.strip())
             if name not in names and len(name) > 4:
                 names.append(name)
-        key_pages = pages_str or f"{iss}-{n + 1}"
+        key_pages = pages_str or f"{iss}-{part}-{n + 1}"
         notes.append({
             "taxon": taxon,
             "binomial": " ".join(words[:2]).lower(),
@@ -240,7 +266,8 @@ def save(db, note, species_id, year, pdf_url):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--issues", type=int, default=0, help="only the N most recent issues")
+    ap.add_argument("--issues", type=int, default=8, help="only the N most recent PDFs (0 = all, back to 1967)")
+    ap.add_argument("--volumes", default="", help="only these volumes, e.g. 30-35 (overrides --issues)")
     args = ap.parse_args()
 
     service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -250,20 +277,23 @@ def main():
     db = Db(service_key or PUBLISHABLE_KEY)
     by_name = species_index(db)
 
-    found = sorted(issues(), reverse=True)
-    if args.issues:
+    found = issues()
+    print(f"{len(found)} PDFs listed ({sum(not i['whole'] for i in found)} Notes sections, {sum(i['whole'] for i in found)} whole issues)")
+    if args.volumes:
+        lo, _, hi = args.volumes.partition("-")
+        found = [i for i in found if int(lo) <= i["vol"] <= int(hi or lo)]
+    elif args.issues:
         found = found[: args.issues]
-    print(f"{len(found)} issues with Natural History Notes PDFs")
 
     total = matched = 0
-    for vol, iss, url in found:
-        year = vol + 1969
+    for item in found:
+        vol, iss, year, url = item["vol"], item["iss"], item["year"], item["url"]
         try:
-            res = requests.get(url, headers=UA, timeout=180)
+            res = requests.get(url, headers=UA, timeout=300)
             res.raise_for_status()
-            notes, n_pages, offset, pages = parse_issue(vol, iss, res.content)
+            notes, n_pages, offset, pages = parse_issue(vol, iss, res.content, item["whole"], item["part"])
         except Exception as e:  # one bad PDF shouldn't stop the rest
-            print(f"HR {vol}({iss}): failed: {e}")
+            print(f"HR {vol}({iss}) part {item['part']}: failed: {e}")
             continue
         view_url = re.sub(r"([?&])dl=1", r"\1dl=0", url)
         hits = 0
@@ -278,8 +308,9 @@ def main():
                 save(db, note, sid, year, view_url)
         total += len(notes)
         matched += hits
-        print(f"HR {vol}({iss}): {n_pages} PDF pages, page offset {offset}, {len(notes)} notes, {hits} for our species")
-        if dry and offset is None and (vol, iss) == found[0][:2]:
+        print(f"HR {vol}({iss}) {year}{' part ' + str(item['part']) if item['part'] > 1 else ''}: "
+              f"{n_pages} PDF pages, page offset {offset}, {len(notes)} notes, {hits} for our species")
+        if dry and offset is None and item is found[0]:
             for i in (1, 2):
                 if i < len(pages):
                     print(f"    page {i} edges: {edge_lines(pages[i], 4)!r}")
