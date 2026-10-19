@@ -7,7 +7,7 @@ import { useState } from "react";
 // database; dates are written relatively so the server and browser render the same.
 // Photos in /public/demo are CC0 / public domain, from Wikimedia Commons:
 // Queen Alphabet the ball python (Capen Hill Nature Sanctuary), Ball python and rock,
-// Ball Python (Python regius), Killer bee ball python snake, Leopard gecko wink,
+// Killer bee ball python snake, Leopard gecko wink,
 // Super Empty Back Crested Gecko, Western hognose at a pet store.
 
 const TABS = ["Animal", "Collection", "Enclosure"] as const;
@@ -44,7 +44,7 @@ const COLLECTION = [
   { name: "Pepper", photo: "/demo/pepper.jpg", species: "Western Hognose", morph: "Normal", sex: "F", weight: "212 g", due: "Due in 5 days", tone: "ok" },
 ] as const;
 
-const MANGO_PHOTOS = ["/demo/mango-1.jpg", "/demo/mango-2.jpg", "/demo/mango-3.jpg"];
+const MANGO_PHOTOS = ["/demo/mango-1.jpg", "/demo/mango-2.jpg"];
 
 const READINGS = [
   { when: "Today, 8:10 am", basking: 34.1, hot: 32.0, cool: 26.5, rh: 62 },
@@ -131,10 +131,10 @@ function AnimalView() {
         <p className="text-sm text-muted">Ball Python <span className="italic">· Python regius</span> · female · Normal, het Clown</p>
         <p className="text-xs text-muted">Hatched Apr 2024 · Sire: Atlas · Dam: Saffron · Rack A, tub 3</p>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {MANGO_PHOTOS.map((src, i) => (
           <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border">
-            <Image src={src} alt={i === 0 ? "Mango, a ball python, on aspen bedding" : "Mango"} fill sizes="(min-width: 768px) 240px, 33vw" className="object-cover" />
+            <Image src={src} alt={i === 0 ? "Mango, a ball python, on aspen bedding" : "Mango"} fill sizes="(min-width: 768px) 360px, 50vw" className="object-cover" />
           </div>
         ))}
       </div>
