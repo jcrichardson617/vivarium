@@ -40,21 +40,56 @@ async function sendWelcomes(key: string) {
   let sent = 0;
   for (const u of data ?? []) {
     const hi = u.display_name ? `Hi ${esc(u.display_name)},` : "Hi,";
+    const h = (text: string) => `<h2 style="font-size:16px;margin:28px 0 8px">${text}</h2>`;
     const html = layout(`
       <p>${hi}</p>
-      <p>Welcome to Reptilytics. Three things get you set up:</p>
-      <ol>
-        <li><a href="${SITE}/animals/new">Add your first animal</a>: name, species, sex and hatch date.</li>
-        <li><a href="${SITE}/enclosures/new">Set up an enclosure</a> with its temperatures and gear.</li>
-        <li>Set a feeding interval on each animal, and we'll flag who's due to eat.</li>
+      <p>Welcome to Reptilytics, and thanks for joining. Reptilytics is a home for your reptile and amphibian records:
+      every feeding, weight, shed and enclosure reading in one place, with the patterns pulled out for you so you can
+      spot a problem early and see how your animals are really doing.</p>
+
+      ${h("Get set up in ten minutes")}
+      <ol style="padding-left:20px">
+        <li style="margin-bottom:8px"><a href="${SITE}/animals/new"><strong>Add your first animal.</strong></a>
+          Name, species, sex and hatch date are enough to start. Add morph genes from our species lists and Reptilytics
+          builds the morph name for you; add sire and dam and the family tree builds itself.</li>
+        <li style="margin-bottom:8px"><a href="${SITE}/enclosures/new"><strong>Set up its enclosure.</strong></a>
+          Enter target basking, hot-side and cool-side temperatures and humidity, then log readings as you check them.
+          Add the gear you use (heat source, thermostat, UVB) so you have a record when something changes.</li>
+        <li style="margin-bottom:8px"><strong>Set a feeding interval.</strong> On each animal's page, tell us how often it
+          eats, and we'll flag who's due or overdue on your dashboard.</li>
+        <li><strong>Log as you go.</strong> Feedings (including refusals), weights and sheds take a few seconds each,
+          and they're what turn into growth charts and early warnings.</li>
       </ol>
-      <p>Free tools while you're here: the <a href="${SITE}/genetics">morph genetics calculator</a>,
+
+      ${h("What you'll get")}
+      <ul style="padding-left:20px">
+        <li style="margin-bottom:6px"><strong>A weekly digest</strong> on Mondays: who's due to eat, and new research
+          for the species you keep. You choose what it includes in <a href="${SITE}/settings">Settings</a>.</li>
+        <li style="margin-bottom:6px"><strong>Growth and history</strong> for every animal: weight charts, feeding
+          history, shed records and a full timeline you can share with a vet or a buyer.</li>
+        <li style="margin-bottom:6px"><strong>Species pages</strong> with care facts, published research and natural
+          history notes from the herpetological literature, each linked to its source.</li>
+        <li style="margin-bottom:6px"><strong>Breeding records</strong>: pairings, clutches, eggs and incubation, with
+          hatchlings that inherit their parents' lineage and genetics.</li>
+        <li><strong>Clean hand-offs</strong>: when an animal changes hands, transfer it to the new keeper with its
+          whole history.</li>
+      </ul>
+      <p>Free tools while you're here: the <a href="${SITE}/genetics">morph genetics calculator</a>, the
       <a href="${SITE}/tools">prey size, hatch date and enclosure size calculators</a>, and the
       <a href="${SITE}/research">research library</a>.</p>
-      <p><strong>Help spread the word.</strong> Reptilytics gets better with every keeper who joins: the growth and care
-      comparisons come from the community. If you know other keepers, breeders or a local herp society, forward this
-      email or share <a href="${SITE}">reptilytics.com</a> with them. It's free for them too.</p>
-      <p>Something missing or broken? Just reply to this email.</p>`);
+
+      ${h("Your records are yours")}
+      <p>Your animals are private unless you choose to make one public. Community comparisons only ever use anonymous
+      totals, and only once enough keepers contribute that no one can be identified.</p>
+
+      ${h("Help spread the word")}
+      <p>Reptilytics gets better with every keeper who joins: the growth and care comparisons come from the community,
+      so the more keepers log, the more everyone learns. If you know other keepers, breeders or a local herp society,
+      forward this email or share <a href="${SITE}">reptilytics.com</a> with them. It's free for them too.</p>
+
+      <p style="margin-top:28px">Something missing, confusing or broken? Just reply to this email. Every message is
+      read by a person, and keeper feedback decides what we build next.</p>
+      <p>Happy herping,<br>The Reptilytics team</p>`);
     if ((await send(key, u.email, "Welcome to Reptilytics", html)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "welcome" });
       sent++;
