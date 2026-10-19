@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MontyDemo } from "@/components/monty-demo";
-import { SampleRecord } from "@/components/sample-record";
+import { AppPreview } from "@/components/app-preview";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -61,12 +61,12 @@ export default async function FeaturesPage() {
         </p>
       </header>
 
-      <section id="sample" className="mx-auto w-full max-w-3xl scroll-mt-6">
-        <h2 className="mb-1 text-center text-2xl font-bold">See it with a sample collection</h2>
+      <section id="preview" className="mx-auto w-full max-w-3xl scroll-mt-6">
+        <h2 className="mb-1 text-center text-2xl font-bold">See your collection at a glance</h2>
         <p className="mb-5 text-center text-sm text-muted">
-          A made-up keeper&apos;s records: one animal, the whole collection, and an enclosure. Click the tabs.
+          Examine individual animals, your whole collection, and every enclosure.
         </p>
-        <SampleRecord />
+        <AppPreview />
       </section>
 
       <div className="grid gap-4 sm:grid-cols-2">
