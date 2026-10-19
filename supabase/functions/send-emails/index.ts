@@ -16,7 +16,7 @@ const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE
 });
 
 type Paper = { title: string; url: string };
-type SpeciesPapers = { common_name: string | null; scientific_name: string; count: number; top: Paper[] };
+type SpeciesPapers = { species_id: string; common_name: string | null; scientific_name: string; count: number; top: Paper[] };
 type Due = { name: string; days: number };
 
 Deno.serve(async (req) => {
@@ -75,12 +75,15 @@ async function sendDigests(key: string) {
       continue;
     }
     const unsubscribe = `${SITE}/unsubscribe?t=${u.email_token}`;
+    const stop = (what: string, label: string, species?: string) =>
+      `<p style="font-size:12px;margin:4px 0 0"><a href="${unsubscribe}&amp;what=${what}${species ? `&amp;s=${species}` : ""}" style="color:#888">${label}</a></p>`;
     const sections: string[] = [];
     if (due.length) {
       sections.push(`
         <h2 style="font-size:16px;margin:24px 0 8px">Due to eat</h2>
         <ul>${due.map((d) => `<li>${esc(d.name)}: ${dueLabel(d.days)}</li>`).join("")}</ul>
-        <p><a href="${SITE}/animals">Open My animals</a></p>`);
+        <p><a href="${SITE}/animals">Open My animals</a></p>
+        ${stop("feeding", "Stop feeding reminders")}`);
     }
     for (const s of papers) {
       const name = s.common_name || s.scientific_name;
@@ -88,14 +91,16 @@ async function sendDigests(key: string) {
         <h2 style="font-size:16px;margin:24px 0 8px">New research: ${esc(name)}</h2>
         <p>${s.count} new paper${s.count === 1 ? "" : "s"} this week${s.count > s.top.length ? ", including" : ""}:</p>
         <ul>${s.top.map((p) => `<li><a href="${esc(p.url)}">${esc(p.title)}</a></li>`).join("")}</ul>
-        <p><a href="${SITE}/species/${slugify(name)}/research">All ${esc(name)} research</a></p>`);
+        <p><a href="${SITE}/species/${slugify(name)}/research">All ${esc(name)} research</a></p>
+        ${stop("species", `Stop research updates for ${esc(name)}`, s.species_id)}`);
     }
     const subject = due.length
       ? `${due.length} ${due.length === 1 ? "animal is" : "animals are"} due to eat`
       : `New research for your ${papers.length === 1 ? (papers[0].common_name || papers[0].scientific_name).toLowerCase() : "species"}`;
     const html = layout(
       `<p>${u.display_name ? `Hi ${esc(u.display_name)},` : "Hi,"} here's your week.</p>${sections.join("")}`,
-      `<a href="${unsubscribe}" style="color:#888">Unsubscribe from the weekly digest</a> or change it in <a href="${SITE}/settings" style="color:#888">Settings</a>.`,
+      `${papers.length ? `<a href="${unsubscribe}&amp;what=research" style="color:#888">Stop all research updates</a> · ` : ""}` +
+        `<a href="${unsubscribe}" style="color:#888">Unsubscribe from the weekly digest</a> · choose what you get in <a href="${SITE}/settings" style="color:#888">Settings</a>.`,
     );
     if ((await send(key, u.email, subject, html, unsubscribe)).ok) {
       await admin.rpc("fn54_mark_emailed", { p_user_id: u.user_id, p_kind: "digest" });

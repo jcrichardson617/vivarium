@@ -2036,6 +2036,8 @@ export type Database = {
           digest_sent_at: string | null
           display_name: string | null
           email_digest: boolean
+          email_feeding: boolean
+          email_research: boolean
           email_token: string
           id: string
           onboarding_skipped: string[]
@@ -2053,6 +2055,8 @@ export type Database = {
           digest_sent_at?: string | null
           display_name?: string | null
           email_digest?: boolean
+          email_feeding?: boolean
+          email_research?: boolean
           email_token?: string
           id: string
           onboarding_skipped?: string[]
@@ -2070,6 +2074,8 @@ export type Database = {
           digest_sent_at?: string | null
           display_name?: string | null
           email_digest?: boolean
+          email_feeding?: boolean
+          email_research?: boolean
           email_token?: string
           id?: string
           onboarding_skipped?: string[]
@@ -2271,6 +2277,39 @@ export type Database = {
             columns: ["species_id"]
             isOneToOne: false
             referencedRelation: "species_detail_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_email_mutes: {
+        Row: {
+          created_at: string
+          species_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          species_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          species_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_email_mutes_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_email_mutes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3696,6 +3735,17 @@ export type Database = {
           id: string
           scientific_name: string
           synonyms: string[]
+        }[]
+      }
+      fn75_unsubscribe: {
+        Args: { p_species_id?: string; p_token: string; p_what: string }
+        Returns: boolean
+      }
+      fn76_my_email_prefs: {
+        Args: never
+        Returns: {
+          email_feeding: boolean
+          email_research: boolean
         }[]
       }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
