@@ -29,14 +29,6 @@ const ROWS: { label: string; cells: Cell[] }[] = [
   { label: "Community growth and husbandry benchmarks", cells: ["yes", "no", "no", "no", "no", "no"] },
 ];
 
-const SOURCES = [
-  { name: "Husbandry.Pro", url: "https://apps.apple.com/app/id1550079634" },
-  { name: "ReptiCare", url: "https://mergeek.com/latest/Xr2JYnwlMl4A1eoZ" },
-  { name: "Reptile Buddy vs Husbandry.Pro (MorphMarket forum)", url: "https://community.morphmarket.com/t/reptile-buddy-or-husbandry-pro/31696" },
-  { name: "MorphMarket Husbandry", url: "https://support.morphmarket.com/article/302-animal-husbandry" },
-  { name: "Herpville", url: "https://apps.apple.com/app/id1499428714" },
-];
-
 const REASONS = [
   {
     title: "Free, with room for your whole collection",
@@ -80,7 +72,7 @@ export default function CompareHusbandryApps() {
         <p className="mt-3 max-w-2xl text-muted">
           Keepers ask this all the time: which app should I use to track feedings, weights, sheds and breeding? Here&apos;s how
           Reptilytics compares with the other popular options. We&apos;ve marked where an app doesn&apos;t list a feature
-          rather than guessing, and linked our sources. Spot something out of date?{" "}
+          rather than guessing. Spot something out of date?{" "}
           <Link href="/contact" className="text-brand hover:underline">Tell us</Link> and we&apos;ll fix it.
         </p>
       </header>
@@ -150,15 +142,10 @@ export default function CompareHusbandryApps() {
       </section>
 
       <footer className="text-xs text-muted">
-        <p className="mb-1">
+        <p>
           Based on each app&apos;s store listing, help pages and public forum posts, checked {CHECKED}. Features and prices
           change; check each app before you decide.
         </p>
-        <ul className="flex flex-wrap gap-x-4 gap-y-1">
-          {SOURCES.map((s) => (
-            <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer nofollow" className="hover:text-foreground">{s.name}</a></li>
-          ))}
-        </ul>
       </footer>
     </article>
   );
