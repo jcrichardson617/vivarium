@@ -12,10 +12,7 @@ const DAY = 24 * 60 * 60 * 1000;
 
 export default async function TrafficAdminPage({ searchParams }: { searchParams: Promise<{ days?: string }> }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: me } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
   const requested = Number((await searchParams).days);
