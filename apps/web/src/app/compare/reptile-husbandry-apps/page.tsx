@@ -24,7 +24,6 @@ const ROWS: { label: string; cells: Cell[] }[] = [
   { label: "Lineage / family trees", cells: ["yes", "Not listed", "Not listed", "Not listed", "Offspring", "Not listed"] },
   { label: "Genetics calculator", cells: ["yes", "Not listed", "Not listed", "Reported by users", "Separate tool", "Not listed"] },
   { label: "QR / barcode labels", cells: ["no", "yes", "Not listed", "Barcode scanner", "QR scanning", "yes"] },
-  { label: "Reptiles and amphibians", cells: ["yes", "Reptiles", "Reptiles", "Reptiles", "Reptiles", "Reptiles"] },
   { label: "Species care facts and published research", cells: ["yes", "no", "no", "no", "no", "no"] },
   { label: "Community growth and husbandry benchmarks", cells: ["yes", "no", "no", "no", "no", "no"] },
 ];
