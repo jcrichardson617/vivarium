@@ -5,7 +5,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 // Each call has a small CPU allowance (about 7 passages), so batches stay small
-// and pg_cron calls this every 20 seconds.
+// and pg_cron calls this every 30 seconds.
 const BATCH = 5;
 const TIME_BUDGET_MS = 15_000;
 
