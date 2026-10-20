@@ -67,12 +67,10 @@ export default function CompareHusbandryApps() {
   return (
     <article className="flex flex-col gap-10 py-6">
       <header>
-        <p className="text-sm text-muted">Comparison · checked {CHECKED}</p>
-        <h1 className="mt-1 text-4xl font-bold">Reptile husbandry apps compared</h1>
+        <h1 className="text-4xl font-bold">Reptile husbandry apps compared</h1>
         <p className="mt-3 max-w-2xl text-muted">
           Keepers ask this all the time: which app should I use to track feedings, weights, sheds and breeding? Here&apos;s how
-          Reptilytics compares with the other popular options. We&apos;ve marked where an app doesn&apos;t list a feature
-          rather than guessing. Spot something out of date?{" "}
+          Reptilytics compares with the other popular options. Spot something out of date?{" "}
           <Link href="/contact" className="text-brand hover:underline">Tell us</Link> and we&apos;ll fix it.
         </p>
       </header>
