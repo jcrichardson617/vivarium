@@ -23,7 +23,9 @@ Deno.serve(async (req) => {
     .from("research_chunks")
     .select("id, document_id, content")
     .is("embedding", null)
-    .order("id")
+    // Finish one paper before starting the next, so papers become searchable steadily.
+    .order("document_id")
+    .order("chunk_index")
     .limit(BATCH);
   if (error) return Response.json({ error: error.message }, { status: 500 });
 

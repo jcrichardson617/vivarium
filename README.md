@@ -49,8 +49,9 @@ functions), so every client gets the same rules.
 Papers are harvested automatically into `research_documents` / `research_chunks`:
 
 - `harvest-research` edge function (pg_cron, every 10 min) alternates between the next species and the next topic sweep (`research_harvest_topics`), pulling from Europe PMC. Each target is re-harvested every 30 days.
-- `fetch-fulltext` (every 2 min) adds full text for open-access papers under CC BY / CC BY-SA / CC0. Non-commercial (NC) and paywalled papers keep only their abstract.
-- `embed-chunks` (every 20 s) embeds passages with Supabase's built-in gte-small model (384 dims).
+- `fetch-fulltext` adds full text for open-access papers under CC BY / CC BY-SA / CC0. Non-commercial (NC) and paywalled papers keep only their abstract. Paused (unscheduled) since it reached its 1,000-paper cap; see migration `20261020000100`.
+- `harvest-openalex` (hourly, slowed from every 20 min until embedding catches up; set back to `'5-59/20 * * * *'` then) adds OpenAlex abstracts.
+- `embed-chunks` (every 30 s, 5 passages a call, one paper at a time) embeds passages with Supabase's built-in gte-small model (384 dims).
 - `fn43_search_research` does hybrid (semantic + keyword) retrieval for Monty.
 - Admin → Library shows progress and has run-now buttons.
 - Herpetological Review Natural History Notes are added by hand in Admin → NH notes (paste citations, one per line). They are stored as summary-only documents (`external_source = 'herp_review'`): citation, topic, link to SSAR's PDF and our own summary, never the note text. They show on species pages and are searchable by Monty.
