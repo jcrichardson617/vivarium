@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdminNav } from "@/components/admin-nav";
 import { createClient } from "@/lib/supabase/server";
+import { analyticsConfigured, trafficBy } from "@/lib/vercel-analytics";
 
 export const metadata: Metadata = { title: "Admin | Reptilytics" };
 
@@ -13,7 +13,16 @@ export default async function AdminHome() {
   const { data: me } = await supabase.rpc("fn72_my_profile").single();
   if (!me || !["moderator", "admin"].includes(me.role)) notFound();
 
-  const [species, products, requests, emails, papers, notes, totals] = await Promise.all([
+  // Page views over the last 7 UTC days; a Vercel outage must not break this page.
+  const now = new Date();
+  const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 6));
+  const views = analyticsConfigured()
+    ? trafficBy("day", weekStart, now, 7)
+        .then((rows) => rows.reduce((n, r) => n + r.pageviews, 0))
+        .catch(() => null)
+    : Promise.resolve(null);
+
+  const [species, products, requests, emails, papers, notes, totals, pageviews] = await Promise.all([
     supabase.from("species_submissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.rpc("fn36_feature_requests_admin"),
@@ -21,6 +30,7 @@ export default async function AdminHome() {
     supabase.from("research_documents").select("id", { count: "estimated", head: true }),
     supabase.from("research_documents").select("id", { count: "exact", head: true }).eq("external_source", "herp_review").is("summary", null),
     me.role === "admin" ? supabase.rpc("fn78_admin_animal_stats") : Promise.resolve({ data: null }),
+    views,
   ]);
   const t = (totals.data ?? null) as { users: number; users_7d: number; animals: number; animals_7d: number } | null;
   const newRequests = (requests.data ?? []).filter((r) => r.status === "new").length;
@@ -38,11 +48,16 @@ export default async function AdminHome() {
     { href: "/admin/email", label: "Email", value: emails.count ?? 0, note: "sent from info@" },
     { href: "/admin/library", label: "Research library", value: papers.count ?? 0, note: "papers (approx.)" },
     { href: "/admin/notes?todo=1", label: "Natural history notes", value: notes.count ?? 0, note: "need a summary" },
+    {
+      href: "/admin/traffic",
+      label: "Traffic",
+      value: pageviews ?? 0,
+      note: pageviews === null ? (analyticsConfigured() ? "couldn't load" : "not connected") : "page views, last 7 days",
+    },
   ];
 
   return (
     <section>
-      <AdminNav current="/admin" />
       <h1 className="mb-6 text-2xl font-bold">Admin</h1>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
