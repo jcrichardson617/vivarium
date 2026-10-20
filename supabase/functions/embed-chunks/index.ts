@@ -5,7 +5,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 // Each call has a small CPU allowance (about 7 passages), so batches stay small
-// and pg_cron calls this every 20 seconds.
+// and pg_cron calls this every 30 seconds.
 const BATCH = 5;
 const TIME_BUDGET_MS = 15_000;
 
@@ -23,7 +23,9 @@ Deno.serve(async (req) => {
     .from("research_chunks")
     .select("id, document_id, content")
     .is("embedding", null)
-    .order("id")
+    // Finish one paper before starting the next, so papers become searchable steadily.
+    .order("document_id")
+    .order("chunk_index")
     .limit(BATCH);
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
