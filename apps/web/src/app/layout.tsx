@@ -1,10 +1,10 @@
-import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
+import { SiteAnalytics } from "@/components/site-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SubNav } from "@/components/sub-nav";
 import { SITE_URL } from "@/lib/site";
@@ -96,7 +96,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         )}
         <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">{children}</main>
         <SiteFooter signedIn={!!user} />
-        <Analytics />
+        <SiteAnalytics staff={isModerator} />
       </body>
     </html>
   );
