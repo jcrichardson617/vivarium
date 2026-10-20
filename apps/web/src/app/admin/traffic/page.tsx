@@ -71,12 +71,15 @@ export default async function TrafficAdminPage({ searchParams }: { searchParams:
   const byDay = new Map(daily.map((d) => [d.key.slice(0, 10), d]));
   const series = Array.from({ length: days }, (_, i) => {
     const key = new Date(since.getTime() + i * DAY).toISOString().slice(0, 10);
-    return byDay.get(key) ?? { key, pageviews: 0, visitors: 0 };
+    // Keep just the date: the API's keys are full timestamps.
+    return { ...(byDay.get(key) ?? { pageviews: 0, visitors: 0 }), key };
   });
   const totalViews = series.reduce((n, d) => n + d.pageviews, 0);
   const avgVisitors = Math.round(series.reduce((n, d) => n + d.visitors, 0) / days);
   const today = series[series.length - 1];
   const peak = Math.max(1, ...series.map((d) => d.pageviews));
+  const shortDate = (key: string) =>
+    new Date(`${key}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 
   const countryName = new Intl.DisplayNames(["en"], { type: "region" });
 
@@ -101,22 +104,33 @@ export default async function TrafficAdminPage({ searchParams }: { searchParams:
       </ul>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="mb-3 text-lg font-semibold">Page views per day</h2>
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="text-lg font-semibold">Page views per day</h2>
+          <span className="text-xs text-muted">peak {peak.toLocaleString("en-US")}</span>
+        </div>
         <div className="flex h-40 items-end gap-px">
           {series.map((d) => (
             <div
               key={d.key}
-              title={`${d.key}: ${d.pageviews.toLocaleString("en-US")} views, ${d.visitors.toLocaleString("en-US")} visitors`}
+              title={`${shortDate(d.key)}: ${d.pageviews.toLocaleString("en-US")} views, ${d.visitors.toLocaleString("en-US")} visitors`}
               className="flex-1 rounded-t-sm bg-brand hover:bg-brand-dark"
               style={{ height: `${(d.pageviews / peak) * 100}%`, minHeight: d.pageviews ? 2 : 0 }}
             />
           ))}
         </div>
-        <div className="mt-1 flex justify-between text-xs text-muted">
-          <span>{series[0].key}</span>
-          <span>peak {peak.toLocaleString("en-US")}</span>
-          <span>{today.key}</span>
-        </div>
+        {/* A date under every bar for a week or two; just the ends for longer ranges. */}
+        {days <= 14 ? (
+          <div className="mt-1 flex gap-px text-xs text-muted">
+            {series.map((d) => (
+              <span key={d.key} className="flex-1 text-center">{shortDate(d.key)}</span>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-1 flex justify-between text-xs text-muted">
+            <span>{shortDate(series[0].key)}</span>
+            <span>{shortDate(today.key)}</span>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
