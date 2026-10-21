@@ -75,7 +75,7 @@ async function sendWelcomes(key: string) {
           whole history.</li>
       </ul>
       <p>Free tools while you're here: the <a href="${SITE}/genetics">morph genetics calculator</a>, the
-      <a href="${SITE}/tools">prey size, hatch date and enclosure size calculators</a>, and the
+      <a href="${SITE}/tools">hatch date and enclosure size calculators</a>, and the
       <a href="${SITE}/research">research library</a>.</p>
 
       ${h("Your records are yours")}

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The prey size calculator was removed; keep old links and search results working.
+  async redirects() {
+    return [{ source: "/tools/prey-size", destination: "/tools", permanent: true }];
+  },
   // No other site may show Reptilytics pages inside a frame.
   async headers() {
     return [
