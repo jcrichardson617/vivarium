@@ -232,6 +232,8 @@ function EnclosureView() {
 
 export function AppPreview() {
   const [tab, setTab] = useState<Tab>("Animal");
+  // The other tabs glow until the visitor clicks one, so it's clear they're clickable.
+  const [explored, setExplored] = useState(false);
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <div className="flex items-center gap-2 border-b border-border px-4 py-2">
@@ -249,8 +251,11 @@ export function AppPreview() {
             key={t}
             role="tab"
             aria-selected={tab === t}
-            onClick={() => setTab(t)}
-            className={`rounded-t-md px-3 py-1.5 text-sm ${tab === t ? "border border-b-0 border-border bg-background font-semibold" : "text-muted hover:text-foreground"}`}
+            onClick={() => {
+              setTab(t);
+              setExplored(true);
+            }}
+            className={`rounded-t-md px-3 py-1.5 text-sm ${tab === t ? "border border-b-0 border-border bg-background font-semibold" : `text-muted hover:text-foreground ${explored ? "" : "tab-glow"}`}`}
           >
             {t}
           </button>
