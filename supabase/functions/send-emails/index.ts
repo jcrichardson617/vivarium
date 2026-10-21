@@ -238,9 +238,17 @@ async function refreshOpens(key: string) {
     .limit(40);
   if (error) return { error: error.message };
   let opened = 0;
+  let failed = 0;
+  let lastError: string | null = null;
   for (const m of data ?? []) {
     const res = await fetch(`https://api.resend.com/emails/${m.resend_id}`, { headers: { Authorization: `Bearer ${key}` } });
-    if (!res.ok) continue;
+    if (!res.ok) {
+      lastError = `Resend ${res.status}: ${await res.text()}`;
+      console.error(lastError);
+      failed++;
+      await new Promise((r) => setTimeout(r, 1000));
+      continue;
+    }
     const event = String((await res.json()).last_event ?? "");
     const isOpen = event === "opened" || event === "clicked";
     await admin
@@ -250,7 +258,7 @@ async function refreshOpens(key: string) {
     if (isOpen) opened++;
     await new Promise((r) => setTimeout(r, 250)); // stay under Resend's rate limit
   }
-  return { kind: "opens", checked: data?.length ?? 0, opened };
+  return { kind: "opens", checked: data?.length ?? 0, opened, failed, lastError };
 }
 
 async function send(key: string, to: string, subject: string, html: string, unsubscribe?: string, text?: string) {
