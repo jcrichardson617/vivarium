@@ -7,7 +7,9 @@ import { analyticsConfigured, trafficBy, type TrafficRow } from "@/lib/vercel-an
 
 export const metadata: Metadata = { title: "Traffic | Reptilytics" };
 
-const RANGES = [7, 30, 90];
+// 1 is the "Today" tab: the current UTC day so far.
+const RANGES = [1, 7, 30, 90];
+const rangeLabel = (r: number) => (r === 1 ? "Today" : `Last ${r} days`);
 const DAY = 24 * 60 * 60 * 1000;
 
 export default async function TrafficAdminPage({ searchParams }: { searchParams: Promise<{ days?: string }> }) {
@@ -90,48 +92,58 @@ export default async function TrafficAdminPage({ searchParams }: { searchParams:
       <div className="flex gap-3 text-sm">
         {RANGES.map((r) =>
           r === days ? (
-            <span key={r} className="font-semibold">Last {r} days</span>
+            <span key={r} className="font-semibold">{rangeLabel(r)}</span>
           ) : (
-            <Link key={r} href={`/admin/traffic?days=${r}`} className="text-muted hover:text-foreground">Last {r} days</Link>
+            <Link key={r} href={`/admin/traffic?days=${r}`} className="text-muted hover:text-foreground">{rangeLabel(r)}</Link>
           ),
         )}
       </div>
 
-      <ul className="grid gap-3 sm:grid-cols-3">
-        <Stat label="Page views" value={totalViews} note={`last ${days} days`} />
-        <Stat label="Visitors per day" value={avgVisitors} note="average" />
-        <Stat label="Today" value={today.pageviews} note={`page views · ${today.visitors.toLocaleString("en-US")} visitors (UTC day)`} />
-      </ul>
+      {days === 1 ? (
+        <ul className="grid gap-3 sm:grid-cols-2">
+          <Stat label="Page views" value={today.pageviews} note={`today so far (${shortDate(today.key)}, UTC day)`} />
+          <Stat label="Visitors" value={today.visitors} note="today so far (estimate)" />
+        </ul>
+      ) : (
+        <ul className="grid gap-3 sm:grid-cols-3">
+          <Stat label="Page views" value={totalViews} note={`last ${days} days`} />
+          <Stat label="Visitors per day" value={avgVisitors} note="average" />
+          <Stat label="Today" value={today.pageviews} note={`page views · ${today.visitors.toLocaleString("en-US")} visitors (UTC day)`} />
+        </ul>
+      )}
 
-      <div className="rounded-lg border border-border bg-card p-4">
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold">Page views per day</h2>
-          <span className="text-xs text-muted">peak {peak.toLocaleString("en-US")}</span>
-        </div>
-        <div className="flex h-40 items-end gap-px">
-          {series.map((d) => (
-            <div
-              key={d.key}
-              title={`${shortDate(d.key)}: ${d.pageviews.toLocaleString("en-US")} views, ${d.visitors.toLocaleString("en-US")} visitors`}
-              className="flex-1 rounded-t-sm bg-brand hover:bg-brand-dark"
-              style={{ height: `${(d.pageviews / peak) * 100}%`, minHeight: d.pageviews ? 2 : 0 }}
-            />
-          ))}
-        </div>
-        {/* A date under every bar for a week or two; just the ends for longer ranges. */}
-        {days <= 14 ? (
-          <div className="mt-1 flex gap-px text-xs text-muted">
+      {/* A one-bar chart says nothing, so Today skips it. */}
+      {days > 1 && (
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold">Page views per day</h2>
+            <span className="text-xs text-muted">peak {peak.toLocaleString("en-US")}</span>
+          </div>
+          <div className="flex h-40 items-end gap-px">
             {series.map((d) => (
-              <span key={d.key} className="flex-1 text-center">{shortDate(d.key)}</span>
+              <div
+                key={d.key}
+                title={`${shortDate(d.key)}: ${d.pageviews.toLocaleString("en-US")} views, ${d.visitors.toLocaleString("en-US")} visitors`}
+                className="flex-1 rounded-t-sm bg-brand hover:bg-brand-dark"
+                style={{ height: `${(d.pageviews / peak) * 100}%`, minHeight: d.pageviews ? 2 : 0 }}
+              />
             ))}
           </div>
-        ) : (
-          <div className="mt-1 flex justify-between text-xs text-muted">
-            <span>{shortDate(series[0].key)}</span>
-            <span>{shortDate(today.key)}</span>
-          </div>
-        )}
-      </div>
+          {/* A date under every bar for a week or two; just the ends for longer ranges. */}
+          {days <= 14 ? (
+            <div className="mt-1 flex gap-px text-xs text-muted">
+              {series.map((d) => (
+                <span key={d.key} className="flex-1 text-center">{shortDate(d.key)}</span>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-1 flex justify-between text-xs text-muted">
+              <span>{shortDate(series[0].key)}</span>
+              <span>{shortDate(today.key)}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Breakdown title="Top pages" rows={pages} />
