@@ -86,8 +86,22 @@ body {
 .monty-caret {
   animation: monty-blink 1s step-end infinite;
 }
+@keyframes tab-glow {
+  50% {
+    color: var(--brand);
+    background-color: color-mix(in srgb, var(--brand) 12%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--brand) 45%, transparent);
+  }
+}
+.tab-glow {
+  animation: tab-glow 2.5s ease-in-out infinite;
+}
 @media (prefers-reduced-motion: reduce) {
   .monty-caret {
     animation: none;
+  }
+  .tab-glow {
+    animation: none;
+    color: var(--brand);
   }
 }
