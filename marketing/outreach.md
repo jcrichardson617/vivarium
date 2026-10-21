@@ -11,6 +11,7 @@ care site tells Google we're trustworthy, and sends real keepers our way.
   land in your Gmail). Sign as "The Reptilytics Team".
 - **Point each audience at the page that helps *them*** (see the table) — not the home page.
 - No attachments. One link per email is best, two at most.
+- Format and style rules for writing new emails: [EMAIL_FORMAT.md](EMAIL_FORMAT.md).
 - Track who you emailed and when in a simple spreadsheet. **Follow up once** after ~10 days, then stop.
 - **Breeder replies are product research:** log their answers (software used, likes, frustrations)
   in the spreadsheet too. Patterns across 10–20 replies tell us what to build next.
