@@ -18,7 +18,7 @@ care site tells Google we're trustworthy, and sends real keepers our way.
 | Audience | Link them to | Why they'd care |
 |---|---|---|
 | Herp societies | Home page (record keeping), then /tools | A free place for members to log their animals, plus free tools; the society's links page |
-| Reptile vets | /tools/prey-size, /tools/enclosure-size | Handouts for clients; fewer husbandry-related visits |
+| Reptile vets | /tools/enclosure-size | Handouts for clients; fewer husbandry-related visits |
 | Care-sheet & resource sites | /genetics, species morph pages, /research | Cite-able data and tools for their readers |
 | Breeders | /genetics, morph pages for their species | Explain pairings to buyers; and we ask what software they use and what they'd change |
 
@@ -58,7 +58,7 @@ get reminders when an animal is due to eat, track their enclosures, and follow b
 from pairing through clutches to hatchlings.
 
 There are also free tools anyone can use without an account: a morph genetics calculator,
-prey-size, hatch-date and enclosure-size calculators, and a library of published research for
+hatch-date and enclosure-size calculators, and a library of published research for
 over 180 species.
 
 We thought it might be useful for your members, and wondered if you'd consider adding it to
@@ -84,8 +84,8 @@ Hi Dr. [Name],
 We run Reptilytics, a free site for reptile keepers. A lot of what brings reptiles to the vet
 starts with husbandry, so we built a few simple tools owners can use at home:
 
-- Prey size by body weight: https://www.reptilytics.com/tools/prey-size
 - Enclosure sizes by species: https://www.reptilytics.com/tools/enclosure-size
+- Care facts and published research by species: https://www.reptilytics.com/species
 
 If they'd be useful, would you consider linking them from your client resources page? And if
 you see anything you'd change from a veterinary point of view, we'd be grateful for the feedback —

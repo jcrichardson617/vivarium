@@ -5,11 +5,6 @@ export const TOOLS = [
     blurb: "Pick two parents and see every possible baby with its odds, including supers, allelic combos and possible hets.",
   },
   {
-    href: "/tools/prey-size",
-    title: "Snake prey size calculator",
-    blurb: "Enter your snake's weight to see the right mouse or rat size and a typical feeding interval.",
-  },
-  {
     href: "/tools/hatch-date",
     title: "Egg hatch date calculator",
     blurb: "Enter the lay date to see when a clutch should pip, with incubation temperatures for popular species.",

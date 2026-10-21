@@ -4,7 +4,7 @@ import { TOOLS } from "@/lib/tools";
 
 export const metadata: Metadata = {
   title: "Free Reptile Keeping Tools & Calculators | Reptilytics",
-  description: "Free reptile calculators: morph genetics, snake prey size, egg hatch dates and enclosure sizes for ball pythons, leopard geckos, corn snakes and more.",
+  description: "Free reptile calculators: morph genetics, egg hatch dates and enclosure sizes for ball pythons, leopard geckos, corn snakes and more.",
   alternates: { canonical: "/tools" },
 };
 
