@@ -203,6 +203,55 @@ info@reptilytics.com
 
 ---
 
+## Special — Jon and Tracy (local Hernando County keepers)
+
+Breeder email (Email 4) expanded with the analytics that are live today, so they know what
+"record keeping" means here. Only mention features that are built; community comparisons are
+still "coming".
+
+**Subject:** A quick question from a fellow Hernando County keeper
+
+Hi Jon and Tracy,
+
+We'd like to introduce Reptilytics, a record-keeping site for keepers and breeders, and before we
+go further we'd love to learn from people who actually run collections. Would you mind answering
+three quick questions for a fellow Hernando County reptile enthusiast?
+
+1. What do you use to keep records today (iHerp, Husbandry.Pro, MorphMarket's Animal Manager,
+   a spreadsheet, paper…)?
+2. What do you like about it?
+3. What frustrates you, or what do you wish it did?
+
+Even one-line answers help a lot!
+
+For context, here's what Reptilytics does with your records today, beyond just storing them:
+
+- **A daily dashboard** that lists who's due or overdue to eat (most overdue first) and which
+  clutches are close to hatching.
+- **Feeding trends:** a 30-day chart of meals fed versus refused, and your acceptance rate for
+  the week across the whole collection.
+- **A watch list** that flags any animal that refuses two meals in a row or drops more than 10%
+  of its body weight, plus animals that haven't been weighed in 30+ days.
+- **Weight sparklines** next to every animal in your collection list, so a stalled or falling
+  weight stands out at a glance.
+- **Breeding records** from pairing through clutches, eggs and incubation to hatchlings, with
+  hatch rates per clutch and family trees that build themselves as hatchlings inherit their
+  parents' genetics.
+- **New research for your species:** recently published papers on the animals you actually keep,
+  right on your dashboard.
+
+Next we're working on anonymous community comparisons, like what normal growth looks like for a
+species, so if there's a number you've always wanted to see for your animals, tell us!
+
+If you're up for trying Reptilytics itself, we'd happily give you free premium for life as an
+early tester.
+
+Thanks,
+The Reptilytics Team
+https://www.reptilytics.com
+
+---
+
 ## Follow-up (once, ~10 days later)
 
 **Subject:** Re: [original subject]
