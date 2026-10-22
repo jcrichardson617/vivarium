@@ -55,8 +55,9 @@ async function sendWelcomes(key: string) {
         <li style="margin-bottom:8px"><a href="${SITE}/enclosures/new"><strong>Set up its enclosure.</strong></a>
           Enter target basking, hot-side and cool-side temperatures and humidity, then log readings as you check them.
           Add the gear you use (heat source, thermostat, UVB) so you have a record when something changes.</li>
-        <li style="margin-bottom:8px"><strong>Set a feeding interval.</strong> On each animal's page, tell us how often it
-          eats, and we'll flag who's due or overdue on your dashboard.</li>
+        <li style="margin-bottom:8px"><strong>Set a feeding interval, if you like.</strong> On each animal's page, tell us how
+          often it eats, and we'll flag who's due or overdue on your dashboard. Don't feed on a schedule? Skip it, or
+          turn schedules off in Settings.</li>
         <li><strong>Log as you go.</strong> Feedings (including refusals), weights and sheds take a few seconds each,
           and they're what turn into growth charts and early warnings.</li>
       </ol>

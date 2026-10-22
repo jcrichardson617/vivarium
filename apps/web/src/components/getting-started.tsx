@@ -5,26 +5,29 @@ type Step = { key: string; done: boolean; title: string; body: string; href: str
 
 // Shown on My animals until every step is done or skipped. Skips are saved
 // on the profile, so a dismissed step or checklist never comes back.
-export function GettingStarted({ animalCount, enclosureCount, hasReminder, firstAnimalId, skipped }: {
+export function GettingStarted({ animalCount, enclosureCount, hasReminder, schedules, firstAnimalId, skipped }: {
   animalCount: number;
   enclosureCount: number;
   hasReminder: boolean;
+  schedules: boolean;
   firstAnimalId?: string;
   skipped: string[];
 }) {
   if (skipped.includes("all")) return null;
-  const steps: Step[] = [
+  const allSteps: Step[] = [
     { key: "animal", done: animalCount > 0, title: "Add your first animal", body: "Name, species, sex and hatch date. Photos optional.", href: "/animals/new", cta: "Add animal" },
     { key: "enclosure", done: enclosureCount > 0, title: "Set up an enclosure", body: "Size, temperatures and gear, then house your animal in it.", href: "/enclosures/new", cta: "Add enclosure" },
     {
       key: "reminder",
       done: hasReminder,
       title: "Turn on feeding reminders",
-      body: "Set how often an animal eats and we'll flag when it's due.",
+      body: "Optional. Set how often an animal eats and we'll flag when it's due.",
       href: firstAnimalId ? `/animals/${firstAnimalId}/edit` : "/animals/new",
       cta: "Set interval",
     },
   ];
+  // Feeding reminders are optional; keepers who turned schedules off aren't nudged.
+  const steps = schedules ? allSteps : allSteps.filter((s) => s.key !== "reminder");
   const settled = (s: Step) => s.done || skipped.includes(s.key);
   const doneCount = steps.filter(settled).length;
   if (doneCount === steps.length) return null;

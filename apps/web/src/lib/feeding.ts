@@ -1,4 +1,13 @@
+import type { createClient } from "@/lib/supabase/server";
+
 const DAY = 86400000;
+
+// Keepers can turn feeding schedules off for the whole account in Settings.
+// When off, nothing is ever due: no badges, due lists or reminder nudges.
+export async function feedingSchedulesOn(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const { data } = await supabase.rpc("fn79_my_feeding_schedules");
+  return data ?? true;
+}
 
 export type FeedingDue = { days: number; label: string; tone: "overdue" | "today" | "soon" | "later" };
 

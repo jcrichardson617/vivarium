@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FeedingChart } from "@/components/feeding-chart";
-import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
+import { DUE_TONE_CLASS, feedingDue, feedingSchedulesOn } from "@/lib/feeding";
 import { speciesSlug } from "@/lib/slug";
 import { createClient } from "@/lib/supabase/server";
 import { quickFeed } from "./actions";
@@ -26,16 +26,17 @@ const TODAY_LIMIT = 12;
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const [{ data: raw, error }, { data: animals }] = await Promise.all([
+  const [{ data: raw, error }, { data: animals }, schedules] = await Promise.all([
     supabase.rpc("fn61_dashboard"),
     supabase.rpc("fn67_my_animals"),
+    feedingSchedulesOn(supabase),
   ]);
   if (error) return <p className="text-red-600">Could not load the dashboard: {error.message}</p>;
   const d = raw as unknown as Dashboard;
 
   // Due or overdue to eat, most overdue first. Includes animals you look after for someone else.
   const due = (animals ?? [])
-    .filter((a) => a.status === "active" && a.access !== "viewer")
+    .filter((a) => schedules && a.status === "active" && a.access !== "viewer")
     .map((a) => ({ ...a, due: feedingDue(a.last_fed_at, a.feeding_interval_days) }))
     .filter((a) => a.due && a.due.days <= 0)
     .sort((x, y) => x.due!.days - y.due!.days);

@@ -20,6 +20,7 @@ export async function saveSettings(formData: FormData) {
       country: String(formData.get("country") ?? "").trim().toUpperCase() || null,
       unit_system: unit === "metric" || unit === "imperial" ? unit : null,
       share_gear: formData.get("share_gear") === "on",
+      feeding_schedules: formData.get("feeding_schedules") === "on",
       email_digest: formData.get("email_digest") === "on",
       email_feeding: formData.get("email_feeding") === "on",
       email_research: formData.get("email_research") === "on",

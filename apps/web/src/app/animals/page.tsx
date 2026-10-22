@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AnimalFilters } from "@/components/animal-filters";
 import { GettingStarted } from "@/components/getting-started";
-import { DUE_TONE_CLASS, feedingDue, type FeedingDue } from "@/lib/feeding";
+import { DUE_TONE_CLASS, feedingDue, feedingSchedulesOn, type FeedingDue } from "@/lib/feeding";
 import { createClient } from "@/lib/supabase/server";
 import { bulkTag } from "./list-actions";
 
@@ -18,10 +18,11 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: rows, error }, { count: enclosureCount }, { data: profile }] = await Promise.all([
+  const [{ data: rows, error }, { count: enclosureCount }, { data: profile }, schedules] = await Promise.all([
     supabase.rpc("fn67_my_animals"),
     supabase.from("enclosures").select("id", { count: "exact", head: true }).eq("owner_id", user!.id),
     supabase.rpc("fn72_my_profile").single(),
+    feedingSchedulesOn(supabase),
   ]);
   const all = (rows ?? []).map((a) => ({
     ...a,
@@ -30,7 +31,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
       (a.pending_species
         ? `${a.pending_species} (${a.pending_species_status === "rejected" ? "species request rejected" : "species pending review"})`
         : "Unknown species"),
-    due: a.status === "active" ? feedingDue(a.last_fed_at, a.feeding_interval_days) : null,
+    due: schedules && a.status === "active" ? feedingDue(a.last_fed_at, a.feeding_interval_days) : null,
   }));
   const dueCount = all.filter((a) => a.due && a.due.days <= 0).length;
 
@@ -128,6 +129,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
           animalCount={all.length}
           enclosureCount={enclosureCount ?? 0}
           hasReminder={all.some((a) => a.feeding_interval_days)}
+          schedules={schedules}
           firstAnimalId={all[0]?.id}
           skipped={profile?.onboarding_skipped ?? []}
         />
@@ -142,7 +144,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
       {all.length > 0 && (
         <>
           {all.length > 6 && (
-            <AnimalFilters values={filterValues} species={speciesOptions} enclosures={enclosureOptions} tags={tagOptions} />
+            <AnimalFilters values={filterValues} species={speciesOptions} enclosures={enclosureOptions} tags={tagOptions} schedules={schedules} />
           )}
           <p className="mb-3 text-sm text-muted">
             {filtered.length === 0
@@ -214,7 +216,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                       <th className="p-2">Age</th>
                       <th className="p-2">Weight</th>
                       <th className="p-2">Enclosure</th>
-                      <th className="p-2">Feeding</th>
+                      {schedules && <th className="p-2">Feeding</th>}
                       <th className="p-2">Tags</th>
                     </tr>
                   </thead>
@@ -249,7 +251,7 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
                               )}
                             </td>
                             <td className="p-2 text-muted">{a.enclosure_name}</td>
-                            <td className="p-2"><DueBadge due={a.due} /></td>
+                            {schedules && <td className="p-2"><DueBadge due={a.due} /></td>}
                             <td className="p-2"><Tags tags={a.tags} /></td>
                           </tr>
                         ))}
