@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { feedingSchedulesOn } from "@/lib/feeding";
 import { createClient } from "@/lib/supabase/server";
 import { addGene, deleteAnimal, removeGene, updateDetails } from "./actions";
 
@@ -27,13 +28,14 @@ export default async function EditAnimalPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: animal }, { data: isOwner }] = await Promise.all([
+  const [{ data: animal }, { data: isOwner }, schedules] = await Promise.all([
     supabase
       .from("animals")
       .select("id, name, sex, hatch_date, status, status_date, visibility, feeding_interval_days, species_id, sire_id, dam_id, species(common_name)")
       .eq("id", id)
       .maybeSingle(),
     supabase.rpc("fn06_is_current_owner", { p_animal_id: id, p_user_id: user!.id }),
+    feedingSchedulesOn(supabase),
   ]);
   if (!animal || !isOwner) notFound();
 
@@ -109,7 +111,7 @@ export default async function EditAnimalPage({
           <span className="text-xs text-muted">Your own labels, separated by commas. Filter by them on My animals. Only you see them.</span>
         </label>
         <label className="flex flex-col gap-1 text-sm">
-          Feed every (days)
+          Feed every (days, optional)
           <input
             name="feeding_interval_days"
             type="number"
@@ -119,7 +121,16 @@ export default async function EditAnimalPage({
             defaultValue={animal.feeding_interval_days ?? ""}
             className="field"
           />
-          <span className="text-xs text-muted">Leave blank for no feeding reminders.</span>
+          <span className="text-xs text-muted">
+            {schedules ? (
+              "Leave blank for no feeding reminders."
+            ) : (
+              <>
+                Feeding schedules are off in <Link href="/settings" className="text-brand hover:underline">Settings</Link>, so this
+                is saved but not used.
+              </>
+            )}
+          </span>
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-sm">

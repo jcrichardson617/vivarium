@@ -2038,6 +2038,7 @@ export type Database = {
           email_digest: boolean
           email_feeding: boolean
           email_research: boolean
+          feeding_schedules: boolean
           email_token: string
           id: string
           onboarding_skipped: string[]
@@ -2057,6 +2058,7 @@ export type Database = {
           email_digest?: boolean
           email_feeding?: boolean
           email_research?: boolean
+          feeding_schedules?: boolean
           email_token?: string
           id: string
           onboarding_skipped?: string[]
@@ -2076,6 +2078,7 @@ export type Database = {
           email_digest?: boolean
           email_feeding?: boolean
           email_research?: boolean
+          feeding_schedules?: boolean
           email_token?: string
           id?: string
           onboarding_skipped?: string[]
@@ -3767,6 +3770,7 @@ export type Database = {
         }[]
       }
       fn78_admin_animal_stats: { Args: never; Returns: Json }
+      fn79_my_feeding_schedules: { Args: never; Returns: boolean }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {

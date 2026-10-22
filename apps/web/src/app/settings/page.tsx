@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { feedingSchedulesOn } from "@/lib/feeding";
 import { createClient } from "@/lib/supabase/server";
 import { deleteAccount, saveSettings } from "./actions";
 
@@ -11,7 +12,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const [{ data: profile }, { data: prefs }, { data: owned }, { data: mutes }] = await Promise.all([
+  const [{ data: profile }, { data: prefs }, { data: owned }, { data: mutes }, schedules] = await Promise.all([
     supabase.rpc("fn72_my_profile").single(),
     supabase.rpc("fn76_my_email_prefs").maybeSingle(),
     supabase
@@ -21,6 +22,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
       .eq("is_current_owner", true)
       .eq("animals.status", "active"),
     supabase.from("research_email_mutes").select("species_id"),
+    feedingSchedulesOn(supabase),
   ]);
   const keptSpecies = [
     ...new Map(
@@ -67,6 +69,16 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             <span className="block text-xs text-muted">Only totals are ever shown, and only once 5+ keepers use a product.</span>
           </span>
         </label>
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="feeding_schedules" defaultChecked={schedules} className="mt-1" />
+          <span>
+            Feeding schedules
+            <span className="block text-xs text-muted">
+              Show when each animal is due to eat. Turn off if you don&apos;t feed on a schedule; your feeding log and
+              each animal&apos;s interval are kept.
+            </span>
+          </span>
+        </label>
         <fieldset className="flex flex-col gap-2 text-sm">
           <label className="flex items-start gap-2">
             <input type="checkbox" name="email_digest" defaultChecked={profile?.email_digest ?? true} className="mt-1" />
@@ -78,7 +90,12 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           <div className="ml-6 flex flex-col gap-2">
             <label className="flex items-start gap-2">
               <input type="checkbox" name="email_feeding" defaultChecked={prefs?.email_feeding ?? true} className="mt-1" />
-              <span>Feeding reminders <span className="block text-xs text-muted">Animals due or overdue to eat.</span></span>
+              <span>
+                Feeding reminders
+                <span className="block text-xs text-muted">
+                  {schedules ? "Animals due or overdue to eat." : "Only sent while feeding schedules are on."}
+                </span>
+              </span>
             </label>
             <label className="flex items-start gap-2">
               <input type="checkbox" name="email_research" defaultChecked={prefs?.email_research ?? true} className="mt-1" />

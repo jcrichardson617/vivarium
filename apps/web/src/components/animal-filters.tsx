@@ -11,11 +11,13 @@ export function AnimalFilters({
   species,
   enclosures,
   tags,
+  schedules,
 }: {
   values: Record<string, string>;
   species: Option[];
   enclosures: Option[];
   tags: string[];
+  schedules: boolean;
 }) {
   const form = useRef<HTMLFormElement>(null);
   const submit = () => form.current?.requestSubmit();
@@ -66,7 +68,7 @@ export function AnimalFilters({
         )}
         {select("enclosure", "Enclosure", [{ value: "none", label: "Not housed" }, ...enclosures])}
         {select("tag", "Tag", tags.map((t) => ({ value: t, label: t })))}
-        {select("due", "Feeding", [{ value: "1", label: "Due to eat" }], "Any")}
+        {schedules && select("due", "Feeding", [{ value: "1", label: "Due to eat" }], "Any")}
         {select(
           "sort",
           "Sort",
@@ -74,7 +76,7 @@ export function AnimalFilters({
             { value: "code", label: "ID code" },
             { value: "newest", label: "Newest added" },
             { value: "age", label: "Oldest first" },
-            { value: "due", label: "Next meal" },
+            ...(schedules ? [{ value: "due", label: "Next meal" }] : []),
           ],
           "Name",
         )}

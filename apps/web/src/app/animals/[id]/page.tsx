@@ -6,7 +6,7 @@ import { cancelTransfer, requestTransfer } from "@/app/transfers/actions";
 import { removeShare, shareAnimal } from "./share-actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { ShareButton } from "@/components/share-button";
-import { DUE_TONE_CLASS, feedingDue } from "@/lib/feeding";
+import { DUE_TONE_CLASS, feedingDue, feedingSchedulesOn } from "@/lib/feeding";
 import { SITE_URL } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -83,7 +83,7 @@ export default async function AnimalPage({
     supabase.from("animal_enclosures").select("enclosure_id, enclosures(name)").eq("animal_id", id).is("end_date", null).maybeSingle(),
   ]);
 
-  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition] =
+  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition, schedules] =
     await Promise.all([
       supabase.rpc("fn69_animal_access", { p_animal_id: id }),
       supabase.rpc("morph_name", { p_animal_id: id }),
@@ -95,6 +95,7 @@ export default async function AnimalPage({
       supabase.from("health_events").select("id, event_date, event_type, severity, notes, recorded_by").eq("animal_id", id).order("event_date", { ascending: false }).limit(50),
       supabase.from("animal_notes").select("id, created_at, note_text, created_by").eq("animal_id", id).order("created_at", { ascending: false }).limit(50),
       supabase.from("animal_acquisitions").select("acquired_date").eq("animal_id", id).maybeSingle(),
+      feedingSchedulesOn(supabase),
     ]);
   // Owner, caretaker (can log) or viewer (read only), and whose animal it is.
   const access = accessRows?.[0];
@@ -141,7 +142,7 @@ export default async function AnimalPage({
   const latestWeight = weights.data?.[0];
   const latestFeeding = feedings.data?.find((f) => f.accepted);
   const latestShed = sheds.data?.[0];
-  const due = animal.status === "active" ? feedingDue(latestFeeding?.fed_at, animal.feeding_interval_days) : null;
+  const due = schedules && animal.status === "active" ? feedingDue(latestFeeding?.fed_at, animal.feeding_interval_days) : null;
 
   const timeline: TimelineItem[] = [
     ...(feedings.data ?? []).map((f) => ({
@@ -241,7 +242,7 @@ export default async function AnimalPage({
           {due ? (
             <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${DUE_TONE_CLASS[due.tone]}`}>{due.label}</span>
           ) : (
-            isOwner && (
+            isOwner && schedules && (
               <Link href={`/animals/${id}/edit`} className="mt-1 block text-xs text-muted hover:text-brand">
                 Set a feeding reminder
               </Link>
