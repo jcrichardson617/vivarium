@@ -27,21 +27,22 @@ functions), so every client gets the same rules.
 
 ## To do later
 
-- **Search Console (check ~Oct 21):** Indexing → Pages: note indexed / not-indexed counts and the not-indexed reasons. Sitemaps: confirm `https://www.reptilytics.com/sitemap.xml` shows Success. URL inspection → Request indexing for `/`, `/features` and a species page. Then Bing Webmaster Tools → Import from Google Search Console.
-- **OpenAlex API key:** get a free key at https://openalex.org/settings/api, then Supabase → Edge Functions → Secrets → `OPENALEX_API_KEY`. The OpenAlex harvester skips every run until it's set.
+- **Search Console:** after each indexing fix goes live, resubmit `https://www.reptilytics.com/sitemap.xml` under Sitemaps and request indexing for key pages in URL inspection. Check Indexing → Pages a week later for the not-indexed reasons. Still to do: Bing Webmaster Tools → Import from Google Search Console.
+- **OpenAlex API key (optional):** the harvester already works without one (6,700+ OpenAlex papers so far). A free key from https://openalex.org/settings/api, saved as Supabase → Edge Functions → Secrets → `OPENALEX_API_KEY`, only raises the daily request budget.
 - **Comparison page** (`/compare/reptile-husbandry-apps`): re-check competitors' features and prices every few months and update the "checked" date.
 
 - **Google sign-in branding** (from home): the Google screen says "Sign in to
   megvsfrjvmjpujarjksx.supabase.co"; verified branding makes it say Reptilytics.
   In Google Cloud → Google Auth Platform → Branding, set app name `Reptilytics`,
   a 120×120 logo, home page `https://reptilytics.com`, privacy
-  `https://reptilytics.com/privacy`, terms `https://reptilytics.com/terms`. Prove
-  ownership of reptilytics.com in Google Search Console (Domain property, TXT
-  record in DNS), then click Verify branding (Google takes ~2–3 business days).
+  `https://reptilytics.com/privacy`, terms `https://reptilytics.com/terms`.
+  reptilytics.com is already verified in Google Search Console, so the next
+  step is Verify branding (Google takes ~2–3 business days).
   Paid alternative: Supabase custom domain (`auth.reptilytics.com`, Pro + $10/mo).
 - Turn on leaked-password protection in Supabase → Authentication (requires
   the Supabase Pro plan).
-- Review the 49 seeded ball python genes and mark them verified.
+- Review the seeded morph genes and mark them verified (as of Oct 23: 23 of 49
+  ball python genes verified, and 47 of 126 genes across all species).
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
 
 ## HerpAtlas research library
