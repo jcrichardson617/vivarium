@@ -109,7 +109,7 @@ export default async function MorphPage({ params }: Props) {
         <h2 className="text-2xl font-semibold">How {g.name} is inherited</h2>
         <p>{inheritanceExplainer(g, speciesName)}</p>
         <p className="text-sm text-muted">
-          New to these terms? See the <Link href="/glossary#genetics-morphs" className="text-brand hover:underline">genetics glossary</Link>.
+          New to these terms? See the <Link href="/glossary" className="text-brand hover:underline">genetics glossary</Link>.
         </p>
         {siblings.length > 0 && (
           <p>

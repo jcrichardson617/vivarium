@@ -10,20 +10,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "/glossary" },
 };
 
+// Every term in one A–Z list, bucketed by first letter.
+const TERMS = GLOSSARY.flatMap((g) => g.terms.map((t) => ({ ...t, group: g.group }))).sort((a, b) =>
+  a.term.localeCompare(b.term, "en", { sensitivity: "base" }),
+);
+const LETTERS = [...new Set(TERMS.map((t) => t.term[0].toUpperCase()))];
+
 export default function GlossaryPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "DefinedTermSet",
     name: "Reptile keeping glossary",
     url: `${SITE_URL}/glossary`,
-    hasDefinedTerm: GLOSSARY.flatMap((g) =>
-      g.terms.map((t) => ({
-        "@type": "DefinedTerm",
-        name: t.term,
-        description: t.def,
-        url: `${SITE_URL}/glossary#${termAnchor(t.term)}`,
-      })),
-    ),
+    hasDefinedTerm: TERMS.map((t) => ({
+      "@type": "DefinedTerm",
+      name: t.term,
+      description: t.def,
+      url: `${SITE_URL}/glossary#${termAnchor(t.term)}`,
+    })),
   };
 
   return (
@@ -35,23 +39,26 @@ export default function GlossaryPage() {
           Reptile genetics and husbandry terms in plain English. Try them out in the{" "}
           <Link href="/genetics" className="text-brand hover:underline">genetics calculator</Link>.
         </p>
-        <nav className="mt-3 flex flex-wrap gap-2 text-sm">
-          {GLOSSARY.map((g) => (
-            <a key={g.group} href={`#${termAnchor(g.group)}`} className="rounded-full border border-border bg-card px-3 py-1 hover:border-brand">
-              {g.group}
+        <nav aria-label="Jump to letter" className="mt-3 flex flex-wrap gap-2 text-sm">
+          {LETTERS.map((l) => (
+            <a key={l} href={`#letter-${l.toLowerCase()}`} className="rounded-full border border-border bg-card px-3 py-1 hover:border-brand">
+              {l}
             </a>
           ))}
         </nav>
       </header>
-      {GLOSSARY.map((g) => (
-        <section key={g.group} id={termAnchor(g.group)} className="scroll-mt-4">
-          <h2 className="mb-3 text-2xl font-semibold">{g.group}</h2>
+      {LETTERS.map((l) => (
+        <section key={l} id={`letter-${l.toLowerCase()}`} className="scroll-mt-4">
+          <h2 className="mb-3 text-2xl font-semibold">{l}</h2>
           <dl className="flex flex-col gap-3">
-            {g.terms.map((t) => (
+            {TERMS.filter((t) => t.term[0].toUpperCase() === l).map((t) => (
               <div key={t.term} id={termAnchor(t.term)} className="scroll-mt-4 rounded-lg border border-border bg-card p-4">
-                <dt className="font-semibold">
-                  {t.term}
-                  {t.aka && <span className="font-normal text-muted"> ({t.aka})</span>}
+                <dt className="flex flex-wrap items-baseline justify-between gap-2">
+                  <span className="font-semibold">
+                    {t.term}
+                    {t.aka && <span className="font-normal text-muted"> ({t.aka})</span>}
+                  </span>
+                  <span className="text-xs text-muted">{t.group}</span>
                 </dt>
                 <dd className="mt-1 text-sm">{t.def}</dd>
               </div>
