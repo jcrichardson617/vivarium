@@ -22,7 +22,7 @@ const ROWS: { label: string; cells: Cell[] }[] = [
   { label: "Enclosure temperatures (basking, hot, cool) and humidity", cells: ["yes", "Not listed", "Not listed", "Not listed", "Not listed", "Not listed"] },
   { label: "Breeding: pairings, clutches, incubation", cells: ["yes", "yes", "paid", "yes", "Pairings", "yes"] },
   { label: "Lineage / family trees", cells: ["yes", "Not listed", "Not listed", "Not listed", "Offspring", "Not listed"] },
-  { label: "Genetics calculator", cells: ["yes", "Not listed", "Not listed", "Reported by users", "Separate tool", "Not listed"] },
+  { label: "Genetics calculator", cells: ["yes", "yes", "Not listed", "Reported by users", "Separate tool", "Not listed"] },
   { label: "QR / barcode labels", cells: ["no", "yes", "Not listed", "Barcode scanner", "QR scanning", "yes"] },
   { label: "Species care facts and published research", cells: ["yes", "no", "no", "no", "no", "no"] },
   { label: "Community growth and husbandry benchmarks", cells: ["yes", "no", "no", "no", "no", "no"] },
