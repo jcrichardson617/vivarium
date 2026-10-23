@@ -1,4 +1,4 @@
-// Herp-keeping terms, grouped for the /glossary page.
+// Herp-keeping terms by topic; the /glossary page lists them A–Z.
 export const GLOSSARY: { group: string; terms: { term: string; aka?: string; def: string }[] }[] = [
   {
     group: "Genetics & morphs",
