@@ -7,7 +7,7 @@ type Props = { params: Promise<{ username: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
-  return { title: `${username} | Reptilytics` };
+  return { title: `${username} | Reptilytics`, alternates: { canonical: `/u/${username.toLowerCase()}` } };
 }
 
 export default async function KeeperPage({ params }: Props) {

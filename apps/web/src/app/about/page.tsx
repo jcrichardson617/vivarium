@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProsePage } from "@/components/prose-page";
 
-export const metadata: Metadata = { title: "About | Reptilytics" };
+export const metadata: Metadata = { title: "About | Reptilytics", alternates: { canonical: "/about" } };
 
 export default function AboutPage() {
   return (

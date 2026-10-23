@@ -21,13 +21,11 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: "Reptilytics",
   keywords: ["reptile husbandry software", "husbandry app", "reptile tracker", "reptile care log", "ball python morphs", "herp record keeping", "reptile breeding software", "enclosure temperature log", "amphibian care"],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "Reptilytics",
     title: "Reptilytics | Intelligence for Modern Herpetoculture",
     description: DESCRIPTION,
-    url: "/",
   },
   twitter: { card: "summary_large_image" },
   appleWebApp: { capable: true, title: "Reptilytics", statusBarStyle: "default" },

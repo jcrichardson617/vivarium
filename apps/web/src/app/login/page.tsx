@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { signIn, signInWithGoogle, signUp } from "./actions";
+
+export const metadata: Metadata = { title: "Sign in | Reptilytics", alternates: { canonical: "/login" } };
 
 // Turn on once the Google provider is configured in Supabase (see README).
 const GOOGLE_SIGN_IN_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN === "true";

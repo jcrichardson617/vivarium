@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { MontyDemo } from "@/components/monty-demo";
@@ -10,6 +11,8 @@ const STEPS = [
   { n: "2", title: "Log as you go", body: "Record feedings, weights and sheds as part of your routine." },
   { n: "3", title: "See the patterns", body: "Growth charts, reminders and community benchmarks do the rest." },
 ];
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   const supabase = await createClient();
