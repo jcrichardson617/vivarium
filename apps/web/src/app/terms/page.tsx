@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ProsePage } from "@/components/prose-page";
 import { CONTACT_EMAIL } from "@/components/site-footer";
 
-export const metadata: Metadata = { title: "Terms of Service | Reptilytics" };
+export const metadata: Metadata = { title: "Terms of Service | Reptilytics", alternates: { canonical: "/terms" } };
 
 export default function TermsPage() {
   return (

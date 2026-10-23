@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ProsePage } from "@/components/prose-page";
 import { CONTACT_EMAIL } from "@/components/site-footer";
 
-export const metadata: Metadata = { title: "Privacy Policy | Reptilytics" };
+export const metadata: Metadata = { title: "Privacy Policy | Reptilytics", alternates: { canonical: "/privacy" } };
 
 export default function PrivacyPage() {
   return (

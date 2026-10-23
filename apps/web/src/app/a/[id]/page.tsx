@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!animal) return { title: "Animal not found | Reptilytics" };
   const title = `${animal.name ?? "Animal"} · ${animal.species?.common_name ?? "Reptile"} | Reptilytics`;
   const description = `${animal.name ?? "This animal"}, a ${animal.species?.common_name ?? "reptile"} tracked on Reptilytics.`;
-  return { title, description, openGraph: { title, description, siteName: "Reptilytics" } };
+  return { title, description, alternates: { canonical: `/a/${id}` }, openGraph: { title, description, siteName: "Reptilytics" } };
 }
 
 export default async function PublicAnimalPage({ params }: Props) {
