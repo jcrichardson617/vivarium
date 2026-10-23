@@ -19,7 +19,7 @@ export default async function Home() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const cta = user ? { href: "/dashboard", label: "Go to my dashboard" } : { href: "/login", label: "Create a free account" };
+  const cta = user ? { href: "/dashboard", label: "Go to my dashboard" } : { href: "/signup", label: "Create a free account" };
 
   return (
     <div className="flex flex-col gap-20 py-6">

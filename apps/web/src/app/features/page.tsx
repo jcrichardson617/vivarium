@@ -50,7 +50,7 @@ export default async function FeaturesPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const cta = user ? { href: "/animals", label: "Go to my animals" } : { href: "/login", label: "Create a free account" };
+  const cta = user ? { href: "/animals", label: "Go to my animals" } : { href: "/signup", label: "Create a free account" };
 
   return (
     <div className="flex flex-col gap-12 py-6">

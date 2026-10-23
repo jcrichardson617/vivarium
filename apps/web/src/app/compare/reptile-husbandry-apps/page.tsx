@@ -106,7 +106,7 @@ export default function CompareHusbandryApps() {
           </div>
         ))}
         <div>
-          <Link href="/login" className="btn-primary inline-block px-6 py-3">Start free</Link>
+          <Link href="/signup" className="btn-primary inline-block px-6 py-3">Start free</Link>
         </div>
       </section>
 
@@ -135,7 +135,7 @@ export default function CompareHusbandryApps() {
       <section className="rounded-2xl border border-border bg-card p-6 text-center">
         <h2 className="mb-2 text-xl font-semibold">Try Reptilytics free</h2>
         <p className="mx-auto mb-4 max-w-md text-muted">No credit card. Add your first animal in under a minute.</p>
-        <Link href="/login" className="btn-primary inline-block px-6 py-3">Create a free account</Link>
+        <Link href="/signup" className="btn-primary inline-block px-6 py-3">Create a free account</Link>
       </section>
 
       <footer className="text-xs text-muted">
