@@ -44,7 +44,7 @@ export function ToolPage({
         <p className="mx-auto mb-4 max-w-md text-muted">
           Log feedings, weights, sheds and clutches, get feeding reminders and see how your animals compare. Free.
         </p>
-        <Link href="/login" className="btn-primary inline-block px-6 py-3">Start tracking free</Link>
+        <Link href="/signup" className="btn-primary inline-block px-6 py-3">Start tracking free</Link>
       </section>
       <nav>
         <h2 className="mb-2 font-semibold">More free tools</h2>

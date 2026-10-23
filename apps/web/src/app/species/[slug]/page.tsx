@@ -215,7 +215,7 @@ export default async function SpeciesPage({ params }: Props) {
           Log feedings, weights and sheds in seconds, track genetics and lineage, and see how your animal compares with
           other keepers.
         </p>
-        <Link href="/login" className="btn-primary inline-block px-6 py-3">Start tracking free</Link>
+        <Link href="/signup" className="btn-primary inline-block px-6 py-3">Start tracking free</Link>
       </section>
     </article>
   );
