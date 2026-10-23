@@ -42,7 +42,7 @@ functions), so every client gets the same rules.
 - Turn on leaked-password protection in Supabase → Authentication (requires
   the Supabase Pro plan).
 - Review the seeded morph genes and mark them verified (as of Oct 23: 23 of 49
-  ball python genes verified, and 47 of 127 genes across all species).
+  ball python genes verified, and 47 of 126 genes across all species).
 - Move hosting to a commercial-use plan (or Cloudflare) before charging users.
 
 ## HerpAtlas research library
