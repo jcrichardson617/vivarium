@@ -27,7 +27,7 @@ functions), so every client gets the same rules.
 
 ## To do later
 
-- **Search Console:** after each indexing fix goes live, resubmit `https://www.reptilytics.com/sitemap.xml` under Sitemaps and request indexing for key pages in URL inspection. Check Indexing → Pages a week later for the not-indexed reasons. Still to do: Bing Webmaster Tools → Import from Google Search Console.
+- **Search Console:** after each indexing fix goes live, resubmit `https://www.reptilytics.com/sitemap.xml` under Sitemaps and request indexing for key pages in URL inspection. Check Indexing → Pages a week later for the not-indexed reasons.
 - **OpenAlex API key (optional):** the harvester already works without one (6,700+ OpenAlex papers so far). A free key from https://openalex.org/settings/api, saved as Supabase → Edge Functions → Secrets → `OPENALEX_API_KEY`, only raises the daily request budget.
 - **Comparison page** (`/compare/reptile-husbandry-apps`): re-check competitors' features and prices every few months and update the "checked" date.
 - Turn on leaked-password protection in Supabase → Authentication (requires
