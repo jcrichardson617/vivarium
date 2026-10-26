@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminNav } from "@/components/admin-nav";
 import { createClient } from "@/lib/supabase/server";
@@ -50,7 +51,10 @@ export default async function AnimalsAdminPage() {
       <div>
         <AdminNav current="/admin/animals" />
         <h1 className="text-2xl font-bold">Animals</h1>
-        <p className="text-muted">Totals across all keepers.</p>
+        <p className="text-muted">
+          Totals across all keepers. To look at one keeper&apos;s animals, enclosures and logs, open them from{" "}
+          <Link href="/admin/users" className="text-brand hover:underline">Users</Link>.
+        </p>
       </div>
       {error && <p className="rounded-md bg-red-500/10 p-3 text-sm text-red-600">{error.message}</p>}
 

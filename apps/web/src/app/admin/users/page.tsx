@@ -55,7 +55,7 @@ export default async function UsersAdminPage({ searchParams }: { searchParams: P
             {shown.map((u) => (
               <tr key={u.id}>
                 <td className="p-3">
-                  <Link href={`/u/${u.username}`} className="font-medium hover:text-brand">@{u.username}</Link>
+                  <Link href={`/admin/users/${u.id}`} className="font-medium hover:text-brand">@{u.username}</Link>
                   {u.display_name && u.display_name !== u.username && <span className="block text-xs text-muted">{u.display_name}</span>}
                   {(u.role !== "user" || u.plan !== "free") && (
                     <span className="block text-xs text-muted">{[u.role !== "user" ? u.role : null, u.plan !== "free" ? u.plan : null].filter(Boolean).join(" · ")}</span>
@@ -67,7 +67,9 @@ export default async function UsersAdminPage({ searchParams }: { searchParams: P
                 </td>
                 <td className="p-3 text-muted">{day(u.joined)}</td>
                 <td className="p-3 text-muted">{day(u.last_sign_in)}</td>
-                <td className="p-3 text-right">{u.animals}</td>
+                <td className="p-3 text-right">
+                  {u.animals ? <Link href={`/admin/users/${u.id}`} className="text-brand hover:underline">{u.animals}</Link> : 0}
+                </td>
                 <td className="p-3 text-right">{u.logs_30d}</td>
                 <td className="p-3 text-muted">{day(u.last_log)}</td>
               </tr>
