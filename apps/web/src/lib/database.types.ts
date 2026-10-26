@@ -3775,6 +3775,7 @@ export type Database = {
       fn81_admin_animal: { Args: { p_animal_id: string }; Returns: Json }
       fn82_admin_enclosure: { Args: { p_enclosure_id: string }; Returns: Json }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
+      weight_comparison: { Args: { p_animal_id: string; p_group: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

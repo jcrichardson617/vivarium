@@ -6,6 +6,7 @@ import { cancelTransfer, requestTransfer } from "@/app/transfers/actions";
 import { removeShare, shareAnimal } from "./share-actions";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { ShareButton } from "@/components/share-button";
+import { COMPARE_GROUPS, ComparisonControls, WeightChart, type CompareGroup, type Comparison } from "@/components/weight-chart";
 import { DUE_TONE_CLASS, feedingDue, feedingSchedulesOn } from "@/lib/feeding";
 import { SITE_URL } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
@@ -67,10 +68,10 @@ export default async function AnimalPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; saved?: string }>;
+  searchParams: Promise<{ error?: string; saved?: string; compare?: string }>;
 }) {
   const { id } = await params;
-  const { error, saved } = await searchParams;
+  const { error, saved, compare } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -88,10 +89,11 @@ export default async function AnimalPage({
     supabase.from("animal_enclosures").select("enclosure_id, enclosures(name)").eq("animal_id", id).is("end_date", null).maybeSingle(),
   ]);
 
-  const [{ data: accessRows }, { data: morph }, photos, feedings, weights, lengths, sheds, health, notes, acquisition, schedules] =
+  const [{ data: accessRows }, { data: morph }, weightSeries, photos, feedings, weights, lengths, sheds, health, notes, acquisition, schedules] =
     await Promise.all([
       supabase.rpc("fn69_animal_access", { p_animal_id: id }),
       supabase.rpc("morph_name", { p_animal_id: id }),
+      supabase.from("weight_logs").select("recorded_at, weight_grams").eq("animal_id", id).not("weight_grams", "is", null).order("recorded_at").limit(1000),
       supabase.from("animal_photos").select("id, storage_path, is_primary, caption, uploaded_by").eq("animal_id", id).order("created_at"),
       supabase.from("feedings").select("id, fed_at, feeder_type, feeder_size, quantity, accepted, notes, fed_by").eq("animal_id", id).order("fed_at", { ascending: false }).limit(50),
       supabase.from("weight_logs").select("id, recorded_at, weight_grams, notes, recorded_by").eq("animal_id", id).order("recorded_at", { ascending: false }).limit(50),
@@ -145,6 +147,15 @@ export default async function AnimalPage({
   const limit = photoLimit ?? 3;
 
   const latestWeight = weights.data?.[0];
+  const weightPoints = (weightSeries.data ?? []).map((w) => ({ at: w.recorded_at!, g: Number(w.weight_grams) }));
+  const sexKnown = animal.sex === "male" || animal.sex === "female";
+  const requested = COMPARE_GROUPS.find((g) => g.key === compare && (!g.needsSex || sexKnown));
+  const compareGroup: CompareGroup = requested?.key ?? "species";
+  const { data: comparisonData } =
+    weightPoints.length >= 2 && animal.hatch_date && animal.species
+      ? await supabase.rpc("weight_comparison", { p_animal_id: id, p_group: compareGroup })
+      : { data: null };
+  const comparison = comparisonData as Comparison | null;
   const latestFeeding = feedings.data?.find((f) => f.accepted);
   const latestShed = sheds.data?.[0];
   const due = schedules && animal.status === "active" ? feedingDue(latestFeeding?.fed_at, animal.feeding_interval_days) : null;
@@ -263,6 +274,22 @@ export default async function AnimalPage({
           <p className="mt-1 font-semibold">{daysAgo(latestShed?.shed_date)}</p>
         </div>
       </section>
+
+      {weightPoints.length >= 2 && (
+        <section id="weight" className="scroll-mt-20 rounded-lg border border-border bg-card p-4">
+          <h2 className="mb-2 font-semibold">Weight</h2>
+          <WeightChart points={weightPoints} comparison={comparison} />
+          {animal.species && (
+            <ComparisonControls
+              animalId={id}
+              group={compareGroup}
+              sexKnown={sexKnown}
+              hasHatchDate={!!animal.hatch_date}
+              comparison={comparison}
+            />
+          )}
+        </section>
+      )}
 
       {isOwner && (
         <section className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4 text-sm">

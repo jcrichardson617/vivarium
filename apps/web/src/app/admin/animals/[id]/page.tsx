@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminNav } from "@/components/admin-nav";
 import { AdminReadOnly } from "@/components/admin-read-only";
+import { WeightChart } from "@/components/weight-chart";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Animal | Reptilytics" };
@@ -162,38 +163,6 @@ export default async function AnimalAdminPage({ params }: { params: Promise<{ id
           ))}
         </ol>
       </section>
-    </div>
-  );
-}
-
-// Weight over time, spaced by date. Each point has a title tooltip with its date and value.
-function WeightChart({ points }: { points: { at: string; g: number }[] }) {
-  const W = 600;
-  const H = 160;
-  const pad = 8;
-  const times = points.map((p) => new Date(p.at).getTime());
-  const t0 = Math.min(...times);
-  const span = Math.max(1, Math.max(...times) - t0);
-  const min = Math.min(...points.map((p) => p.g));
-  const max = Math.max(...points.map((p) => p.g));
-  const range = max - min || 1;
-  const xy = points.map((p, i) => [pad + ((times[i] - t0) / span) * (W - 2 * pad), H - pad - ((p.g - min) / range) * (H - 2 * pad)]);
-  const label = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
-  return (
-    <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-40 w-full" role="img" aria-label={`Weight from ${points[0].g} g to ${points[points.length - 1].g} g`}>
-        <polyline points={xy.map((p) => p.join(",")).join(" ")} fill="none" strokeWidth={2} strokeLinejoin="round" className="stroke-brand" />
-        {xy.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={4} className="fill-brand">
-            <title>{`${new Date(points[i].at).toLocaleDateString()}: ${points[i].g} g`}</title>
-          </circle>
-        ))}
-      </svg>
-      <div className="mt-1 flex justify-between text-xs text-muted">
-        <span>{label(points[0].at)}</span>
-        <span>{min.toLocaleString("en-US")}–{max.toLocaleString("en-US")} g</span>
-        <span>{label(points[points.length - 1].at)}</span>
-      </div>
     </div>
   );
 }
