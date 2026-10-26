@@ -3771,6 +3771,9 @@ export type Database = {
       }
       fn78_admin_animal_stats: { Args: never; Returns: Json }
       fn79_my_feeding_schedules: { Args: never; Returns: boolean }
+      fn80_admin_keeper: { Args: { p_user_id: string }; Returns: Json }
+      fn81_admin_animal: { Args: { p_animal_id: string }; Returns: Json }
+      fn82_admin_enclosure: { Args: { p_enclosure_id: string }; Returns: Json }
       morph_name: { Args: { p_animal_id: string }; Returns: string }
     }
     Enums: {
