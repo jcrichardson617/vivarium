@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { COMPARE_GROUPS, WeightChart, type CompareGroup, type ComparisonBin } from "@/components/weight-chart";
 
 // A static preview of the app for the Features page. Nothing here reads the
 // database; dates are written relatively so the server and browser render the same.
@@ -13,19 +14,30 @@ import { useState } from "react";
 const TABS = ["Animal", "Collection", "Enclosure"] as const;
 type Tab = (typeof TABS)[number];
 
-// Monthly weights (g) for a female ball python, hatched April 2024, with the
-// community 25th–75th percentile band for the same age.
-const WEIGHTS = [
-  { m: "Jun", g: 78, lo: 70, hi: 95 },
-  { m: "Aug", g: 140, lo: 110, hi: 160 },
-  { m: "Oct", g: 215, lo: 160, hi: 240 },
-  { m: "Dec", g: 290, lo: 210, hi: 320 },
-  { m: "Feb", g: 360, lo: 260, hi: 400 },
-  { m: "Apr", g: 455, lo: 320, hi: 490 },
-  { m: "Jun", g: 540, lo: 380, hi: 580 },
-  { m: "Aug", g: 610, lo: 440, hi: 660 },
-  { m: "Oct", g: 702, lo: 500, hi: 740 },
-];
+// Mango's weigh-ins (g): a female ball python, Normal het Clown, hatched April 2024.
+const MANGO_HATCH = "2024-04-01";
+const MANGO_WEIGHTS = [78, 140, 215, 290, 360, 455, 540, 610, 702].map((g, i) => ({
+  at: new Date(Date.UTC(2024, 5 + i * 2, 1, 12)).toISOString(),
+  g,
+}));
+
+// Middle half and median by month of age for each comparison group: a median
+// curve scaled per group, with the band's width as a share of the median.
+// "Same morph" compares visual genes only, so het Clown counts as Normal.
+const GROUP_SHAPE: Record<CompareGroup, { scale: number; spread: number; label: string }> = {
+  species: { scale: 1, spread: 0.24, label: "ball pythons her age" },
+  sex: { scale: 1.07, spread: 0.21, label: "female ball pythons her age" },
+  morph: { scale: 1.02, spread: 0.19, label: "Normal ball pythons her age" },
+  morph_sex: { scale: 1.1, spread: 0.15, label: "Normal female ball pythons her age" },
+};
+const groupBins = (group: CompareGroup): ComparisonBin[] => {
+  const { scale, spread } = GROUP_SHAPE[group];
+  return Array.from({ length: 18 }, (_, i) => {
+    const age = i + 1;
+    const p50 = Math.round((20 + 31 * age + 0.2 * age * age) * scale);
+    return { age_month: age, n: 0, p25: Math.round(p50 * (1 - spread)), p50, p75: Math.round(p50 * (1 + spread)) };
+  });
+};
 
 const HISTORY = [
   { title: "Fed: small rat (frozen-thawed)", detail: "Took it right away", when: "3 days ago" },
@@ -69,34 +81,29 @@ function Tile({ label, value, note }: { label: string; value: string; note?: str
 }
 
 function GrowthChart() {
-  const W = 560;
-  const H = 150;
-  const max = 800;
-  const x = (i: number) => 12 + (i / (WEIGHTS.length - 1)) * (W - 24);
-  const y = (g: number) => H - 6 - (g / max) * (H - 16);
-  const band =
-    WEIGHTS.map((w, i) => `${i ? "L" : "M"}${x(i)},${y(w.hi)}`).join(" ") +
-    " " +
-    [...WEIGHTS].reverse().map((w, i) => `L${x(WEIGHTS.length - 1 - i)},${y(w.lo)}`).join(" ") +
-    " Z";
-  const line = WEIGHTS.map((w, i) => `${i ? "L" : "M"}${x(i)},${y(w.g)}`).join(" ");
+  const [group, setGroup] = useState<CompareGroup>("species");
+  const comparison = { animals: 0, keepers: 0, hatch_date: MANGO_HATCH, bins: groupBins(group) };
   return (
     <div>
-      <div className="mb-1 flex flex-wrap items-center gap-4 text-xs text-muted">
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 rounded bg-brand" aria-hidden /> Mango</span>
-        <span className="flex items-center gap-1.5"><span className="h-2.5 w-4 rounded-sm bg-brand/15" aria-hidden /> Typical for her age</span>
-      </div>
-      <svg viewBox={`0 0 ${W} ${H + 16}`} className="w-full" role="img" aria-label="Mango's weight, 78 g to 702 g over 16 months, at the upper end of the typical range">
-        <path d={band} className="fill-brand/15" />
-        <path d={line} fill="none" strokeWidth={2.5} strokeLinejoin="round" className="stroke-brand" />
-        {WEIGHTS.map((w, i) => (
-          <g key={i}>
-            <circle cx={x(i)} cy={y(w.g)} r={3} className="fill-brand" />
-            <text x={x(i)} y={H + 13} textAnchor="middle" className="fill-muted text-[10px]">{w.m}</text>
-          </g>
+      <WeightChart points={MANGO_WEIGHTS} comparison={comparison} />
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-muted">Compare with:</span>
+        {COMPARE_GROUPS.map((g) => (
+          <button
+            key={g.key}
+            type="button"
+            onClick={() => setGroup(g.key)}
+            aria-pressed={g.key === group}
+            className={`rounded-full border px-2.5 py-0.5 ${g.key === group ? "border-brand bg-brand text-white" : "border-border hover:border-brand hover:text-brand"}`}
+          >
+            {g.label}
+          </button>
         ))}
-        <text x={x(WEIGHTS.length - 1) - 6} y={y(702) - 8} textAnchor="end" className="fill-foreground text-[11px] font-semibold">702 g</text>
-      </svg>
+      </div>
+      <p className="mt-2 text-xs text-muted">
+        <span className="mr-1 inline-block h-2.5 w-4 rounded-sm bg-brand/15 align-middle" aria-hidden />
+        Shaded band is the middle half of {GROUP_SHAPE[group].label}; dashed line is the median.
+      </p>
     </div>
   );
 }
@@ -144,7 +151,7 @@ function AnimalView() {
         <Tile label="Last shed" value="12 days ago" note="Complete" />
       </div>
       <section className="rounded-lg border border-border bg-background p-3">
-        <p className="mb-2 text-sm font-semibold">Growth vs. other ball pythons her age</p>
+        <p className="mb-2 text-sm font-semibold">Growth compared with similar animals</p>
         <GrowthChart />
       </section>
       <section className="rounded-lg border border-border bg-background p-3">
