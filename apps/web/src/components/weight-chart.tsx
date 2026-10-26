@@ -17,6 +17,18 @@ export type CompareGroup = (typeof COMPARE_GROUPS)[number]["key"];
 const MIN_ANIMALS = 5;
 const MONTH_MS = 30.4375 * 86_400_000;
 
+// About four round-numbered gridlines covering [min, max].
+function niceTicks(min: number, max: number) {
+  const raw = (max - min || Math.max(1, max)) / 4;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw)!;
+  const lo = Math.floor(min / step) * step;
+  const hi = Math.ceil(max / step) * step;
+  const ticks: number[] = [];
+  for (let t = lo; t <= hi + step / 2; t += step) ticks.push(Math.round(t * 100) / 100);
+  return ticks;
+}
+
 // Weight over time, spaced by date. Each point has a title tooltip with its
 // date and value. With a comparison, the 25th–75th percentile band and median
 // of the chosen group are drawn behind the line, month by month of age.
@@ -41,8 +53,9 @@ export function WeightChart({ points, comparison }: { points: WeightPoint[]; com
   const t0 = Math.min(first, ...band.map((b) => b.t));
   const span = Math.max(1, Math.max(last, ...band.map((b) => b.t)) - t0);
   const values = [...points.map((p) => p.g), ...band.flatMap((b) => [b.p25, b.p75])];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const ticks = niceTicks(Math.min(...values), Math.max(...values));
+  const min = ticks[0];
+  const max = ticks[ticks.length - 1];
   const range = max - min || 1;
   const x = (t: number) => pad + ((t - t0) / span) * (W - 2 * pad);
   const y = (g: number) => H - pad - ((g - min) / range) * (H - 2 * pad);
@@ -58,29 +71,50 @@ export function WeightChart({ points, comparison }: { points: WeightPoint[]; com
       : null;
   const median = band.length >= 2 ? band.map((b, i) => `${i ? "L" : "M"}${x(b.t)},${y(b.p50)}`).join(" ") : null;
 
+  // The plot stretches to the card (preserveAspectRatio none) with
+  // non-scaling strokes; axis labels are HTML so they stay readable on phones.
+  const ns = { vectorEffect: "non-scaling-stroke" as const };
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-40 w-full" role="img" aria-label={`Weight from ${points[0].g} g to ${points[points.length - 1].g} g`}>
-        {bandPath && <path d={bandPath} className="fill-brand/15" />}
-        {median && <path d={median} fill="none" strokeWidth={1.5} strokeDasharray="4 4" className="stroke-brand/60" />}
-        {band.length === 1 && (
-          <line x1={x(band[0].t)} x2={x(band[0].t)} y1={y(band[0].p75)} y2={y(band[0].p25)} strokeWidth={8} strokeLinecap="round" className="stroke-brand/20" />
-        )}
-        {band.map((b) => (
-          <rect key={b.age_month} x={x(b.t) - 6} y={y(b.p75)} width={12} height={Math.max(1, y(b.p25) - y(b.p75))} fill="transparent">
-            <title>{`Age ${b.age_month} mo: middle half ${b.p25}–${b.p75} g, median ${b.p50} g (${b.n} animals)`}</title>
-          </rect>
-        ))}
-        <polyline points={xy.map((p) => p.join(",")).join(" ")} fill="none" strokeWidth={2} strokeLinejoin="round" className="stroke-brand" />
-        {xy.map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r={4} className="fill-brand">
-            <title>{`${new Date(points[i].at).toLocaleDateString()}: ${points[i].g} g`}</title>
-          </circle>
-        ))}
-      </svg>
-      <div className="mt-1 flex justify-between text-xs text-muted">
+      <div className="flex gap-2">
+        <div className="relative h-40 w-14 shrink-0 text-right text-xs text-muted" aria-hidden>
+          {ticks.map((t) => (
+            <span key={t} className="absolute right-0 -translate-y-1/2 whitespace-nowrap" style={{ top: `${(y(t) / H) * 100}%` }}>
+              {`${t.toLocaleString("en-US")} g`}
+            </span>
+          ))}
+        </div>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="none"
+          className="h-40 min-w-0 flex-1"
+          role="img"
+          aria-label={`Weight from ${points[0].g} g to ${points[points.length - 1].g} g`}
+        >
+          {ticks.map((t) => (
+            <line key={t} x1={0} x2={W} y1={y(t)} y2={y(t)} strokeWidth={1} className="stroke-border" {...ns} />
+          ))}
+          {bandPath && <path d={bandPath} className="fill-brand/15" />}
+          {median && <path d={median} fill="none" strokeWidth={1.5} strokeDasharray="4 4" className="stroke-brand/60" {...ns} />}
+          {band.length === 1 && (
+            <line x1={x(band[0].t)} x2={x(band[0].t)} y1={y(band[0].p75)} y2={y(band[0].p25)} strokeWidth={8} strokeLinecap="round" className="stroke-brand/20" {...ns} />
+          )}
+          {band.map((b) => (
+            <rect key={b.age_month} x={x(b.t) - 6} y={y(b.p75)} width={12} height={Math.max(1, y(b.p25) - y(b.p75))} fill="transparent">
+              <title>{`Age ${b.age_month} mo: middle half ${b.p25}–${b.p75} g, median ${b.p50} g (${b.n} animals)`}</title>
+            </rect>
+          ))}
+          <polyline points={xy.map((p) => p.join(",")).join(" ")} fill="none" strokeWidth={2} strokeLinejoin="round" className="stroke-brand" {...ns} />
+          {/* Zero-length round-capped lines stay circular when the plot stretches. */}
+          {xy.map(([cx, cy], i) => (
+            <line key={i} x1={cx} x2={cx} y1={cy} y2={cy} strokeWidth={8} strokeLinecap="round" className="stroke-brand" {...ns}>
+              <title>{`${new Date(points[i].at).toLocaleDateString()}: ${points[i].g} g`}</title>
+            </line>
+          ))}
+        </svg>
+      </div>
+      <div className="mt-1 flex justify-between pl-16 text-xs text-muted">
         <span>{label(t0)}</span>
-        <span>{Math.round(min).toLocaleString("en-US")}–{Math.round(max).toLocaleString("en-US")} g</span>
         <span>{label(t0 + span)}</span>
       </div>
     </div>
