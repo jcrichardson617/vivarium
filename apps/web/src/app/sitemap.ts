@@ -12,13 +12,21 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Anonymous client: only public data ends up in the sitemap.
   const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-  const results = await Promise.all([
-    supabase.from("species").select("id, common_name, scientific_name").eq("active", true),
-    supabase.rpc("fn48_species_content_counts"),
-    supabase.from("animals").select("id, created_at").eq("visibility", "public").limit(5000),
-    supabase.from("genes").select("name, species(common_name, scientific_name)").eq("active", true),
-    supabase.from("species_care").select("species_id"),
-  ]);
+  const load = () =>
+    Promise.all([
+      supabase.from("species").select("id, common_name, scientific_name").eq("active", true),
+      supabase.rpc("fn48_species_content_counts"),
+      supabase.from("animals").select("id, created_at").eq("visibility", "public").limit(5000),
+      supabase.from("genes").select("name, species(common_name, scientific_name)").eq("active", true),
+      supabase.from("species_care").select("species_id"),
+    ]);
+  // During a build many pages prerender at once and the anonymous role's 3 s
+  // statement timeout can trip, so give a failed batch two more tries.
+  let results = await load();
+  for (let attempt = 1; attempt < 3 && results.some((r) => r.error); attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+    results = await load();
+  }
   // A failed query would quietly drop pages from the sitemap. Throwing instead
   // keeps the last good sitemap cached until the next revalidation succeeds.
   const failed = results.find((r) => r.error);
