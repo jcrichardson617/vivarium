@@ -35,11 +35,16 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Latest date a log may use: tomorrow in UTC, so keepers ahead of UTC can still pick their today.
+function latest() {
+  return new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+}
+
 function DateField() {
   return (
     <label className="flex flex-col gap-1 text-sm">
       Date
-      <input name="date" type="date" defaultValue={today()} className="field" />
+      <input name="date" type="date" defaultValue={today()} max={latest()} className="field" />
     </label>
   );
 }

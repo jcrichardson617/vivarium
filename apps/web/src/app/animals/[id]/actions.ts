@@ -15,9 +15,16 @@ function num(formData: FormData, key: string) {
 }
 
 // "2026-10-14" from a date input becomes a timestamp; empty means now.
+// Future dates are refused (a day of slack covers keepers ahead of UTC).
 function when(formData: FormData) {
   const value = text(formData, "date");
-  return value ? new Date(`${value}T12:00:00`).toISOString() : new Date().toISOString();
+  if (!value) return new Date().toISOString();
+  const at = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(at.getTime()) || at.getTime() > Date.now() + 36 * 3600 * 1000) {
+    const animalId = String(formData.get("animal_id"));
+    redirect(`/animals/${animalId}?error=${encodeURIComponent("That date is in the future. Check the year and try again.")}`);
+  }
+  return at.toISOString();
 }
 
 async function done(animalId: string, error: { message: string } | null, what: string) {
