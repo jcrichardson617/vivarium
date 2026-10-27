@@ -107,9 +107,14 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
     <section>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">My animals</h1>
-        <Link href="/animals/new" className="btn-primary">
-          Add animal
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/settings#export" className="text-sm text-muted hover:text-brand">
+            Export CSV
+          </Link>
+          <Link href="/animals/new" className="btn-primary">
+            Add animal
+          </Link>
+        </div>
       </div>
 
       {deleted && <p className="mb-4 rounded-md bg-brand/10 p-3 text-sm text-brand-dark">Animal deleted.</p>}

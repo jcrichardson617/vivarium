@@ -6,6 +6,16 @@ import { deleteAccount, saveSettings } from "./actions";
 
 export const metadata: Metadata = { title: "Settings | Reptilytics" };
 
+const EXPORTS = [
+  ["animals", "Animals"],
+  ["feedings", "Feedings"],
+  ["weights", "Weights"],
+  ["lengths", "Lengths"],
+  ["sheds", "Sheds"],
+  ["health", "Health"],
+  ["notes", "Notes"],
+] as const;
+
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ error?: string; saved?: string }> }) {
   const { error, saved } = await searchParams;
   const supabase = await createClient();
@@ -117,6 +127,22 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         </fieldset>
         <button className="btn-primary self-start">Save</button>
       </form>
+
+      <div id="export" className="mt-12 scroll-mt-20">
+        <h2 className="mb-1 text-lg font-semibold">Export your data</h2>
+        <p className="mb-3 text-sm text-muted">
+          CSV files for spreadsheets or other apps, covering every animal you own. Weights are in grams, lengths in cm.
+        </p>
+        <ul className="flex flex-wrap gap-2 text-sm">
+          {EXPORTS.map(([file, label]) => (
+            <li key={file}>
+              <a href={`/animals/export/${file}.csv`} download className="btn-secondary inline-block">
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="mt-12 rounded-lg border border-red-500/40 p-4">
         <h2 className="mb-1 text-lg font-semibold text-red-600">Delete account</h2>
