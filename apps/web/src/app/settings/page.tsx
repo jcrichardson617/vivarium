@@ -132,6 +132,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <h2 className="mb-1 text-lg font-semibold">Export your data</h2>
         <p className="mb-3 text-sm text-muted">
           CSV files for spreadsheets or other apps, covering every animal you own. Weights are in grams, lengths in cm.
+          To bring records in, use{" "}
+          <Link href="/animals/import" className="text-brand hover:underline">Import from CSV</Link>.
         </p>
         <ul className="flex flex-wrap gap-2 text-sm">
           {EXPORTS.map(([file, label]) => (

@@ -108,8 +108,11 @@ export default async function AnimalsPage({ searchParams }: { searchParams: Prom
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">My animals</h1>
         <div className="flex items-center gap-3">
+          <Link href="/animals/import" className="text-sm text-muted hover:text-brand">
+            Import
+          </Link>
           <Link href="/settings#export" className="text-sm text-muted hover:text-brand">
-            Export CSV
+            Export
           </Link>
           <Link href="/animals/new" className="btn-primary">
             Add animal
