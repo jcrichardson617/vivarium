@@ -26,7 +26,12 @@ export default async function LoginPage({
           <input name="email" type="email" required autoComplete="email" className="field" />
         </label>
         <label className="flex flex-col gap-1 text-sm">
-          Password
+          <span className="flex items-baseline justify-between">
+            Password
+            <Link href="/forgot-password" className="text-xs text-brand hover:underline">
+              Forgot password?
+            </Link>
+          </span>
           <input name="password" type="password" required minLength={8} autoComplete="current-password" className="field" />
         </label>
         <button formAction={signIn} className="btn-primary mt-2">
