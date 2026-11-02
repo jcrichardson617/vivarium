@@ -59,7 +59,7 @@ export default async function Home() {
         <section className="mx-auto w-full max-w-3xl">
           <h2 className="mb-1 text-center text-2xl font-bold">Every weigh-in, in context</h2>
           <p className="mb-5 text-center text-sm text-muted">
-            An example animal. Switch the comparison to see her against her species, sex or morph.
+            Switch the comparison to see how Mango measures up against her species, her sex or her morph.
           </p>
           <AppPreview />
         </section>
