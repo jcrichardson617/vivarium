@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SignupCta } from "@/components/signup-cta";
 import { Pager, PaperList } from "@/components/paper-list";
 import { newestPapers } from "@/lib/research";
 import { createClient } from "@/lib/supabase/server";
@@ -35,6 +36,11 @@ export default async function ResearchPage({ searchParams }: Props) {
       <PaperList papers={papers} />
       {!papers.length && <p className="text-muted">No papers yet.</p>}
       <Pager base="/research" page={page} hasMore={hasMore} />
+      {/* Shown to everyone: reading the session would stop this page being cached. */}
+      <SignupCta
+        title="Put the research to work"
+        body="Log weights, feedings and sheds for your own animals, chart their growth, and see how they compare with other keepers' animals of the same species."
+      />
     </section>
   );
 }

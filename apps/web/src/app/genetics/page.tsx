@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SignupCta } from "@/components/signup-cta";
 import { GeneticsCalculator, type CalcAnimal } from "@/components/genetics-calculator";
 import type { GeneStatus } from "@/lib/genetics";
 import { loadCalculatorSpecies } from "@/lib/genetics-data";
@@ -62,7 +63,8 @@ export default async function GeneticsPage({
           {!user && (
             <>
               {" "}
-              <Link href="/login" className="text-brand hover:underline">Sign in</Link> to load your own animals.
+              <Link href="/signup" className="text-brand hover:underline">Create a free account</Link> to run pairings on
+              your own animals and keep their genetics on file.
             </>
           )}
         </p>
@@ -77,6 +79,12 @@ export default async function GeneticsPage({
         />
       ) : (
         <p className="text-muted">No species have genes yet.</p>
+      )}
+      {!user && (
+        <SignupCta
+          title="Planning a pairing?"
+          body="Save your animals with their genes, run them through the calculator in one click, and track clutches and hatch rates when the eggs come."
+        />
       )}
     </section>
   );

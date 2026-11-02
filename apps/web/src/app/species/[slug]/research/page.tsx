@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SignupCta } from "@/components/signup-cta";
 import { notFound } from "next/navigation";
 import { Pager, PaperList } from "@/components/paper-list";
 import { newestPapers } from "@/lib/research";
@@ -53,6 +54,10 @@ export default async function SpeciesResearchPage({ params, searchParams }: Prop
       <PaperList papers={papers} />
       {!papers.length && <p className="text-muted">No papers for this species yet. The library checks for new ones every month.</p>}
       <Pager base={`/species/${slug}/research`} page={page} hasMore={hasMore} />
+      <SignupCta
+        title={`Keep a ${name.toLowerCase()}?`}
+        body="Log weights, feedings and sheds in seconds, chart your animal's growth, and see how it compares with other keepers' animals."
+      />
     </section>
   );
 }

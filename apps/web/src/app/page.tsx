@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AppPreview } from "@/components/app-preview";
 import { MontyDemo } from "@/components/monty-demo";
 import { ShareButton } from "@/components/share-button";
 import { SITE_URL } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
 const STEPS = [
-  { n: "1", title: "Add your animals", body: "Create a profile for each animal in under a minute." },
-  { n: "2", title: "Log as you go", body: "Record feedings, weights and sheds as part of your routine." },
-  { n: "3", title: "See the patterns", body: "Growth charts, reminders and community benchmarks do the rest." },
+  { n: "1", title: "Add your animals", body: "A profile for each animal in under a minute, or import your spreadsheet as a CSV." },
+  { n: "2", title: "Log as you go", body: "Feedings, weights and sheds in a few taps, right at the rack." },
+  { n: "3", title: "Read the data", body: "Growth charts, feeding history and comparisons with other keepers' animals turn your logs into answers." },
 ];
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -24,7 +25,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col gap-20 py-6">
       <section className="flex flex-col items-center gap-6 text-center">
-        <Image src="/logo.png" alt="Reptilytics logo" width={140} height={140} priority />
+        <Image src="/logo.png" alt="Reptilytics logo" width={140} height={140} priority className="h-24 w-24 sm:h-[140px] sm:w-[140px]" />
         <div>
           <h1 className="text-5xl font-extrabold tracking-tight">Reptilytics</h1>
           <p className="mt-2 text-base tracking-[0.15em] text-muted">Intelligence for Modern Herpetoculture</p>
@@ -32,10 +33,16 @@ export default async function Home() {
         {user ? (
           <p className="max-w-2xl text-lg">Welcome back. Your collection is waiting.</p>
         ) : (
-          <p className="max-w-2xl text-lg">
-            The husbandry and record-keeping hub for reptile and amphibian keepers and breeders. Track every animal, log husbandry in seconds,
-            manage breeding projects and genetics, and see how your animals compare with data from keepers everywhere.
-          </p>
+          <>
+            <p className="max-w-2xl text-2xl font-semibold leading-snug">
+              Turn your husbandry records into data you can use.
+            </p>
+            <p className="max-w-2xl text-lg text-muted">
+              Log feedings, weights and sheds for every reptile and amphibian you keep. Reptilytics charts each animal&apos;s
+              growth, tells you who&apos;s due to eat, and compares it with other keepers&apos; animals of the same species, sex
+              and morph as the community grows.
+            </p>
+          </>
         )}
         <div className="flex flex-wrap justify-center gap-3">
           <Link href={cta.href} className="btn-primary px-6 py-3">
@@ -45,8 +52,18 @@ export default async function Home() {
             {user ? "My animals" : "See what it does"}
           </Link>
         </div>
-        {!user && <p className="text-sm text-muted">Free to use. No credit card.</p>}
+        {!user && <p className="text-sm text-muted">Free to use. Sign up with Google or email in about a minute.</p>}
       </section>
+
+      {!user && (
+        <section className="mx-auto w-full max-w-3xl">
+          <h2 className="mb-1 text-center text-2xl font-bold">Every weigh-in, in context</h2>
+          <p className="mb-5 text-center text-sm text-muted">
+            An example animal. Switch the comparison to see her against her species, sex or morph.
+          </p>
+          <AppPreview />
+        </section>
+      )}
 
       {!user && (
         <section>
@@ -92,7 +109,10 @@ export default async function Home() {
       ) : (
         <section className="flex flex-col items-center gap-4 text-center">
           <h2 className="text-3xl font-bold">Start your collection today</h2>
-          <p className="max-w-md text-muted">Built by keepers, for keepers. Your private records stay private.</p>
+          <p className="max-w-md text-muted">
+            Built by a herpetoculturist and PhD herpetologist/ecologist. Your records stay private unless you choose to
+            share them.
+          </p>
           <Link href={cta.href} className="btn-primary px-6 py-3">
             {cta.label}
           </Link>
