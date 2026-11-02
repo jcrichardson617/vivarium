@@ -2,7 +2,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MontyDemo } from "@/components/monty-demo";
-import { AppPreview } from "@/components/app-preview";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -60,14 +59,6 @@ export default async function FeaturesPage() {
           Spreadsheets and notebooks hold your records. Reptilytics turns them into answers.
         </p>
       </header>
-
-      <section id="preview" className="mx-auto w-full max-w-3xl scroll-mt-6">
-        <h2 className="mb-1 text-center text-2xl font-bold">See your collection at a glance</h2>
-        <p className="mb-5 text-center text-sm text-muted">
-          Examine individual animals, your whole collection, and every enclosure.
-        </p>
-        <AppPreview />
-      </section>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {FEATURES.map((f) => (
