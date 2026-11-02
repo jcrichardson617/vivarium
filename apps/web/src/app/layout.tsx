@@ -76,9 +76,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                   </form>
                 </>
               ) : (
-                <Link href="/login" className="font-medium hover:text-brand">
-                  Sign in
-                </Link>
+                <>
+                  <Link href="/login" className="font-medium hover:text-brand">
+                    Sign in
+                  </Link>
+                  <Link href="/signup" className="btn-primary whitespace-nowrap px-3 py-1.5 text-sm">
+                    Sign up free
+                  </Link>
+                </>
               )}
             </div>
           </nav>
