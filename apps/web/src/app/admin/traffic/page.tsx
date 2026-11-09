@@ -83,7 +83,16 @@ export default async function TrafficAdminPage({ searchParams }: { searchParams:
   const shortDate = (key: string) =>
     new Date(`${key}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 
-  const countryName = new Intl.DisplayNames(["en"], { type: "region" });
+  const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+  // Analytics sometimes reports codes that aren't real regions (Tor shows up as
+  // "T1", for example), and DisplayNames throws on those, so fall back to the raw code.
+  const countryName = (code: string) => {
+    try {
+      return regionNames.of(code) ?? code;
+    } catch {
+      return code;
+    }
+  };
 
   return (
     <section className="flex flex-col gap-6">
@@ -148,7 +157,7 @@ export default async function TrafficAdminPage({ searchParams }: { searchParams:
       <div className="grid gap-4 lg:grid-cols-2">
         <Breakdown title="Top pages" rows={pages} />
         <Breakdown title="Where visitors came from" rows={referrers} label={(k) => k || "Direct / unknown"} />
-        <Breakdown title="Countries" rows={countries} label={(k) => (k ? (countryName.of(k) ?? k) : "Unknown")} />
+        <Breakdown title="Countries" rows={countries} label={(k) => (k ? countryName(k) : "Unknown")} />
         <Breakdown title="Devices" rows={devices} label={(k) => (k ? k[0].toUpperCase() + k.slice(1) : "Unknown")} />
       </div>
     </section>
