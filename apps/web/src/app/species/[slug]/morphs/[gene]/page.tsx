@@ -141,7 +141,13 @@ export default async function MorphPage({ params }: Props) {
         <p className="mb-4 text-sm text-muted">Odds per egg. Try your own pairing in the genetics calculator.</p>
         <div className="grid gap-4 md:grid-cols-2">
           {pairings.map((p) => {
-            const { outcomes } = predictOffspring(genes as Gene[], p.a, p.b);
+            // Skip a pairing the calculator can't work out rather than fail the whole page.
+            let outcomes: ReturnType<typeof predictOffspring>["outcomes"];
+            try {
+              ({ outcomes } = predictOffspring(genes as Gene[], p.a, p.b));
+            } catch {
+              return null;
+            }
             return (
               <div key={p.title} className="rounded-lg border border-border bg-card p-4 text-sm">
                 <h3 className="mb-2 font-semibold">{p.title}</h3>
