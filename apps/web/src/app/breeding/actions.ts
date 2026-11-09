@@ -14,6 +14,14 @@ function num(formData: FormData, key: string) {
   return value === null ? null : Number(value);
 }
 
+// A date input's "2026-10-14" as a noon timestamp. A malformed value (old
+// browsers send free text) becomes null instead of throwing in toISOString.
+function noonIso(day: string | null) {
+  if (!day) return null;
+  const at = new Date(`${day}T12:00:00`);
+  return Number.isNaN(at.getTime()) ? null : at.toISOString();
+}
+
 function back(pairingId: string, params: string): never {
   revalidatePath(`/breeding/${pairingId}`);
   revalidatePath("/breeding");
@@ -38,7 +46,7 @@ export async function createPairing(formData: FormData) {
     .insert({
       male_id: maleId,
       female_id: femaleId,
-      pairing_date: pairedOn ? new Date(`${pairedOn}T12:00:00`).toISOString() : undefined,
+      pairing_date: noonIso(pairedOn) ?? undefined,
       notes: text(formData, "notes"),
     })
     .select("id")
@@ -99,7 +107,7 @@ export async function addClutch(formData: FormData) {
     .from("clutches")
     .insert({
       pairing_id: pairingId,
-      laid_date: laid ? new Date(`${laid}T12:00:00`).toISOString() : null,
+      laid_date: noonIso(laid),
       egg_count: eggCount,
       fertile_count: fertile,
       expected_hatch_date: text(formData, "expected_hatch_date"),
@@ -117,8 +125,8 @@ export async function addClutch(formData: FormData) {
       Array.from({ length: eggCount }, (_, i) => ({
         clutch_id: clutch.id,
         egg_number: i + 1,
-        laid_date: laid ? new Date(`${laid}T12:00:00`).toISOString() : null,
-        incubation_start: laid ? new Date(`${laid}T12:00:00`).toISOString() : null,
+        laid_date: noonIso(laid),
+        incubation_start: noonIso(laid),
         status: i < good ? "incubating" : "infertile",
       })),
     );
